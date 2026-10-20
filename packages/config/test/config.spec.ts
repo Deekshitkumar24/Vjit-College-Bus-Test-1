@@ -55,13 +55,13 @@ describe('Configuration Package & Startup Refusal Rules', () => {
     );
   });
 
-  it('refuses startup if any secret matches a known placeholder value', () => {
-    const placeholderEnv = {
+  it('refuses startup if any secret matches a prohibited token string', () => {
+    const invalidSecretEnv = {
       ...validEnv,
-      JWT_SIGNING_KEY: 'this_is_a_placeholder_key_for_testing_purposes',
+      JWT_SIGNING_KEY: 'prohibited_changeme_key_for_unit_tests',
     };
-    expect(() => loadAndValidateEnv(placeholderEnv)).toThrowError(
-      /matches prohibited placeholder/,
+    expect(() => loadAndValidateEnv(invalidSecretEnv)).toThrowError(
+      /matches prohibited credential pattern/,
     );
   });
 

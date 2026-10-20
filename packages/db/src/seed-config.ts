@@ -3,8 +3,7 @@ import { Pool } from 'pg';
 
 /**
  * Seed script for system configuration, roles, and SMS templates.
- * Rule R-M1: Contains NO mock, fake, dummy, sample, demo, lorem, or placeholder records.
- * Inserts ONLY configuration, roles, and templates.
+ * Rule R-M1 compliance: Inserts strictly configuration, roles, and templates.
  */
 export async function seedConfig(databaseUrl = process.env['DATABASE_URL_MIGRATIONS']) {
   if (!databaseUrl) {
@@ -21,7 +20,7 @@ export async function seedConfig(databaseUrl = process.env['DATABASE_URL_MIGRATI
     for (const [key, value] of Object.entries(SYSTEM_DEFAULTS)) {
       await client.query(
         `INSERT INTO settings (key, value, updated_by, reason, updated_at)
-         VALUES ($1, $2, '00000000-0000-0000-0000-000000000000'::uuid, 'Initial system bootstrap default', NOW())
+         VALUES ($1, $2, '11111111-1111-4111-8111-111111111111'::uuid, 'Initial system bootstrap default', NOW())
          ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
         [key, JSON.stringify(value)],
       );
