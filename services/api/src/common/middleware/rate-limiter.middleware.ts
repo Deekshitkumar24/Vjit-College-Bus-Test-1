@@ -77,7 +77,10 @@ export class RateLimiterMiddleware implements NestMiddleware {
 
     res.setHeader('RateLimit-Limit', limitConfig.maxRequests.toString());
     res.setHeader('RateLimit-Remaining', (limitConfig.maxRequests - record.count).toString());
-    res.setHeader('RateLimit-Reset', (limitConfig.windowSeconds - (now - record.windowStart)).toString());
+    res.setHeader(
+      'RateLimit-Reset',
+      (limitConfig.windowSeconds - (now - record.windowStart)).toString(),
+    );
 
     return next();
   }

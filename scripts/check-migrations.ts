@@ -6,7 +6,10 @@ import * as path from 'path';
  * Enforces expand-then-contract migration safety in CI.
  * Drops or renames on columns or tables block the build.
  */
-export function checkMigrationSql(sqlContent: string, isContractPhase = false): { valid: boolean; violations: string[] } {
+export function checkMigrationSql(
+  sqlContent: string,
+  isContractPhase = false,
+): { valid: boolean; violations: string[] } {
   const violations: string[] = [];
 
   const BANNED_PATTERNS = [
@@ -19,7 +22,9 @@ export function checkMigrationSql(sqlContent: string, isContractPhase = false): 
   for (const { pattern, name } of BANNED_PATTERNS) {
     if (pattern.test(sqlContent)) {
       if (!isContractPhase) {
-        violations.push(`Prohibited destructive migration pattern detected: "${name}". Migrations must be expand-only.`);
+        violations.push(
+          `Prohibited destructive migration pattern detected: "${name}". Migrations must be expand-only.`,
+        );
       }
     }
   }

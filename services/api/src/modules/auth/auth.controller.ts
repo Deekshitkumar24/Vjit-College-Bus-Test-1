@@ -1,18 +1,12 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Delete,
-  Body,
-  Param,
-  HttpStatus,
-  Res,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Get, Delete, Body, Param, HttpStatus, Res, Req } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service.js';
 import { Public } from '../../common/decorators/public.decorator.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
+
+interface AuthenticatedRequest extends Request {
+  user?: { userId?: string };
+}
 
 @Controller('auth')
 export class AuthController {
@@ -50,9 +44,15 @@ export class AuthController {
 
   @Post('otp/request')
   @Public()
-  async requestOtp(@Body() body: { email: string; turnstile_token?: string }, @Res() res: Response) {
+  async requestOtp(
+    @Body() body: { email: string; turnstile_token?: string },
+    @Res() res: Response,
+  ) {
     // In production, uses OTP_HMAC_KEY from env
-    await this.authService.requestDriverOtp(body.email, 'super_secure_otp_hmac_secret_key_32_chars');
+    await this.authService.requestDriverOtp(
+      body.email,
+      'super_secure_otp_hmac_secret_key_32_chars',
+    );
     return res.status(HttpStatus.OK).json({
       message: 'If the email exists, a verification code has been dispatched.',
     });
@@ -107,9 +107,9 @@ export class AuthController {
 
   @Post('mfa/enrol')
   @Roles('SEC', 'COR', 'TEC', 'MGT', 'SAD')
-  enrolMfa(@Req() req: Request, @Res() res: Response) {
-    const userId = (req as any).user?.userId || 'user_1';
-    const mfaData = this.authService.enrolAdminMfa(userId);
+  async enrolMfa(@Req() req: Request, @Res() res: Response) {
+    const userId = (req as AuthenticatedRequest).user?.userId || 'user_1';
+    const mfaData = await this.authService.enrolAdminMfa(userId);
     return res.status(HttpStatus.OK).json(mfaData);
   }
 

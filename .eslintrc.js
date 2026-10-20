@@ -9,7 +9,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:security/recommended',
+    'plugin:security/recommended-legacy',
     'prettier',
   ],
   rules: {
@@ -22,11 +22,13 @@ module.exports = {
       'error',
       {
         property: '$queryRawUnsafe',
-        message: 'Unsafe raw SQL is strictly banned. Use Prisma.sql tagged templates only (AG-MASTER-1.0 §13.6).',
+        message:
+          'Unsafe raw SQL is strictly banned. Use Prisma.sql tagged templates only (AG-MASTER-1.0 §13.6).',
       },
       {
         property: '$executeRawUnsafe',
-        message: 'Unsafe raw SQL is strictly banned. Use Prisma.sql tagged templates only (AG-MASTER-1.0 §13.6).',
+        message:
+          'Unsafe raw SQL is strictly banned. Use Prisma.sql tagged templates only (AG-MASTER-1.0 §13.6).',
       },
       {
         property: 'dangerouslySetInnerHTML',

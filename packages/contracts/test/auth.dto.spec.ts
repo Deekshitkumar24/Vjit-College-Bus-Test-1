@@ -11,7 +11,9 @@ import {
 describe('Contracts - Auth DTOs', () => {
   it('validates SsoStartSchema correctly', () => {
     expect(SsoStartSchema.safeParse({}).success).toBe(true);
-    expect(SsoStartSchema.safeParse({ return_url: 'https://college.edu/callback' }).success).toBe(true);
+    expect(SsoStartSchema.safeParse({ return_url: 'https://college.edu/callback' }).success).toBe(
+      true,
+    );
     expect(SsoStartSchema.safeParse({ return_url: 'not-a-url' }).success).toBe(false);
   });
 
@@ -21,9 +23,15 @@ describe('Contracts - Auth DTOs', () => {
   });
 
   it('validates DriverOtpVerifySchema correctly', () => {
-    expect(DriverOtpVerifySchema.safeParse({ email: 'driver@college.edu', code: '123456' }).success).toBe(true);
-    expect(DriverOtpVerifySchema.safeParse({ email: 'driver@college.edu', code: '12345' }).success).toBe(false);
-    expect(DriverOtpVerifySchema.safeParse({ email: 'driver@college.edu', code: '1234567' }).success).toBe(false);
+    expect(
+      DriverOtpVerifySchema.safeParse({ email: 'driver@college.edu', code: '123456' }).success,
+    ).toBe(true);
+    expect(
+      DriverOtpVerifySchema.safeParse({ email: 'driver@college.edu', code: '12345' }).success,
+    ).toBe(false);
+    expect(
+      DriverOtpVerifySchema.safeParse({ email: 'driver@college.edu', code: '1234567' }).success,
+    ).toBe(false);
   });
 
   it('validates RefreshTokenSchema correctly', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { EnvSchema, loadAndValidateEnv } from '../src/env.schema.js';
-import { SYSTEM_DEFAULTS } from '../src/defaults.js';
+import { loadAndValidateEnv } from '../src/env.schema.js';
+import { SYSTEM_DEFAULTS, SECTION_35_KEYS } from '../src/defaults.js';
 
 describe('Configuration Package & Startup Refusal Rules', () => {
   const validEnv = {
@@ -18,7 +18,8 @@ describe('Configuration Package & Startup Refusal Rules', () => {
     OIDC_CLIENT_ID: 'college-bus-tracker-client-id.apps.googleusercontent.com',
     OIDC_CLIENT_SECRET: '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',
     COLLEGE_EMAIL_DOMAINS: 'college.edu,faculty.college.edu',
-    SSO_ALLOWED_RETURN_URLS: 'https://admin.college.edu/auth/callback,https://bus.college.edu/auth/callback',
+    SSO_ALLOWED_RETURN_URLS:
+      'https://admin.college.edu/auth/callback,https://bus.college.edu/auth/callback',
     FCM_SERVICE_ACCOUNT_JSON: '{"type":"service_account","project_id":"college-bus"}',
     SMS_PROVIDER_KEY: 'sms_live_api_key_8f7d6e5c4b3a2019',
     SMS_SENDER_ID: 'CLGBUS',
@@ -76,18 +77,115 @@ describe('Configuration Package & Startup Refusal Rules', () => {
   });
 
   it('verifies that system defaults match specification values exactly', () => {
+    // Hardware validity
     expect(SYSTEM_DEFAULTS['hw.stale_after_s']).toBe(60);
     expect(SYSTEM_DEFAULTS['hw.min_satellites']).toBe(4);
     expect(SYSTEM_DEFAULTS['hw.max_hdop']).toBe(5.0);
+    expect(SYSTEM_DEFAULTS['hw.gps_lost_after_s']).toBe(30);
+
+    // Phone validity
     expect(SYSTEM_DEFAULTS['phone.max_accuracy_m']).toBe(50);
+    expect(SYSTEM_DEFAULTS['phone.standby_interval_s']).toBe(30);
+    expect(SYSTEM_DEFAULTS['phone.fallback_interval_s']).toBe(10);
+
+    // Selector
     expect(SYSTEM_DEFAULTS['selector.cooldown_s']).toBe(30);
     expect(SYSTEM_DEFAULTS['selector.return_fixes']).toBe(3);
     expect(SYSTEM_DEFAULTS['selector.both_down_s']).toBe(120);
+    expect(SYSTEM_DEFAULTS['selector.flap_limit']).toBe(6);
+    expect(SYSTEM_DEFAULTS['selector.flap_hold_s']).toBe(300);
+
+    // Stops and ETA
     expect(SYSTEM_DEFAULTS['stop.radius_m']).toBe(50);
     expect(SYSTEM_DEFAULTS['stop.arrival_speed_kmh']).toBe(5);
     expect(SYSTEM_DEFAULTS['stop.arrival_dwell_s']).toBe(15);
+    expect(SYSTEM_DEFAULTS['eta.speed_default_kmh']).toBe(20);
+    expect(SYSTEM_DEFAULTS['eta.arriving_threshold_s']).toBe(60);
+
+    // Attendance
     expect(SYSTEM_DEFAULTS['qr.rotation_s']).toBe(30);
+    expect(SYSTEM_DEFAULTS['qr.grace_slots']).toBe(1);
     expect(SYSTEM_DEFAULTS['boarding.window_before_min']).toBe(10);
     expect(SYSTEM_DEFAULTS['boarding.window_after_min']).toBe(15);
+    expect(SYSTEM_DEFAULTS['leave.cutoff_before_trip_min']).toBe(30);
+
+    // SOS
+    expect(SYSTEM_DEFAULTS['sos.dedupe_s']).toBe(60);
+    expect(SYSTEM_DEFAULTS['sos.cancel_window_s']).toBe(30);
+    expect(SYSTEM_DEFAULTS['sos.escalation_min']).toEqual([0, 2, 5, 10]);
+    expect(SYSTEM_DEFAULTS['sos.escalation_repeat_min']).toBe(5);
+    expect(SYSTEM_DEFAULTS['sos.escalation_check_s']).toBe(15);
+
+    // Notifications
+    expect(SYSTEM_DEFAULTS['notify.quiet_start']).toBe('22:00');
+    expect(SYSTEM_DEFAULTS['notify.quiet_end']).toBe('06:00');
+    expect(SYSTEM_DEFAULTS['notify.push_per_hour']).toBe(6);
+    expect(SYSTEM_DEFAULTS['notify.group_window_s']).toBe(120);
+
+    // Sessions and OTP
+    expect(SYSTEM_DEFAULTS['session.idle_min']).toBe(30);
+    expect(SYSTEM_DEFAULTS['session.idle_min_sec']).toBe(15);
+    expect(SYSTEM_DEFAULTS['otp.ttl_min']).toBe(10);
+    expect(SYSTEM_DEFAULTS['otp.attempts']).toBe(5);
+    expect(SYSTEM_DEFAULTS['otp.lock_min']).toBe(15);
+
+    // Data retention
+    expect(SYSTEM_DEFAULTS['retention.location_days']).toBe(90);
+    expect(SYSTEM_DEFAULTS['retention.audit_log_years']).toBe(3);
+
+    // Service
+    expect(SYSTEM_DEFAULTS['service.hours']).toBe('05:30 to 22:30');
+  });
+
+  it('seeds every key listed in SW-MVP-1.0 §35 (completeness check)', () => {
+    // This test ensures that the SYSTEM_DEFAULTS object contains all keys
+    // that the specification defines. Each key must have a defined, non-undefined value.
+    const keys = SECTION_35_KEYS;
+    expect(keys.length).toBeGreaterThanOrEqual(85);
+
+    for (const key of keys) {
+      expect(SYSTEM_DEFAULTS[key], `Missing value for key: ${key}`).toBeDefined();
+    }
+
+    // Spot-check key domain coverage — every domain prefix must be present
+    const domains = new Set(keys.map((k) => k.split('.')[0]));
+    const requiredDomains = [
+      'hw',
+      'phone',
+      'vehicle',
+      'ingest',
+      'rate',
+      'selector',
+      'shift',
+      'trip',
+      'stop',
+      'eta',
+      'snapshot',
+      'qr',
+      'boarding',
+      'leave',
+      'approach',
+      'sos',
+      'firmware',
+      'route',
+      'notify',
+      'summary',
+      'session',
+      'otp',
+      'mfa',
+      'doc',
+      'app',
+      'web',
+      'import',
+      'export',
+      'retention',
+      'service',
+      'preflight',
+      'absence',
+      'stop_request',
+    ];
+    for (const domain of requiredDomains) {
+      expect(domains.has(domain), `Missing domain prefix: ${domain}`).toBe(true);
+    }
   });
 });

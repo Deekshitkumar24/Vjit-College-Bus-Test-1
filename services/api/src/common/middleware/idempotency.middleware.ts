@@ -5,8 +5,12 @@ import { createHash } from 'crypto';
 interface StoredIdempotencyEntry {
   requestHash: string;
   statusCode: number;
-  body: any;
+  body: unknown;
   expiresAt: number;
+}
+
+interface AuthenticatedRequest extends Request {
+  user?: { userId?: string };
 }
 
 @Injectable()
@@ -26,7 +30,7 @@ export class IdempotencyMiddleware implements NestMiddleware {
       return next();
     }
 
-    const userId = (req as any).user?.userId || 'anonymous';
+    const userId = (req as AuthenticatedRequest).user?.userId || 'anonymous';
     const cacheKey = `${userId}:${idempotencyKey}`;
     const requestHash = createHash('sha256')
       .update(JSON.stringify(req.body || {}))
@@ -52,7 +56,7 @@ export class IdempotencyMiddleware implements NestMiddleware {
 
     // Intercept response to cache it
     const originalSend = res.json.bind(res);
-    res.json = (body: any) => {
+    res.json = (body: unknown) => {
       // Store in cache for 24 hours (86400 seconds)
       IdempotencyMiddleware.cache.set(cacheKey, {
         requestHash,

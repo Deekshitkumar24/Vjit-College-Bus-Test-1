@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 
 export interface RlsContext {
   userId: string;
@@ -14,7 +14,7 @@ export interface RlsContext {
 export async function withRlsTransaction<T>(
   pool: Pool,
   ctx: RlsContext,
-  callback: (client: any) => Promise<T>,
+  callback: (client: PoolClient) => Promise<T>,
 ): Promise<T> {
   const client = await pool.connect();
   try {
@@ -65,7 +65,10 @@ export function getRlsAndAuditSql(): string {
   ];
 
   const enableRlsSql = rlsTables
-    .map((t) => `ALTER TABLE ${t} ENABLE ROW LEVEL SECURITY;\nALTER TABLE ${t} FORCE ROW LEVEL SECURITY;`)
+    .map(
+      (t) =>
+        `ALTER TABLE ${t} ENABLE ROW LEVEL SECURITY;\nALTER TABLE ${t} FORCE ROW LEVEL SECURITY;`,
+    )
     .join('\n');
 
   const auditTriggerSql = `

@@ -91,7 +91,8 @@ export const EnvSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['NODE_ENV'],
-        message: 'NODE_ENV cannot be production while APP_ENV is local (AG-MASTER-1.0 §3.3 refusal rule)',
+        message:
+          'NODE_ENV cannot be production while APP_ENV is local (AG-MASTER-1.0 §3.3 refusal rule)',
       });
     }
 
@@ -127,7 +128,9 @@ export const EnvSchema = z
 
 export type EnvConfig = z.infer<typeof EnvSchema>;
 
-export function loadAndValidateEnv(env: Record<string, string | undefined> = process.env): EnvConfig {
+export function loadAndValidateEnv(
+  env: Record<string, string | undefined> = process.env,
+): EnvConfig {
   const result = EnvSchema.safeParse(env);
   if (!result.success) {
     const errorDetails = result.error.issues

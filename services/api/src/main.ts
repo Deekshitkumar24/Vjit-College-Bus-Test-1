@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import { Request, Response, NextFunction } from 'express';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,7 +29,7 @@ export async function bootstrap() {
   );
 
   // 2. Custom header policies & X-Powered-By strip
-  app.use((req: any, res: any, next: any) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
     res.removeHeader('X-Powered-By');
     if (req.headers.authorization || req.cookies?.session) {

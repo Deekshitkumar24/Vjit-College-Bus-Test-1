@@ -51,10 +51,13 @@ export class PartitionManager {
     try {
       const cutoff = DateTime.utc().minus({ days: retentionDays }).toFormat('yyyy_MM_dd');
       // Query information_schema / pg_inherits for partitions older than cutoff and drop them
-      const res = await client.query(`
+      const res = await client.query(
+        `
         SELECT relname FROM pg_class 
         WHERE relname LIKE 'location_samples_%' AND relname < 'location_samples_' || $1;
-      `, [cutoff]);
+      `,
+        [cutoff],
+      );
 
       for (const row of res.rows) {
         await client.query(`DROP TABLE IF EXISTS ${row.relname};`);

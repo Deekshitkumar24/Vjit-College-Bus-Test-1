@@ -24,12 +24,7 @@ const FORBIDDEN_IMPORTS = [
   /from\s+['"].*tools\/simulator.*['"]/,
 ];
 
-const EXCLUDED_PATHS = [
-  'tests/fixtures',
-  'tools/simulator',
-  'docs',
-  'scripts',
-];
+const EXCLUDED_PATHS = ['tests/fixtures', 'tools/simulator', 'docs', 'scripts'];
 
 const EXCLUDED_FOLDER_NAMES = new Set([
   'node_modules',
@@ -79,7 +74,10 @@ export function scanDirectory(dir: string, baseDir = dir): boolean {
       if (!scanDirectory(fullPath, baseDir)) {
         isClean = false;
       }
-    } else if (entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx') || entry.name.endsWith('.js'))) {
+    } else if (
+      entry.isFile() &&
+      (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx') || entry.name.endsWith('.js'))
+    ) {
       const issues = scanFileForMocks(fullPath);
       if (issues.length > 0) {
         console.error(`verify:no-mock VIOLATION in ${relPath}:`);
@@ -96,7 +94,9 @@ if (process.argv[1] && process.argv[1].endsWith('verify-no-mock.ts')) {
   const root = process.cwd();
   const passed = scanDirectory(root);
   if (!passed) {
-    console.error('verify:no-mock FAILED. Prohibited mock data or test imports found in production code.');
+    console.error(
+      'verify:no-mock FAILED. Prohibited mock data or test imports found in production code.',
+    );
     process.exit(1);
   }
   console.log('verify:no-mock PASSED. Zero mock data patterns found in application code.');

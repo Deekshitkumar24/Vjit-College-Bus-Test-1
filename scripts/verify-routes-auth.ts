@@ -19,7 +19,10 @@ export const REVIEWED_PUBLIC_ALLOWLIST = [
   'GET /api/v1/health/ready',
 ];
 
-export function verifyRouteInventory(routes: RouteAuthEntry[]): { valid: boolean; unauthorizedRoutes: string[] } {
+export function verifyRouteInventory(routes: RouteAuthEntry[]): {
+  valid: boolean;
+  unauthorizedRoutes: string[];
+} {
   const unauthorizedRoutes: string[] = [];
 
   for (const r of routes) {
@@ -53,8 +56,18 @@ if (process.argv[1] && process.argv[1].endsWith('verify-routes-auth.ts')) {
     { method: 'POST', path: '/api/v1/auth/logout', isPublic: false, roles: [] },
     { method: 'GET', path: '/api/v1/auth/sessions', isPublic: false, roles: [] },
     { method: 'DELETE', path: '/api/v1/auth/sessions/:id', isPublic: false, roles: [] },
-    { method: 'POST', path: '/api/v1/auth/mfa/enrol', isPublic: false, roles: ['SEC', 'COR', 'TEC', 'MGT', 'SAD'] },
-    { method: 'POST', path: '/api/v1/auth/mfa/verify', isPublic: false, roles: ['SEC', 'COR', 'TEC', 'MGT', 'SAD'] },
+    {
+      method: 'POST',
+      path: '/api/v1/auth/mfa/enrol',
+      isPublic: false,
+      roles: ['SEC', 'COR', 'TEC', 'MGT', 'SAD'],
+    },
+    {
+      method: 'POST',
+      path: '/api/v1/auth/mfa/verify',
+      isPublic: false,
+      roles: ['SEC', 'COR', 'TEC', 'MGT', 'SAD'],
+    },
     { method: 'GET', path: '/api/v1/health', isPublic: true, roles: [] },
     { method: 'GET', path: '/api/v1/health/ready', isPublic: true, roles: [] },
   ];
@@ -66,5 +79,7 @@ if (process.argv[1] && process.argv[1].endsWith('verify-routes-auth.ts')) {
     process.exit(1);
   }
 
-  console.log(`verify:routes-auth PASSED. ${currentRoutes.length} routes checked with zero unauthorized public endpoints.`);
+  console.log(
+    `verify:routes-auth PASSED. ${currentRoutes.length} routes checked with zero unauthorized public endpoints.`,
+  );
 }

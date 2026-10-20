@@ -32,8 +32,6 @@ import { IdempotencyMiddleware } from './common/middleware/idempotency.middlewar
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(RateLimiterMiddleware, IdempotencyMiddleware)
-      .forRoutes('*');
+    consumer.apply(RateLimiterMiddleware, IdempotencyMiddleware).forRoutes('*');
   }
 }

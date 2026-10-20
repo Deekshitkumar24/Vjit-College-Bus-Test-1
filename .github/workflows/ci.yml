@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint, Typecheck, Unit Tests & Security Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Monorepo Typecheck
+        run: pnpm typecheck
+
+      - name: Linter & Prettier Check
+        run: pnpm lint
+
+      - name: Unit Tests
+        run: pnpm test:unit
+
+      - name: Verify No Mock / Synthetic Data Leakage (R-M1, R-M6)
+        run: pnpm verify:no-mock
+
+      - name: Verify Route Authorization Inventory (Default-Deny)
+        run: pnpm verify:routes-auth
+
+      - name: Verify Expand-Only Migration Policy (P0-T5)
+        run: npx tsx scripts/check-migrations.ts

@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint && prettier --check \"**/*.{ts,tsx,js,json,md}\"",
-    "lint:fix": "turbo run lint:fix && prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "lint": "turbo run lint && prettier --check \"packages/**/*.{ts,tsx,js,json,md}\" \"services/**/*.{ts,tsx,js,json,md}\" \"scripts/**/*.{ts,tsx,js,json,md}\" \"docs/**/*.{ts,tsx,js,json,md}\"",
+    "lint:fix": "turbo run lint:fix && prettier --write \"packages/**/*.{ts,tsx,js,json,md}\" \"services/**/*.{ts,tsx,js,json,md}\" \"scripts/**/*.{ts,tsx,js,json,md}\" \"docs/**/*.{ts,tsx,js,json,md}\"",
     "typecheck": "turbo run typecheck",
     "test:unit": "turbo run test:unit",
     "test:int": "turbo run test:int",

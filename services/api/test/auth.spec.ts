@@ -14,27 +14,27 @@ describe('Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9)', () =
   });
 
   describe('Driver OTP & Lockout (T-AUTH-01, Part 13.4, Part 13.20)', () => {
-    it('dispatches a valid code and locks account after 5 consecutive incorrect attempts', async () => {
+    it('dispatches a valid code and locks account after 5 consecutive incorrect attempts per code (C-06)', async () => {
       const email = 'driver.ops@college.edu';
       const code = await authService.requestDriverOtp(email, testSecret);
       expect(code).toMatch(/^\d{6}$/);
 
       // Attempt 1 to 4: Failures
       for (let i = 1; i < 5; i++) {
-        await expect(
-          authService.verifyDriverOtp(email, '000000', testSecret),
-        ).rejects.toThrowError(/Invalid email or authentication code/);
+        await expect(authService.verifyDriverOtp(email, '000000', testSecret)).rejects.toThrowError(
+          /Invalid email or authentication code/,
+        );
       }
 
       // Attempt 5: Exceeds threshold -> triggers account lockout
-      await expect(
-        authService.verifyDriverOtp(email, '000000', testSecret),
-      ).rejects.toThrowError(/Account is locked for 15 minutes/);
+      await expect(authService.verifyDriverOtp(email, '000000', testSecret)).rejects.toThrowError(
+        /Account is locked for 15 minutes/,
+      );
 
       // Subsequent attempt rejected while locked
-      await expect(
-        authService.verifyDriverOtp(email, code, testSecret),
-      ).rejects.toThrowError(/Account is temporarily locked/);
+      await expect(authService.verifyDriverOtp(email, code, testSecret)).rejects.toThrowError(
+        /Account is temporarily locked/,
+      );
     });
 
     it('successfully verifies correct code and marks it single-use', async () => {
@@ -46,9 +46,62 @@ describe('Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9)', () =
       expect(tokens.refreshToken).toBeDefined();
 
       // Second attempt with same code must fail (single-use enforcement)
-      await expect(
-        authService.verifyDriverOtp(email, code, testSecret),
-      ).rejects.toThrowError(/expired or has already been used/);
+      await expect(authService.verifyDriverOtp(email, code, testSecret)).rejects.toThrowError(
+        /expired or has already been used/,
+      );
+    });
+
+    it('enforces F-AUTH-02: 10 consecutive failures across codes locks account for 15 minutes (C-06)', async () => {
+      const email = 'driver.consecutive@college.edu';
+      // Code 1: 4 attempts
+      await authService.requestDriverOtp(email, testSecret);
+      for (let i = 0; i < 4; i++) {
+        await expect(authService.verifyDriverOtp(email, '000000', testSecret)).rejects.toThrowError(
+          /Invalid email or authentication code/,
+        );
+      }
+      // Code 2: 4 attempts
+      await authService.requestDriverOtp(email, testSecret);
+      for (let i = 0; i < 4; i++) {
+        await expect(authService.verifyDriverOtp(email, '000000', testSecret)).rejects.toThrowError(
+          /Invalid email or authentication code/,
+        );
+      }
+      // Code 3: 2 attempts -> reaches 10 consecutive failures!
+      await authService.requestDriverOtp(email, testSecret);
+      await expect(authService.verifyDriverOtp(email, '000000', testSecret)).rejects.toThrowError(
+        /Invalid email or authentication code/,
+      );
+
+      await expect(authService.verifyDriverOtp(email, '000000', testSecret)).rejects.toThrowError(
+        /Account is locked for 15 minutes/,
+      );
+    });
+  });
+
+  describe('Admin MFA Recovery Codes (P0-T12, Part 13.20)', () => {
+    it('generates 10 single-use recovery codes hashed with Argon2id and shown once', async () => {
+      const userId = 'admin_user_001';
+      const { secret, recoveryCodes } = await authService.enrolAdminMfa(userId);
+
+      expect(secret).toBeDefined();
+      expect(recoveryCodes).toHaveLength(10);
+      expect(recoveryCodes[0]).toMatch(/^RC-[A-F0-9]{4}-[A-F0-9]{4}$/);
+
+      // Verify the first recovery code succeeds
+      const firstCode = recoveryCodes[0];
+      const valid = await authService.verifyRecoveryCode(userId, firstCode);
+      expect(valid).toBe(true);
+
+      // Second use of the same recovery code MUST fail (single-use enforcement)
+      await expect(authService.verifyRecoveryCode(userId, firstCode)).rejects.toThrowError(
+        /Invalid or previously used recovery code/,
+      );
+
+      // An invalid code fails
+      await expect(authService.verifyRecoveryCode(userId, 'RC-0000-0000')).rejects.toThrowError(
+        /Invalid or previously used recovery code/,
+      );
     });
   });
 
@@ -71,10 +124,14 @@ describe('Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9)', () =
       expect(legitRotation.refreshToken).toBeDefined();
 
       // Attacker attempts to replay the old initialToken!
-      expect(() => authService.rotateRefreshToken(initialToken)).toThrowError(/Session has been revoked or expired/);
+      expect(() => authService.rotateRefreshToken(initialToken)).toThrowError(
+        /Session has been revoked or expired/,
+      );
 
       // Now legitimate user's new token is ALSO revoked because the family was breached!
-      expect(() => authService.rotateRefreshToken(legitRotation.refreshToken)).toThrowError(/Session has been revoked or expired/);
+      expect(() => authService.rotateRefreshToken(legitRotation.refreshToken)).toThrowError(
+        /Session has been revoked or expired/,
+      );
     });
   });
 
@@ -135,7 +192,9 @@ describe('Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9)', () =
         json: (b: any) => b,
       };
 
-      expect(() => middleware.use(mockReq2, mockRes2, () => {})).toThrowError(/Idempotency key reused with different request payload/);
+      expect(() => middleware.use(mockReq2, mockRes2, () => {})).toThrowError(
+        /Idempotency key reused with different request payload/,
+      );
     });
   });
 });
