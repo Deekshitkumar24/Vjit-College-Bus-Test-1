@@ -2,11 +2,12 @@
 
 **Document ID:** RS-07  
 **Source:** Amazon SNS Developer Guide, AWS SES Event Publishing Guidelines  
-**Date Checked:** 20 October 2026  
+**Date Checked:** 20 October 2026
 
 ---
 
 ## 1. Context & Architecture
+
 When Amazon SES encounters an email bounce or complaint, it publishes a notification to an Amazon SNS Topic (`SNS_EMAIL_TOPIC_ARNS`). SNS then issues an HTTP POST webhook call to `services/api` (`POST /api/v1/webhooks/ses`).
 
 To prevent webhook spoofing, the API must perform full cryptographic signature verification on the payload before acting on any message (`AG-MASTER-1.0` §13.19).

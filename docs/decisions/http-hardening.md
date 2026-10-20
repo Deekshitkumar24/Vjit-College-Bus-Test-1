@@ -2,11 +2,12 @@
 
 **Document ID:** RS-15  
 **Source:** Helmet Documentation, OWASP REST Security Cheat Sheet, NestJS Security Guide  
-**Date Checked:** 20 October 2026  
+**Date Checked:** 20 October 2026
 
 ---
 
 ## 1. Helmet & Response Headers Configuration (`AG-MASTER-1.0` §13.18)
+
 In `services/api/src/main.ts`, Helmet is configured to apply strict HTTP response headers:
 
 ```typescript
@@ -29,7 +30,7 @@ app.use(
       preload: true,
     },
     crossOriginResourcePolicy: { policy: 'same-origin' },
-  })
+  }),
 );
 
 // Explicit header controls
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
 ---
 
 ## 2. CORS Policy Architecture (`AG-MASTER-1.0` §13.7)
+
 - **Ingest Host (`ingest.[college_domain]`):** Returns **NO CORS headers**. Hardware trackers and mobile apps communicate via native sockets/HTTPS and do not execute in browser DOM sandboxes.
 - **API Host (`api.[college_domain]`):**
   - Origin allowlist is strictly pinned to `CORS_ALLOWED_ORIGINS` (only the static admin web console origin `https://admin.[college_domain]`).
@@ -55,7 +57,9 @@ app.use((req, res, next) => {
 ---
 
 ## 3. Disabling OpenAPI / Swagger UI in Production (`AG-MASTER-1.0` §13.10)
+
 Swagger documentation is generated automatically from code but strictly protected:
+
 ```typescript
 if (process.env.NODE_ENV !== 'production') {
   const config = new DocumentBuilder()
@@ -67,4 +71,5 @@ if (process.env.NODE_ENV !== 'production') {
   SwaggerModule.setup('api/docs', app, document);
 }
 ```
+
 In production environments (`NODE_ENV === 'production'`), the `/api/docs` route is completely unregistered, and raw OpenAPI JSON schemas are restricted to development and staging tiers.

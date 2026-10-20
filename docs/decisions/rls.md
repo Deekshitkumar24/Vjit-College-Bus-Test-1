@@ -2,14 +2,16 @@
 
 **Document ID:** RS-12  
 **Source:** PostgreSQL 16 Documentation, Prisma Interactive Transactions Guide  
-**Date Checked:** 20 October 2026  
+**Date Checked:** 20 October 2026
 
 ---
 
 ## 1. Context & Defense-in-Depth RLS Architecture
+
 To guarantee zero cross-role and cross-tenant data leakage (`SW-MVP-1.0` §1.4, `AG-MASTER-1.0` §7.11, §13.1), PostgreSQL Row-Level Security (RLS) is forced across all personal and operational data tables.
 
 Three distinct database roles are established:
+
 1. `app_migrator`: Owns tables and migrations. Never used at runtime.
 2. `app_runtime`: Used by `services/api`. Non-owner, has **NO `BYPASSRLS`** privilege.
 3. `app_worker`: Used by `services/worker`. Granted only permissions needed for background jobs.
@@ -17,13 +19,14 @@ Three distinct database roles are established:
 ---
 
 ## 2. Session Context Injection per Transaction
+
 Prisma does not have native RLS session injection. Therefore, every client request processed by the API runs inside an interactive Prisma transaction that initializes Postgres configuration variables before executing queries (`AG-MASTER-1.0` §7.11, §13.1):
 
 ```typescript
 export async function withRlsContext<T>(
   prisma: PrismaClient,
   context: { userId: string; roles: string[]; busIds: string[]; routeIds: string[] },
-  fn: (tx: Prisma.TransactionClient) => Promise<T>
+  fn: (tx: Prisma.TransactionClient) => Promise<T>,
 ): Promise<T> {
   return prisma.$transaction(async (tx) => {
     // Parameterized session configuration injection (is_local = true limits to current tx)
@@ -44,6 +47,7 @@ export async function withRlsContext<T>(
 ## 3. Sample Fail-Closed Policy Implementations
 
 ### 3.1 Student Attendance Isolation
+
 ```sql
 ALTER TABLE attendance_records ENABLE ROW LEVEL SECURITY;
 ALTER TABLE attendance_records FORCE ROW LEVEL SECURITY;
@@ -65,11 +69,12 @@ CREATE POLICY attendance_isolation_policy ON attendance_records
     (
       'FAC' = ANY(string_to_array(current_setting('app.roles', true), ',')) AND
       EXISTS (
-        SELECT 1 FROM trips t 
-        WHERE t.id = attendance_records.trip_id 
+        SELECT 1 FROM trips t
+        WHERE t.id = attendance_records.trip_id
           AND t.bus_id::text = ANY(string_to_array(current_setting('app.bus_ids', true), ','))
       )
     )
   );
 ```
-*Verification Rule:* If a transaction does not invoke `set_config` to inject `app.user_id` and `app.roles`, all queries return zero rows (fail closed).
+
+_Verification Rule:_ If a transaction does not invoke `set_config` to inject `app.user_id` and `app.roles`, all queries return zero rows (fail closed).

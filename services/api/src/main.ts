@@ -32,7 +32,7 @@ export async function bootstrap() {
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
     res.removeHeader('X-Powered-By');
-    if (req.headers.authorization || req.cookies?.session) {
+    if (req.headers['authorization'] || req.cookies?.['session']) {
       res.setHeader('Cache-Control', 'no-store');
     }
     next();

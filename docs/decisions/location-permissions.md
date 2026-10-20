@@ -2,12 +2,14 @@
 
 **Document IDs:** RS-02, RS-03, RS-17  
 **Sources:** Android Developers Documentation, Google Play Console Policy Center, Apple Developer Guidelines  
-**Date Checked:** 20 October 2026  
+**Date Checked:** 20 October 2026
 
 ---
 
 ## 1. RS-02: Expo Background Location Configuration
+
 ### 1.1 Android Foreground Service
+
 - **Permissions Required:**
   - `android.permission.ACCESS_FINE_LOCATION`
   - `android.permission.ACCESS_COARSE_LOCATION`
@@ -34,6 +36,7 @@
   - Content: "Active Shift: Sharing Bus Location - Shift ID #...".
 
 ### 1.2 iOS Permissions & Background Modes
+
 - **Info.plist Strings:**
   - `NSLocationWhenInUseUsageDescription`: "Your location is used to broadcast the bus position to students while your driving shift is active."
   - `NSLocationAlwaysAndWhenInUseUsageDescription`: "Your location is needed in the background to continuously update the college bus live position even when the phone is locked."
@@ -48,7 +51,9 @@
 ---
 
 ## 2. RS-03: Google Play Background Location Policy & Declaration Form
+
 ### 2.1 Core Policy Compliance
+
 - Google Play strictly regulates background location: background access must provide clear direct user value and cannot be solely for advertising or analytics.
 - **Justification for Driver App:** The driver role is an authorized transportation operator. Background location is the critical real-time safety backup for vehicle tracking during assigned transit shifts.
 - **In-App Prominent Disclosure:**
@@ -57,6 +62,7 @@
   - User must tap "Agree & Continue" before system prompt is triggered.
 
 ### 2.2 Google Play Declaration Video & Form
+
 - Submission requires a video recording of the physical device demonstrating:
   1. Driver signing in via email OTP.
   2. Prominent disclosure dialog appearing.
@@ -67,10 +73,12 @@
 ---
 
 ## 3. RS-17: Google Play Data Safety Form Declarations
+
 Under Google Play's Data Safety declaration requirements:
+
 1. **Data Types Collected:**
-   - *Location:* Approximate location (`ACCESS_COARSE_LOCATION`) and Precise location (`ACCESS_FINE_LOCATION`).
-   - *Personal Info:* Name, Email address, Phone number.
+   - _Location:_ Approximate location (`ACCESS_COARSE_LOCATION`) and Precise location (`ACCESS_FINE_LOCATION`).
+   - _Personal Info:_ Name, Email address, Phone number.
 2. **Data Usage Purpose:**
    - App functionality (vehicle routing, ETA computation, attendance verification).
    - Emergency and safety features (SOS incidents).

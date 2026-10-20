@@ -2,12 +2,14 @@
 
 **Document ID:** RS-20  
 **Source:** `expo-sqlite` (v14) Documentation, React Native TaskManager Guides  
-**Date Checked:** 20 October 2026  
+**Date Checked:** 20 October 2026
 
 ---
 
 ## 1. Requirement & Capacity Sizing
+
 Under `SW-MVP-1.0` §11.7 and `AG-MASTER-1.0` §10.5 (#10):
+
 - The driver mobile phone must buffer location samples locally during network outages for up to **24 hours**.
 - At a 10-second sampling interval (`phone.fallback_interval_s`), 24 hours produces:
   $$\frac{24 \text{ hours} \times 3600 \text{ seconds}}{10 \text{ seconds/sample}} = 8,640 \text{ samples}$$
@@ -16,6 +18,7 @@ Under `SW-MVP-1.0` §11.7 and `AG-MASTER-1.0` §10.5 (#10):
 ---
 
 ## 2. Background Concurrency & Thread Safety with `expo-sqlite`
+
 - In `Expo SDK 51`, `expo-sqlite` introduces the new `SQLiteDatabase` async API (`openDatabaseAsync`), which uses native SQLite WAL (Write-Ahead Logging) mode.
 - **Background Headless Tasks:** When `expo-task-manager` executes the background location task registered via `TaskManager.defineTask`, it operates in a headless JS context.
 - **Safe SQLite Operations in Background:**
@@ -26,6 +29,7 @@ Under `SW-MVP-1.0` §11.7 and `AG-MASTER-1.0` §10.5 (#10):
 ---
 
 ## 3. Buffer Schema & Replay Logic
+
 ```sql
 CREATE TABLE IF NOT EXISTS phone_sample_buffer (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

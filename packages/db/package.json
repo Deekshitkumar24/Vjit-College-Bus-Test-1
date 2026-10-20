@@ -11,7 +11,8 @@
     "db:migrate": "prisma migrate deploy",
     "db:seed:config": "tsx src/seed-config.ts",
     "lint": "eslint src/**/*.ts",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run test/db.spec.ts test/check-migrations.spec.ts",
+    "test:int": "vitest run test/integration.spec.ts"
   },
   "dependencies": {
     "@collegebus/config": "workspace:*",
@@ -20,10 +21,12 @@
     "pg": "^8.12.0"
   },
   "devDependencies": {
+    "@testcontainers/postgresql": "^12.2.1",
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.5.0",
     "@types/pg": "^8.11.8",
     "prisma": "^5.19.1",
+    "testcontainers": "^12.2.1",
     "tsx": "^4.19.0",
     "typescript": "^5.5.4",
     "vitest": "^2.0.5"

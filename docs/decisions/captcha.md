@@ -2,12 +2,14 @@
 
 **Document ID:** RS-08  
 **Source:** Cloudflare Turnstile Documentation  
-**Date Checked:** 20 October 2026  
+**Date Checked:** 20 October 2026
 
 ---
 
 ## 1. Purpose & Application
+
 Under `AG-MASTER-1.0` §13.11 and Conflict C-02, Cloudflare Turnstile is implemented on public authentication routes:
+
 - Enforced on driver OTP sign-in requests after the first request in an hour from an IP or account (`AG-MASTER-1.0` §13.4, §13.11).
 - Protects public forms without sign-in (e.g., student help inquiry if exposed).
 
@@ -23,6 +25,7 @@ Under `AG-MASTER-1.0` §13.11 and Conflict C-02, Cloudflare Turnstile is impleme
   - `idempotency_key`: Optional UUID v4 preventing double-spending during network retries.
 
 - **Response Body Verification:**
+
   ```json
   {
     "success": true,

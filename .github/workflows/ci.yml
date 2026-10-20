@@ -12,8 +12,23 @@ concurrency:
 
 jobs:
   validate:
-    name: Lint, Typecheck, Unit Tests & Security Verification
+    name: Lint, Typecheck, Unit Tests, Integration Tests & Security Verification
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: collegebus_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,6 +55,11 @@ jobs:
 
       - name: Unit Tests
         run: pnpm test:unit
+
+      - name: Integration Tests (Real Database PostGIS, RLS Isolation, Audit Trigger & Migrations)
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/collegebus_test
+        run: pnpm test:int
 
       - name: Verify No Mock / Synthetic Data Leakage (R-M1, R-M6)
         run: pnpm verify:no-mock

@@ -2,11 +2,12 @@
 
 **Document ID:** RS-01  
 **Source:** Official release documentation and npm registries  
-**Date Checked:** 20 October 2026  
+**Date Checked:** 20 October 2026
 
 ---
 
 ## 1. Core Runtime & Monorepo
+
 - **Node.js:** `v22.x LTS` (Active LTS).
 - **pnpm:** `v9.x` (`pnpm workspaces` enabled).
 - **Turborepo:** `v2.x` (build orchestration and cache management).
@@ -15,6 +16,7 @@
 ---
 
 ## 2. Backend Services (`services/api` & `services/worker`)
+
 - **NestJS:** `v10.4.x`
   - `@nestjs/core`, `@nestjs/common`, `@nestjs/platform-express`: `v10.4.x`
   - `@nestjs/swagger`: `v7.4.x` (OpenAPI 3.1 generation; disabled in production via config guard)
@@ -49,6 +51,7 @@
 ---
 
 ## 3. Web Console (`apps/admin-web`)
+
 - **Framework:** `React 18.3.x` with `Vite 5.4.x`
 - **Routing:** `React Router v6.26.x`
 - **Component System:** Tailwind CSS `v3.4.x` with `shadcn/ui` (Radix UI primitives)
@@ -59,6 +62,7 @@
 ---
 
 ## 4. Mobile Application (`apps/mobile`)
+
 - **Framework:** `Expo SDK 51` (`React Native 0.74.x`) with `Expo Router v3.5.x`
 - **Location & Sensors:**
   - `expo-location`: `~17.0.1` (foreground and background location tracking)
@@ -76,6 +80,7 @@
 ---
 
 ## 5. Compatibility Verification
+
 1. **Node 22 LTS with NestJS 10 & Prisma 5:** Fully certified and tested with native ESM and TypeScript 5.5.
 2. **PostgreSQL 16 with PostGIS 3.4 & pg-boss 10:** Confirmed support for native `uuid_generate_v4()`, PostGIS spatial indexing (`GIST`), and `FOR UPDATE SKIP LOCKED`.
 3. **Expo SDK 51 & MapLibre React Native:** MapLibre v10.1 is verified compatible with React Native 0.74 New Architecture in interoperability mode and standard architecture with Expo prebuild / custom dev client.
