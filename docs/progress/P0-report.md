@@ -25,11 +25,11 @@
 | **P0-T9** | Rate limiter (`rate_counters`) & Idempotency middleware: atomic upsert in sliding window with `Retry-After` header on 429; 24-hour Idempotency key middleware preventing duplicate executions and returning HTTP 409 `IDEMPOTENCY_CONFLICT` on payload mismatch. | **Delivered** | `e4d29c7` |
 | **P0-T10** | Observability baseline: `/health` (public liveness) and `/health/ready` (authenticated readiness) probes. | **Delivered** | `5879516` |
 | **P0-T11** | Infrastructure for dev (Terraform): VPC with private subnets, ALB with HTTPS redirect, ECS service, RDS PostgreSQL Multi-AZ with PostGIS, S3, KMS, Secrets Manager, WAF, ACM, Route 53, CloudFront. | **Delivered** | `986227e` |
-| **P0-T12** | Admin MFA recovery codes: 10 single-use recovery codes, hashed with Argon2id, displayed once to user during MFA enrollment, with single-use verification and repeat usage prevention. | **Delivered** | `pending` |
-| **P0-T13** | Authorisation harness (`services/api/test/authorization-harness.spec.ts`): automated test suite executing every endpoint against all 8 system roles and unauthenticated callers. | **Delivered** | `pending` |
+| **P0-T12** | Admin MFA recovery codes: 10 single-use recovery codes, hashed with Argon2id, displayed once to user during MFA enrollment, with single-use verification and repeat usage prevention. | **Delivered** | `90b42c2` |
+| **P0-T13** | Authorisation harness (`services/api/test/authorization-harness.spec.ts`): automated test suite executing every endpoint against all 8 system roles and unauthenticated callers. | **Delivered** | `90b42c2` |
 | **P0-T14** | Audit append-only trigger and role permission isolation: SQL trigger preventing `UPDATE` and `DELETE` on `audit_logs` (R-09), multi-role database grant script. | **Delivered** | `980eedd` |
 | **P0-T15** | Observability telemetry: Sentry error capture and OpenTelemetry / CloudWatch tracing and metrics integration. | **Deferred to Phase P8** (Decision `D-P0-OBS-01`) | — |
-| **P0-T16** | CI/CD automation: GitHub Actions pipeline (`.github/workflows/ci.yml`) enforcing typecheck, lint, unit tests, `verify:no-mock`, `verify:routes-auth`, and `check-migrations`. | **Delivered** | `pending` |
+| **P0-T16** | CI/CD automation: GitHub Actions pipeline (`.github/workflows/ci.yml`) enforcing typecheck, lint, unit tests, `verify:no-mock`, `verify:routes-auth`, and `check-migrations`. | **Delivered** | `90b42c2` |
 | **P0-T17** | Terraform staging and production environment accounts: separate account isolation and multi-account parameterization. | **Deferred to Phase P8** (Decision `D-P0-INFRA-01`) | — |
 | **P0-T18** | Mobile app shell (Expo Router, SecureStore auth, role switcher, navigation guards). | **Deferred to Phase P2** (Task `P2-T1`, Decision `D-P0-SHELL-01`) | — |
 | **P0-T19** | Web console shell (Vite, React Router, Tailwind, auth context, layout, navigation). | **Deferred to Phase P4** (Task `P4-T1`, Decision `D-P0-SHELL-01`) | — |
