@@ -1,0 +1,10 @@
+# Global owners
+* @engineering-lead
+
+# Security-critical reviews required (AG-MASTER-1.0 §13.17)
+/services/api/src/modules/auth/ @security-owner @engineering-lead
+/services/api/src/common/guards/ @security-owner @engineering-lead
+/services/api/src/modules/telemetry/ @security-owner @engineering-lead
+/packages/db/prisma/migrations/ @security-owner @engineering-lead
+/packages/db/src/rls/ @security-owner @engineering-lead
+/infra/terraform/ @security-owner @engineering-lead
