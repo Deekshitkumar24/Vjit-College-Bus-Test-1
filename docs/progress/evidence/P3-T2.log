@@ -1,0 +1,81 @@
+# Evidence Log: P3-T2 Permissions & Pre-Trip Check Diagnostics
+
+Date: 2026-10-22
+Task: P3-T2
+Status: DONE
+Scope: 8 Pre-trip diagnostic checks per SW-MVP-1.0 §15.1 and Part 9.10 (Driver roster verification, trip type selection, hardware tracker status GREEN/AMBER/RED, phone location permission Always, notification permission, battery optimisation exemption, phone GPS accuracy under 50m, network reachability, AC-DRV-02 warning and phone fallback when hardware RED, AC-DRV-03 location permission blocking and platform-specific fix steps).
+
+## Commands Executed
+
+### 1. Mobile Unit & Integration Tests (Vitest)
+Command: `pnpm --filter @collegebus/mobile test`
+Output:
+```
+> @collegebus/mobile@1.0.0 test C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/route-guard.spec.ts (5 tests) 12ms
+ ✓ test/pre-trip-diagnostics.spec.ts (13 tests) 18ms
+ ✓ test/driver-roster.spec.ts (6 tests) 29ms
+ ✓ test/navigation-store.spec.ts (10 tests) 67ms
+ ✓ test/map-marker.spec.ts (12 tests) 19ms
+ ✓ test/eta-stop-card.spec.ts (8 tests) 19ms
+ ✓ test/emergency-sos.spec.ts (7 tests) 31ms
+ ✓ test/student-requests.spec.ts (11 tests) 42ms
+ ✓ test/qr-attendance.spec.ts (8 tests) 35ms
+ ✓ test/mobile-flows.integration.spec.ts (5 tests) 39ms
+ ✓ test/faculty-manifest.spec.ts (11 tests) 89ms
+
+ Test Files  11 passed (11)
+      Tests  96 passed (96)
+   Duration  1.78s
+```
+
+### 2. Monorepo Typecheck
+Command: `pnpm typecheck`
+Output:
+```
+> college-bus-tracker@1.0.0 typecheck C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> turbo run typecheck
+
+ Tasks:    12 successful, 12 total
+  Time:    8.114s
+```
+
+### 3. Verify No Mock Scanner
+Command: `pnpm verify:no-mock`
+Output:
+```
+> college-bus-tracker@1.0.0 verify:no-mock C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-no-mock.ts
+
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+```
+
+### 4. Verify Route Auth Matrix
+Command: `pnpm verify:routes-auth`
+Output:
+```
+> college-bus-tracker@1.0.0 verify:routes-auth C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-routes-auth.ts
+
+verify:routes-auth PASSED. 23 routes checked with zero unauthorized public endpoints.
+```
+
+### 5. Lint & Prettier Checks
+Command: `pnpm lint`
+Output:
+```
+ Tasks:    8 successful, 8 total
+ All matched files use Prettier code style!
+ 0 errors
+```
+
+## Files Changed / Added
+- `packages/domain/src/pre-trip-diagnostics.ts`
+- `packages/domain/src/index.ts`
+- `apps/mobile/src/driver/pre-trip-manager.ts`
+- `apps/mobile/test/pre-trip-diagnostics.spec.ts`
+- `docs/progress/evidence/P3-T2.log`
