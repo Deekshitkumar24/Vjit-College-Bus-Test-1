@@ -15,6 +15,7 @@ export const REVIEWED_PUBLIC_ALLOWLIST = [
   'POST /api/v1/auth/otp/request',
   'POST /api/v1/auth/otp/verify',
   'POST /api/v1/auth/refresh',
+  'POST /api/v1/telemetry',
   'GET /api/v1/health',
   'GET /api/v1/health/ready',
 ];
