@@ -11,7 +11,8 @@
 ## 1. Specification Sections Read
 
 - `SW-MVP-1.0` Sections: 1, 2, 4, 6, 7, 8, 10, 28, 31, 33, 34, 35, 41
-- `AG-MASTER-1.0` Sections: Part I (I.1 to I.6), Parts 1 to 8, 13, 14, 15, 16, 20, 21
+- `AG-MASTER-1.0` Sections: Parts 1 to 8, 13, 14, 15, 16, 17, 18, 20, 21
+- `HW-SPEC-1.0` Sections: 5, 6, 7, 8, 9, 10, 11, 12, 13, 17, 22 (hardware contract check, device lifecycle, power thresholds)
 
 ---
 
