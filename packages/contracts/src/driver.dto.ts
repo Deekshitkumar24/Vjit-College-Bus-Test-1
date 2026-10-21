@@ -153,3 +153,27 @@ export interface DriverDeviceRegisterResponseDto {
   registered_at: string;
   device_label: string;
 }
+
+export const DriverTrackingModeSchema = z.enum(['AUTO', 'HARDWARE', 'PHONE']);
+export type DriverTrackingMode = z.infer<typeof DriverTrackingModeSchema>;
+
+export const DriverModeSwitchRequestSchema = z
+  .object({
+    mode: DriverTrackingModeSchema,
+    note: z.string().max(140).optional(),
+    shift_id: z.string().min(1),
+  })
+  .strict();
+
+export type DriverModeSwitchRequestDto = z.infer<typeof DriverModeSwitchRequestSchema>;
+
+export const DriverModeSwitchResponseSchema = z
+  .object({
+    mode: DriverTrackingModeSchema,
+    updated_at: z.string().datetime(),
+    bus_id: z.string(),
+    note: z.string().nullable().optional(),
+  })
+  .strict();
+
+export type DriverModeSwitchResponseDto = z.infer<typeof DriverModeSwitchResponseSchema>;

@@ -5,7 +5,11 @@ import {
   PhoneLocationCollector,
   LocationCollectorHttpHandler,
 } from '../src/driver/index.js';
-import { DriverLocationSampleDto, DriverLocationsResponseDto } from '@collegebus/contracts';
+import {
+  DriverLocationSampleDto,
+  DriverLocationsBatchDto,
+  DriverLocationsResponseDto,
+} from '@collegebus/contracts';
 
 describe('PhoneLocationBuffer (RS-20 SQLite Storage & FIFO Eviction)', () => {
   let buffer: PhoneLocationBuffer;
@@ -290,8 +294,8 @@ describe('PhoneLocationCollector (Adaptive Cadence, Notification & Batch Replay)
     const requestBody = dispatchedRequests[0]!.body;
     expect(requestBody.shift_id).toBe('shift_offline_01');
     expect(requestBody.samples.length).toBe(12);
-    expect(requestBody.samples[0].seq).toBe(1);
-    expect(requestBody.samples[11].seq).toBe(12);
+    expect(requestBody.samples[0]!.seq).toBe(1);
+    expect(requestBody.samples[11]!.seq).toBe(12);
 
     // After flush complete, banner is cleared
     const bannerAfter = collector.getStatusBanner();
@@ -328,12 +332,12 @@ describe('PhoneLocationCollector (Adaptive Cadence, Notification & Batch Replay)
     expect(dispatchedRequests[2]!.body.samples.length).toBe(15);
 
     // Verify sequence integrity
-    expect(dispatchedRequests[0]!.body.samples[0].seq).toBe(1);
-    expect(dispatchedRequests[0]!.body.samples[49].seq).toBe(50);
-    expect(dispatchedRequests[1]!.body.samples[0].seq).toBe(51);
-    expect(dispatchedRequests[1]!.body.samples[49].seq).toBe(100);
-    expect(dispatchedRequests[2]!.body.samples[0].seq).toBe(101);
-    expect(dispatchedRequests[2]!.body.samples[14].seq).toBe(115);
+    expect(dispatchedRequests[0]!.body.samples[0]!.seq).toBe(1);
+    expect(dispatchedRequests[0]!.body.samples[49]!.seq).toBe(50);
+    expect(dispatchedRequests[1]!.body.samples[0]!.seq).toBe(51);
+    expect(dispatchedRequests[1]!.body.samples[49]!.seq).toBe(100);
+    expect(dispatchedRequests[2]!.body.samples[0]!.seq).toBe(101);
+    expect(dispatchedRequests[2]!.body.samples[14]!.seq).toBe(115);
 
     expect(await buffer.getCount('shift_multibatch')).toBe(0);
   });

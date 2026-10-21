@@ -20,6 +20,10 @@ import {
   DriverDeviceRegisterResponseDto,
   DriverRosterResponseDto,
   DriverRosterBusDto,
+  DriverModeSwitchRequestSchema,
+  DriverModeSwitchResponseDto,
+  SosCategorySchema,
+  SosTriggerResponseDto,
 } from '@collegebus/contracts';
 
 @Controller('driver')
@@ -141,5 +145,88 @@ export class DriverController {
     }
 
     return this.driverService.recordDriverStatus(driverId, parseResult.data, shiftIdHeader);
+  }
+
+  @Post('mode')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async switchMode(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Body() body: unknown,
+  ): Promise<DriverModeSwitchResponseDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    const parseResult = DriverModeSwitchRequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      throw new BadRequestException({
+        code: 'INVALID_MODE_SWITCH_PAYLOAD',
+        message: 'Driver mode switch payload validation failed',
+        details: parseResult.error.flatten(),
+      });
+    }
+
+    return this.driverService.switchMode(driverId, parseResult.data);
+  }
+
+  @Post('sos')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async triggerSos(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Headers('x-shift-id') shiftIdHeader: string | undefined,
+    @Body()
+    body: {
+      category?: string;
+      lat?: number;
+      lng?: number;
+      accuracy_m?: number;
+      note?: string;
+      shift_id?: string;
+    },
+  ): Promise<SosTriggerResponseDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    const shiftId = body.shift_id || shiftIdHeader;
+
+    if (!driverId || !shiftId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_OR_SHIFT_CONTEXT',
+        message: 'Driver or shift context missing',
+      });
+    }
+
+    const catResult = SosCategorySchema.safeParse(body.category || 'EMERGENCY');
+    const category = catResult.success ? catResult.data : 'EMERGENCY';
+
+    return this.driverService.triggerSos(driverId, shiftId, {
+      category,
+      lat: body.lat,
+      lng: body.lng,
+      accuracy_m: body.accuracy_m,
+      note: body.note,
+    });
+  }
+
+  @Get('sos/:incidentId')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async getSosStatus(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Param('incidentId') incidentId: string,
+  ) {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    return this.driverService.getSosIncident(incidentId);
   }
 }

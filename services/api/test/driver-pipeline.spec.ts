@@ -369,5 +369,92 @@ describe('Driver Phone Pipeline & Shift Claim (P1-T5, Part 5.3 & 6.7)', () => {
       expect(saved?.device_label).toBe('Pixel 8 - Ramesh Driver Phone');
       expect(saved?.device_model).toBe('Google Pixel 8');
     });
+
+    it('P3-T5: switches tracking mode with optional note (§16.3 #6 & D-13)', async () => {
+      shiftService.addRosterEntry({
+        id: 'roster_mode',
+        driver_id: 'drv_mode',
+        bus_id: 'bus_mode',
+        valid_from: new Date('2026-10-01T00:00:00Z'),
+        valid_to: new Date('2026-11-01T00:00:00Z'),
+      });
+
+      const claim = await shiftService.startShift(
+        'drv_mode',
+        { bus_id: 'bus_mode', route_id: 'route_1', trip_type: 'MORNING' },
+        baseTime,
+      );
+
+      // Default mode before switch
+      expect(driverService.getTrackingMode('bus_mode')).toBe('AUTO');
+
+      // Switch to PHONE mode
+      const result = driverService.switchMode(
+        'drv_mode',
+        {
+          mode: 'PHONE',
+          shift_id: claim.shift_id,
+          note: 'Hardware GPS antenna fault observed',
+        },
+        baseTime,
+      );
+
+      expect(result.mode).toBe('PHONE');
+      expect(result.note).toBe('Hardware GPS antenna fault observed');
+      expect(driverService.getTrackingMode('bus_mode')).toBe('PHONE');
+    });
+
+    it('P3-T5: triggers driver SOS emergency, blocks shift end, and tracks progression', async () => {
+      shiftService.addRosterEntry({
+        id: 'roster_sos',
+        driver_id: 'drv_sos',
+        bus_id: 'bus_sos',
+        valid_from: new Date('2026-10-01T00:00:00Z'),
+        valid_to: new Date('2026-11-01T00:00:00Z'),
+      });
+
+      const claim = await shiftService.startShift(
+        'drv_sos',
+        { bus_id: 'bus_sos', route_id: 'route_1', trip_type: 'MORNING' },
+        baseTime,
+      );
+
+      // 1. Trigger SOS
+      const triggerRes = driverService.triggerSos(
+        'drv_sos',
+        claim.shift_id,
+        {
+          category: 'MEDICAL',
+          lat: 12.9716,
+          lng: 77.5946,
+          accuracy_m: 10,
+          note: 'Driver medical assistance needed',
+        },
+        baseTime,
+      );
+
+      expect(triggerRes.incident_id).toBeDefined();
+      expect(triggerRes.status).toBe('OPEN');
+      expect(triggerRes.category).toBe('MEDICAL');
+
+      // 2. SW-MVP-1.0 §15.4: Driver cannot end shift while SOS incident is OPEN
+      await expect(shiftService.endShift('drv_sos', claim.shift_id, 'MANUAL')).rejects.toThrowError(
+        'Driver cannot end shift while an SOS incident is open',
+      );
+
+      // 3. Status progression
+      const incident = driverService.getSosIncident(triggerRes.incident_id);
+      expect(incident.step).toBe('RECEIVED');
+
+      // Acknowledgment
+      const acknowledged = driverService.acknowledgeSos(
+        triggerRes.incident_id,
+        'Coordinator Sharma',
+        new Date(baseTime.getTime() + 15000),
+      );
+      expect(acknowledged.step).toBe('ACKNOWLEDGED');
+      expect(acknowledged.acknowledged_by).toBe('Coordinator Sharma');
+      expect(acknowledged.status).toBe('RESPONDING');
+    });
   });
 });

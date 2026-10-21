@@ -3,3 +3,6 @@ export * from './pre-trip-manager.js';
 export * from './shift-lifecycle-manager.js';
 export * from './location-buffer.js';
 export * from './location-collector.js';
+export * from './mode-switcher.js';
+export * from './driver-sos-manager.js';
+

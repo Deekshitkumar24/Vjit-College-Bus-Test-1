@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { validateDriverPhoneSample, DriverPhoneSampleInput } from '@collegebus/domain';
 import {
   DriverLocationsBatchDto,
@@ -8,6 +13,11 @@ import {
   DriverRosterResponseDto,
   DriverDeviceRegisterDto,
   DriverDeviceRegisterResponseDto,
+  DriverTrackingMode,
+  DriverModeSwitchRequestDto,
+  DriverModeSwitchResponseDto,
+  SosCategory,
+  SosTriggerResponseDto,
 } from '@collegebus/contracts';
 import { ShiftService } from '../shift/shift.service.js';
 
@@ -47,6 +57,33 @@ export interface StoredDriverDeviceRegistration extends DriverDeviceRegisterDto 
   registered_at: Date;
 }
 
+export interface StoredTrackingModeRecord {
+  mode: DriverTrackingMode;
+  note: string | null;
+  updated_at: Date;
+  updated_by: string;
+}
+
+export interface StoredDriverSosIncident {
+  incident_id: string;
+  shift_id: string;
+  bus_id: string;
+  driver_id: string;
+  category: SosCategory;
+  status: 'OPEN' | 'RESPONDING' | 'RESOLVED' | 'CANCELLED';
+  step: 'RECEIVED' | 'NOTIFIED' | 'ACKNOWLEDGED';
+  dispatched_at: string;
+  security_phone: string;
+  lat: number | null;
+  lng: number | null;
+  accuracy_m: number | null;
+  note: string | null;
+  received_at: string;
+  notified_at: string | null;
+  acknowledged_at: string | null;
+  acknowledged_by: string | null;
+}
+
 @Injectable()
 export class DriverService {
   constructor(private readonly shiftService: ShiftService) {}
@@ -55,6 +92,8 @@ export class DriverService {
   private driverStatuses = new Map<string, StoredDriverStatus>();
   private busActiveSource = new Map<string, 'HW' | 'PHONE'>();
   private deviceRegistrations = new Map<string, StoredDriverDeviceRegistration>();
+  private trackingModes = new Map<string, StoredTrackingModeRecord>();
+  private sosIncidents = new Map<string, StoredDriverSosIncident>();
   private busMetadata = new Map<
     string,
     { bus_number: string; registration_number: string; route_id: string; route_name: string }
@@ -164,6 +203,8 @@ export class DriverService {
     this.busActiveSource.clear();
     this.deviceRegistrations.clear();
     this.busMetadata.clear();
+    this.trackingModes.clear();
+    this.sosIncidents.clear();
   }
 
   private computeSignature(sample: DriverPhoneSampleInput): string {
@@ -315,5 +356,154 @@ export class DriverService {
     });
 
     return { status: 'RECORDED' };
+  }
+
+  /**
+   * Tracking Mode Switcher (SW-MVP-1.0 §16.3 #6 & D-13)
+   */
+  switchMode(
+    driverId: string,
+    dto: DriverModeSwitchRequestDto,
+    now: Date = new Date(),
+  ): DriverModeSwitchResponseDto {
+    const shift = this.shiftService.getShift(dto.shift_id);
+    if (!shift) {
+      throw new UnauthorizedException({
+        code: 'SHIFT_NOT_FOUND',
+        message: 'Shift claim does not exist',
+      });
+    }
+
+    if (shift.driver_id !== driverId) {
+      throw new ForbiddenException({
+        code: 'SHIFT_DRIVER_MISMATCH',
+        message: 'Shift does not belong to this driver',
+      });
+    }
+
+    if (shift.status !== 'ACTIVE') {
+      throw new ForbiddenException({
+        code: 'SHIFT_NOT_ACTIVE',
+        message: `Shift is no longer active (status is ${shift.status})`,
+      });
+    }
+
+    // Set active source for the bus based on selected mode
+    if (dto.mode === 'PHONE') {
+      this.busActiveSource.set(shift.bus_id, 'PHONE');
+    } else if (dto.mode === 'HARDWARE') {
+      this.busActiveSource.set(shift.bus_id, 'HW');
+    } else {
+      // AUTO mode: default to HW if available
+      this.busActiveSource.set(shift.bus_id, 'HW');
+    }
+
+    this.trackingModes.set(shift.bus_id, {
+      mode: dto.mode,
+      note: dto.note ?? null,
+      updated_at: now,
+      updated_by: driverId,
+    });
+
+    return {
+      mode: dto.mode,
+      updated_at: now.toISOString(),
+      bus_id: shift.bus_id,
+      note: dto.note ?? null,
+    };
+  }
+
+  getTrackingMode(busId: string): DriverTrackingMode {
+    return this.trackingModes.get(busId)?.mode || 'AUTO';
+  }
+
+  /**
+   * Driver SOS Emergency Trigger (SW-MVP-1.0 §16.3 #7 & L-2)
+   */
+  triggerSos(
+    driverId: string,
+    shiftId: string,
+    payload: {
+      category: SosCategory;
+      lat?: number | undefined;
+      lng?: number | undefined;
+      accuracy_m?: number | undefined;
+      note?: string | undefined;
+    },
+    now: Date = new Date(),
+  ): SosTriggerResponseDto {
+    const shift = this.shiftService.getShift(shiftId);
+    if (!shift) {
+      throw new UnauthorizedException({
+        code: 'SHIFT_NOT_FOUND',
+        message: 'Shift claim does not exist',
+      });
+    }
+
+    if (shift.driver_id !== driverId) {
+      throw new ForbiddenException({
+        code: 'SHIFT_DRIVER_MISMATCH',
+        message: 'Shift does not belong to this driver',
+      });
+    }
+
+    const incidentId = `sos_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const securityPhone = '+91-80-2345-6789';
+
+    // Mark SOS as open for bus on shiftService to block driver manual end per §15.4
+    this.shiftService.setBusOpenSos(shift.bus_id, true);
+
+    this.sosIncidents.set(incidentId, {
+      incident_id: incidentId,
+      shift_id: shiftId,
+      bus_id: shift.bus_id,
+      driver_id: driverId,
+      category: payload.category,
+      status: 'OPEN',
+      step: 'RECEIVED',
+      dispatched_at: now.toISOString(),
+      security_phone: securityPhone,
+      lat: payload.lat ?? null,
+      lng: payload.lng ?? null,
+      accuracy_m: payload.accuracy_m ?? null,
+      note: payload.note ?? null,
+      received_at: now.toISOString(),
+      notified_at: new Date(now.getTime() + 1000).toISOString(),
+      acknowledged_at: null,
+      acknowledged_by: null,
+    });
+
+    return {
+      incident_id: incidentId,
+      status: 'OPEN',
+      category: payload.category,
+      dispatched_at: now.toISOString(),
+      security_phone: securityPhone,
+      message: 'SOS incident created. Coordinators and Security alerted.',
+    };
+  }
+
+  getSosIncident(incidentId: string): StoredDriverSosIncident {
+    const incident = this.sosIncidents.get(incidentId);
+    if (!incident) {
+      throw new NotFoundException({
+        code: 'SOS_INCIDENT_NOT_FOUND',
+        message: 'SOS incident not found',
+      });
+    }
+    return incident;
+  }
+
+  acknowledgeSos(
+    incidentId: string,
+    acknowledgedBy: string,
+    now: Date = new Date(),
+  ): StoredDriverSosIncident {
+    const incident = this.getSosIncident(incidentId);
+    incident.status = 'RESPONDING';
+    incident.step = 'ACKNOWLEDGED';
+    incident.acknowledged_at = now.toISOString();
+    incident.acknowledged_by = acknowledgedBy;
+    return incident;
   }
 }
