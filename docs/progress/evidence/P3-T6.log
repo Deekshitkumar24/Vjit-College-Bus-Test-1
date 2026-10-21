@@ -1,0 +1,85 @@
+# Task Evidence: P3-T6 Boarding QR Code Display & Manual Check-in
+
+## 1. Commit SHA
+`6de3ed6`
+
+## 2. Changed Files
+- `packages/contracts/src/driver.dto.ts` (Manual check-in reason enum, request and response DTO schemas)
+- `services/api/src/modules/driver/driver.controller.ts` (POST `/api/v1/driver/checkin`, GET `/api/v1/driver/manifest/:tripId`)
+- `services/api/src/modules/driver/driver.service.ts` (Manual check-in handler with guest/reason rules and manifest updates)
+- `scripts/verify-routes-auth.ts` (Registered driver checkin and manifest routes)
+- `apps/mobile/src/driver/driver-qr-generator.ts` (30s rotating HMAC-SHA256 QR generator with circular countdown state)
+- `apps/mobile/src/driver/driver-checkin-manager.ts` (Passenger manifest manager, offline check-in buffer, sequential sync)
+- `apps/mobile/src/driver/index.ts` (Exported QR generator and check-in manager)
+- `apps/mobile/test/driver-boarding.spec.ts` (12 unit tests validating rotating QR, countdown, manual check-in, guest flagging, offline queue)
+
+## 3. Verification Commands & Outputs
+
+### Command: `pnpm --filter @collegebus/mobile test:unit`
+```
+> @collegebus/mobile@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/shift-lifecycle.spec.ts (8 tests) 34ms
+ ✓ test/driver-roster.spec.ts (6 tests) 33ms
+ ✓ test/pre-trip-diagnostics.spec.ts (13 tests) 19ms
+ ✓ test/map-marker.spec.ts (12 tests) 20ms
+ ✓ test/emergency-sos.spec.ts (7 tests) 28ms
+ ✓ test/navigation-store.spec.ts (10 tests) 54ms
+ ✓ test/student-requests.spec.ts (11 tests) 37ms
+ ✓ test/qr-attendance.spec.ts (8 tests) 35ms
+ ✓ test/route-guard.spec.ts (5 tests) 12ms
+ ✓ test/faculty-manifest.spec.ts (11 tests) 92ms
+ ✓ test/eta-stop-card.spec.ts (8 tests) 19ms
+ ✓ test/mobile-flows.integration.spec.ts (5 tests) 38ms
+ ✓ test/driver-mode-sos.spec.ts (10 tests) 31ms
+ ✓ test/driver-boarding.spec.ts (12 tests) 35ms
+ ✓ test/location-buffer.spec.ts (11 tests) 47ms
+
+ Test Files  15 passed (15)
+      Tests  137 passed (137)
+   Start at  01:45:34
+   Duration  2.45s (transform 3.24s, setup 0ms, collect 7.51s, tests 535ms, environment 7ms, prepare 7.93s)
+```
+
+### Command: `pnpm verify:routes-auth`
+```
+> college-bus-tracker@1.0.0 verify:routes-auth C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-routes-auth.ts
+
+verify:routes-auth PASSED. 29 routes checked with zero unauthorized public endpoints.
+```
+
+### Command: `pnpm verify:no-mock`
+```
+> college-bus-tracker@1.0.0 verify:no-mock C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-no-mock.ts
+
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+```
+
+### Command: `pnpm --filter @collegebus/mobile typecheck`
+```
+> @collegebus/mobile@1.0.0 typecheck C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
+> tsc --noEmit
+Exit code: 0
+```
+
+### Command: `pnpm lint`
+```
+Tasks:    8 successful, 8 total
+Cached:    6 cached, 8 total
+Time:    6.066s 
+
+Checking formatting...
+All matched files use Prettier code style!
+```
+
+### Command: `pnpm test:unit`
+```
+Tasks:    11 successful, 11 total
+Cached:    6 cached, 11 total
+Time:    16.721s 
+```
