@@ -5,6 +5,9 @@ import {
   DriverLocationsResponseDto,
   DriverSampleRejection,
   DriverStatusDto,
+  DriverRosterResponseDto,
+  DriverDeviceRegisterDto,
+  DriverDeviceRegisterResponseDto,
 } from '@collegebus/contracts';
 import { ShiftService } from '../shift/shift.service.js';
 
@@ -40,6 +43,10 @@ export interface StoredDriverStatus {
   recorded_at: Date;
 }
 
+export interface StoredDriverDeviceRegistration extends DriverDeviceRegisterDto {
+  registered_at: Date;
+}
+
 @Injectable()
 export class DriverService {
   constructor(private readonly shiftService: ShiftService) {}
@@ -47,6 +54,23 @@ export class DriverService {
   private sampleRegistry = new Map<string, StoredDriverSample>();
   private driverStatuses = new Map<string, StoredDriverStatus>();
   private busActiveSource = new Map<string, 'HW' | 'PHONE'>();
+  private deviceRegistrations = new Map<string, StoredDriverDeviceRegistration>();
+  private busMetadata = new Map<
+    string,
+    { bus_number: string; registration_number: string; route_id: string; route_name: string }
+  >();
+
+  registerBusMetadata(
+    busId: string,
+    metadata: {
+      bus_number: string;
+      registration_number: string;
+      route_id: string;
+      route_name: string;
+    },
+  ) {
+    this.busMetadata.set(busId, metadata);
+  }
 
   setBusActiveSource(busId: string, source: 'HW' | 'PHONE') {
     this.busActiveSource.set(busId, source);
@@ -60,10 +84,86 @@ export class DriverService {
     return this.driverStatuses.get(driverId);
   }
 
+  registerDevice(
+    driverId: string,
+    dto: DriverDeviceRegisterDto,
+    now: Date = new Date(),
+  ): DriverDeviceRegisterResponseDto {
+    this.deviceRegistrations.set(driverId, {
+      ...dto,
+      registered_at: now,
+    });
+
+    return {
+      registered: true,
+      registered_at: now.toISOString(),
+      device_label: dto.device_label,
+    };
+  }
+
+  getDeviceRegistration(driverId: string): StoredDriverDeviceRegistration | undefined {
+    return this.deviceRegistrations.get(driverId);
+  }
+
+  getRoster(driverId: string, now: Date = new Date()): DriverRosterResponseDto {
+    const rosterEntries = this.shiftService.getRosterEntriesForDriver(driverId, now);
+
+    const buses = rosterEntries.map((r) => {
+      const meta = this.busMetadata.get(r.bus_id) || {
+        bus_number: r.bus_id.replace(/^bus_/, 'Bus '),
+        registration_number: 'KA-01-F-1001',
+        route_id: 'route_default',
+        route_name: 'Campus Express',
+      };
+
+      return {
+        bus_id: r.bus_id,
+        bus_number: meta.bus_number,
+        registration_number: meta.registration_number,
+        route_id: meta.route_id,
+        route_name: meta.route_name,
+        is_active: true,
+      };
+    });
+
+    return {
+      driver_id: driverId,
+      buses,
+    };
+  }
+
+  getBusDetail(driverId: string, busId: string, now: Date = new Date()) {
+    const isRostered = this.shiftService.isDriverRosteredForBus(driverId, busId, now);
+    if (!isRostered) {
+      throw new ForbiddenException({
+        code: 'DRIVER_NOT_ON_ROSTER',
+        message: `Driver is not rostered on bus ${busId}`,
+      });
+    }
+
+    const meta = this.busMetadata.get(busId) || {
+      bus_number: busId.replace(/^bus_/, 'Bus '),
+      registration_number: 'KA-01-F-1001',
+      route_id: 'route_default',
+      route_name: 'Campus Express',
+    };
+
+    return {
+      bus_id: busId,
+      bus_number: meta.bus_number,
+      registration_number: meta.registration_number,
+      route_id: meta.route_id,
+      route_name: meta.route_name,
+      is_active: true,
+    };
+  }
+
   clear() {
     this.sampleRegistry.clear();
     this.driverStatuses.clear();
     this.busActiveSource.clear();
+    this.deviceRegistrations.clear();
+    this.busMetadata.clear();
   }
 
   private computeSignature(sample: DriverPhoneSampleInput): string {

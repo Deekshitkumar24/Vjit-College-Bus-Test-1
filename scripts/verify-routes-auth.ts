@@ -78,6 +78,9 @@ if (process.argv[1] && process.argv[1].endsWith('verify-routes-auth.ts')) {
     { method: 'POST', path: '/api/v1/shifts/end', isPublic: false, roles: ['DRV'] },
     { method: 'POST', path: '/api/v1/driver/locations', isPublic: false, roles: ['DRV'] },
     { method: 'POST', path: '/api/v1/driver/status', isPublic: false, roles: ['DRV'] },
+    { method: 'GET', path: '/api/v1/driver/roster', isPublic: false, roles: ['DRV'] },
+    { method: 'GET', path: '/api/v1/driver/bus/:busId', isPublic: false, roles: ['DRV'] },
+    { method: 'POST', path: '/api/v1/driver/device-register', isPublic: false, roles: ['DRV'] },
     {
       method: 'GET',
       path: '/api/v1/snapshot',

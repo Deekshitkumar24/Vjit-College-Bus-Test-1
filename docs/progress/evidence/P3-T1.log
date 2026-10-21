@@ -1,0 +1,97 @@
+# Evidence Log: P3-T1 Driver OTP Sign-in, Roster List & Device Registration
+
+Date: 2026-10-22
+Task: P3-T1
+Status: DONE
+Scope: Driver OTP authentication flow, roster list retrieval (strictly isolated to assigned buses per AC-DRV-01), phone device label binding and registration (`POST /api/v1/driver/device-register`), and 403 Forbidden handling for unrostered bus access.
+
+## Commands Executed
+
+### 1. Mobile Unit Tests (Vitest)
+Command: `pnpm --filter @collegebus/mobile test`
+Output:
+```
+> @collegebus/mobile@1.0.0 test C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/driver-roster.spec.ts (6 tests) 27ms
+ ✓ test/route-guard.spec.ts (5 tests) 12ms
+ ✓ test/navigation-store.spec.ts (10 tests) 51ms
+ ✓ test/map-marker.spec.ts (12 tests) 17ms
+ ✓ test/emergency-sos.spec.ts (7 tests) 30ms
+ ✓ test/eta-stop-card.spec.ts (8 tests) 19ms
+ ✓ test/student-requests.spec.ts (11 tests) 37ms
+ ✓ test/qr-attendance.spec.ts (8 tests) 34ms
+ ✓ test/faculty-manifest.spec.ts (11 tests) 131ms
+ ✓ test/mobile-flows.integration.spec.ts (5 tests) 43ms
+
+ Test Files  10 passed (10)
+      Tests  83 passed (83)
+   Duration  1.93s
+```
+
+### 2. API Pipeline Tests (Vitest)
+Command: `pnpm --filter @collegebus/api test`
+Output:
+```
+ Test Files  10 passed (10)
+      Tests  58 passed (58)
+   Duration  7.53s
+ Includes:
+ ✓ test/driver-pipeline.spec.ts (9 tests)
+   - P3-T1 / AC-DRV-01: retrieves roster with only assigned buses, rejecting unrostered bus with 403
+   - P3-T1: registers driver phone device label and metadata
+```
+
+### 3. Monorepo Typecheck
+Command: `pnpm typecheck`
+Output:
+```
+> college-bus-tracker@1.0.0 typecheck C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> turbo run typecheck
+
+ Tasks:    12 successful, 12 total
+  Time:    9.521s
+```
+
+### 4. Verify Route Auth Matrix
+Command: `pnpm verify:routes-auth`
+Output:
+```
+> college-bus-tracker@1.0.0 verify:routes-auth C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-routes-auth.ts
+
+verify:routes-auth PASSED. 23 routes checked with zero unauthorized public endpoints.
+```
+
+### 5. Verify No Mock Scanner
+Command: `pnpm verify:no-mock`
+Output:
+```
+> college-bus-tracker@1.0.0 verify:no-mock C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-no-mock.ts
+
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+```
+
+### 6. Lint & Prettier Checks
+Command: `pnpm lint`
+Output:
+```
+ Tasks:    8 successful, 8 total
+ All matched files use Prettier code style!
+ 0 errors
+```
+
+## Files Changed / Added
+- `packages/contracts/src/driver.dto.ts`
+- `services/api/src/modules/shift/shift.service.ts`
+- `services/api/src/modules/driver/driver.service.ts`
+- `services/api/src/modules/driver/driver.controller.ts`
+- `services/api/test/driver-pipeline.spec.ts`
+- `apps/mobile/src/driver/driver-roster.ts`
+- `apps/mobile/test/driver-roster.spec.ts`
+- `scripts/verify-routes-auth.ts`
+- `docs/progress/evidence/P3-T1.log`

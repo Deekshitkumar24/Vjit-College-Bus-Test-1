@@ -20,6 +20,25 @@ export class ShiftService {
     this.rosters = [...entries];
   }
 
+  getRosterEntriesForDriver(driverId: string, now: Date = new Date()): DriverRosterEntry[] {
+    return this.rosters.filter(
+      (r) =>
+        r.driver_id === driverId &&
+        r.valid_from <= now &&
+        (r.valid_to === null || r.valid_to >= now),
+    );
+  }
+
+  isDriverRosteredForBus(driverId: string, busId: string, now: Date = new Date()): boolean {
+    return this.rosters.some(
+      (r) =>
+        r.driver_id === driverId &&
+        r.bus_id === busId &&
+        r.valid_from <= now &&
+        (r.valid_to === null || r.valid_to >= now),
+    );
+  }
+
   getShift(shiftId: string): ShiftRecord | undefined {
     return this.shifts.get(shiftId);
   }

@@ -300,5 +300,74 @@ describe('Driver Phone Pipeline & Shift Claim (P1-T5, Part 5.3 & 6.7)', () => {
       expect(saved?.battery_percent).toBe(88);
       expect(saved?.location_permission).toBe('ALWAYS');
     });
+
+    it('P3-T1 / AC-DRV-01: retrieves roster with only assigned buses, rejecting unrostered bus with 403', async () => {
+      shiftService.addRosterEntry({
+        id: 'roster_10',
+        driver_id: 'drv_301',
+        bus_id: 'bus_01',
+        valid_from: new Date('2026-10-01T00:00:00Z'),
+        valid_to: null,
+      });
+      shiftService.addRosterEntry({
+        id: 'roster_11',
+        driver_id: 'drv_301',
+        bus_id: 'bus_03',
+        valid_from: new Date('2026-10-01T00:00:00Z'),
+        valid_to: null,
+      });
+
+      driverService.registerBusMetadata('bus_01', {
+        bus_number: 'Bus 01',
+        registration_number: 'KA-01-EA-1001',
+        route_id: 'route_north',
+        route_name: 'North Campus Express',
+      });
+      driverService.registerBusMetadata('bus_03', {
+        bus_number: 'Bus 03',
+        registration_number: 'KA-01-EA-1003',
+        route_id: 'route_east',
+        route_name: 'East Campus Shuttle',
+      });
+
+      // 1. Roster query returns only assigned buses
+      const roster = driverService.getRoster('drv_301', baseTime);
+      expect(roster.driver_id).toBe('drv_301');
+      expect(roster.buses.length).toBe(2);
+      expect(roster.buses.map((b) => b.bus_id)).toEqual(['bus_01', 'bus_03']);
+      expect(roster.buses.some((b) => b.bus_id === 'bus_07')).toBe(false);
+
+      // 2. Direct detail query on rostered bus succeeds
+      const busDetail = driverService.getBusDetail('drv_301', 'bus_01', baseTime);
+      expect(busDetail.bus_id).toBe('bus_01');
+      expect(busDetail.bus_number).toBe('Bus 01');
+
+      // 3. Direct query on unrostered Bus 07 throws 403 Forbidden (AC-DRV-01)
+      expect(() => driverService.getBusDetail('drv_301', 'bus_07', baseTime)).toThrowError(
+        'Driver is not rostered on bus bus_07',
+      );
+    });
+
+    it('P3-T1: registers driver phone device label and metadata', async () => {
+      const reg = driverService.registerDevice(
+        'drv_301',
+        {
+          device_label: 'Pixel 8 - Ramesh Driver Phone',
+          device_model: 'Google Pixel 8',
+          os: 'ANDROID',
+          os_version: '14.0',
+          app_version: '1.0.0',
+        },
+        baseTime,
+      );
+
+      expect(reg.registered).toBe(true);
+      expect(reg.device_label).toBe('Pixel 8 - Ramesh Driver Phone');
+
+      const saved = driverService.getDeviceRegistration('drv_301');
+      expect(saved).toBeDefined();
+      expect(saved?.device_label).toBe('Pixel 8 - Ramesh Driver Phone');
+      expect(saved?.device_model).toBe('Google Pixel 8');
+    });
   });
 });

@@ -84,3 +84,42 @@ export const DriverStatusSchema = z
   .strict();
 
 export type DriverStatusDto = z.infer<typeof DriverStatusSchema>;
+
+export const DriverRosterBusSchema = z
+  .object({
+    bus_id: z.string().min(1),
+    bus_number: z.string().min(1),
+    registration_number: z.string().min(1),
+    route_id: z.string().min(1),
+    route_name: z.string().min(1),
+    is_active: z.boolean().default(true),
+  })
+  .strict();
+
+export const DriverRosterResponseSchema = z
+  .object({
+    driver_id: z.string().min(1),
+    buses: z.array(DriverRosterBusSchema),
+  })
+  .strict();
+
+export type DriverRosterBusDto = z.infer<typeof DriverRosterBusSchema>;
+export type DriverRosterResponseDto = z.infer<typeof DriverRosterResponseSchema>;
+
+export const DriverDeviceRegisterSchema = z
+  .object({
+    device_label: z.string().min(1).max(100),
+    device_model: z.string().min(1).max(64),
+    os: z.enum(['ANDROID', 'IOS']),
+    os_version: z.string().min(1).max(32),
+    app_version: z.string().min(1).max(32),
+  })
+  .strict();
+
+export type DriverDeviceRegisterDto = z.infer<typeof DriverDeviceRegisterSchema>;
+
+export interface DriverDeviceRegisterResponseDto {
+  registered: boolean;
+  registered_at: string;
+  device_label: string;
+}
