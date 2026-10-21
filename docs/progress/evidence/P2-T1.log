@@ -1,0 +1,71 @@
+================================================================================
+TASK: P2-T1 - Mobile navigation tree for Student and Faculty tabs, offline cache store, and snapshot polling client with 304 ETag
+DATE: 2026-10-22
+STATUS: DONE
+================================================================================
+
+COMMAND 1:
+pnpm --filter @collegebus/mobile test
+
+OUTPUT 1:
+> @collegebus/mobile@1.0.0 test C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/route-guard.spec.ts (5 tests) 8ms
+ ✓ test/navigation-store.spec.ts (10 tests) 39ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  00:02:03
+   Duration  1.06s (transform 230ms, setup 0ms, collect 291ms, tests 46ms, environment 1ms, prepare 691ms)
+
+--------------------------------------------------------------------------------
+
+COMMAND 2:
+pnpm test:unit
+
+OUTPUT 2:
+> turbo run test:unit
+   • Running test:unit in 8 packages
+@collegebus/domain:test:unit:  Test Files  8 passed (8)
+@collegebus/domain:test:unit:       Tests  99 passed (99)
+@collegebus/api:test:unit:  Test Files  10 passed (10)
+@collegebus/api:test:unit:       Tests  56 passed (56)
+@collegebus/simulator:test:unit:  Test Files  1 passed (1)
+@collegebus/simulator:test:unit:       Tests  7 passed (7)
+@collegebus/mobile:test:unit:  Test Files  2 passed (2)
+@collegebus/mobile:test:unit:       Tests  15 passed (15)
+ Tasks:    10 successful, 10 total
+ Time:    3.15s
+
+--------------------------------------------------------------------------------
+
+COMMAND 3:
+pnpm typecheck; pnpm lint; pnpm verify:routes-auth; pnpm verify:no-mock
+
+OUTPUT 3:
+> turbo run typecheck
+ Tasks:    12 successful, 12 total
+ Time:    3.057s
+
+> turbo run lint && prettier --check ...
+ Tasks:    8 successful, 8 total
+ Time:    4.072s
+All matched files use Prettier code style!
+
+> tsx scripts/verify-routes-auth.ts
+verify:routes-auth PASSED. 20 routes checked with zero unauthorized public endpoints.
+
+> tsx scripts/verify-no-mock.ts
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+
+--------------------------------------------------------------------------------
+
+FILES CHANGED:
+- apps/mobile/package.json
+- apps/mobile/src/navigation/routes.ts
+- apps/mobile/src/store/cache-store.ts
+- apps/mobile/src/api/snapshot-client.ts
+- apps/mobile/test/navigation-store.spec.ts

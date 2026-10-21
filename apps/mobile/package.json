@@ -8,7 +8,8 @@
     "lint": "eslint src/**/*.ts test/**/*.ts"
   },
   "dependencies": {
-    "@collegebus/contracts": "workspace:*"
+    "@collegebus/contracts": "workspace:*",
+    "@collegebus/domain": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.5.0",
