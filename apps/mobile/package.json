@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "vitest run",
+    "test:unit": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/**/*.ts test/**/*.ts"
   },
