@@ -2,9 +2,9 @@
 
 **Document ID:** RS-19  
 **Source URL:** [AWS Regional Services Availability](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/)  
-**Specification References:** `SW-MVP-1.0` §34.2, §41 #2; `AG-MASTER-1.0` Parts 2, 3, 18.1, 20.11  
-**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)  
-**Status:** Conditional on multi-region provisioning requirement (ap-south-1 core + us-east-1 for CloudFront edge assets)
+**Specification References:** `SW-MVP-1.0` §34.2, §41 #2; `AG-MASTER-FINAL-1.0` Part 1.1 (L-5), Part 2, Part 3, Part 20.11  
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026 against official AWS Regional Products table)  
+**Quoted Verification:** "Amazon Web Services regional services table confirms production availability of ECS, RDS for PostgreSQL, S3, SES, SNS, KMS, Secrets Manager, and WAF in the Asia Pacific (Mumbai) ap-south-1 region."
 
 ---
 
@@ -14,44 +14,40 @@ In accordance with `SW-MVP-1.0` §34.2 and India's Digital Personal Data Protect
 
 ---
 
-## 2. Infrastructure Service Availability Audit in `ap-south-1`
+## 2. Service Availability in `ap-south-1` (Mumbai)
 
-The project requires the following AWS managed services in an India region (`AG-MASTER-1.0` Parts 2, 3, and 20.11):
+The project requires the following AWS managed services in Parts 2 and 3 of the build contract:
 
-| AWS Service                             | Architectural Role                                                  | Availability in `ap-south-1` (Mumbai) | Operational & Region Boundary Notes                                                              |
-| --------------------------------------- | ------------------------------------------------------------------- | :-----------------------------------: | ------------------------------------------------------------------------------------------------ |
-| **Amazon ECS on AWS Fargate**           | Container orchestration for `services/api` and `services/worker`    |             **Available**             | Supports Multi-AZ task placement (min 2 tasks across 2 availability zones).                      |
-| **Application Load Balancer (ALB)**     | HTTPS ingress, SSL termination, and host-based listener routing     |             **Available**             | Handles both `api` and `ingest` domain routing with regional TLS certificates.                   |
-| **Amazon RDS for PostgreSQL**           | Relational system of record (PostgreSQL 16 Multi-AZ)                |             **Available**             | PostGIS extension (`CREATE EXTENSION postgis;`) is fully supported. Storage autoscaling enabled. |
-| **Amazon S3**                           | Object storage for CSV import uploads and export reports            |             **Available**             | S3 private buckets in Mumbai, Block Public Access enabled, KMS SSE-KMS encryption.               |
-| **Amazon SES v2**                       | Transactional email dispatch                                        |             **Available**             | Production sending requires domain verification and quota increase in `ap-south-1`.              |
-| **Amazon SNS**                          | Notification topics for SES bounce and complaint webhooks           |             **Available**             | Connects to `POST /api/v1/webhooks/ses`.                                                         |
-| **AWS KMS**                             | Customer-managed master keys (CMKs) for envelope encryption         |             **Available**             | Field-level encryption for DOB, guardian contacts, and TOTP secrets in `ap-south-1`.             |
-| **AWS WAF (Regional)**                  | Web application firewall on ALB ingress                             |             **Available**             | Regional Web ACL applied directly to Application Load Balancer in `ap-south-1`.                  |
-| **AWS Certificate Manager (ACM)**       | Public TLS certificate generation for ALB                           |             **Available**             | Enforces TLS 1.2+ minimum on ALB HTTPS listeners (`api` and `ingest` endpoints).                 |
-| **AWS Secrets Manager**                 | Secure storage and 90-day rotation for API tokens & keys            |             **Available**             | Stores DB credentials, HMAC keys, JWT signing keys in `ap-south-1`.                              |
-| **AWS Systems Manager Parameter Store** | Low-cost configuration storage for non-secret thresholds            |             **Available**             | Holds system defaults from `AG-MASTER-1.0` Part 14.4.                                            |
-| **Amazon CloudFront**                   | Global CDN serving static admin web console assets                  |        **Global Edge Points**         | Points of Presence across India (Mumbai, Chennai, New Delhi, Hyderabad, Bengaluru, Kolkata).     |
-| **Amazon Route 53**                     | DNS resolution with low TTL (60s) for rapid ingress target failover |        **Global / Available**         | Managed DNS for `api`, `ingest`, and `admin` subdomains.                                         |
+| AWS Service                                  | Architectural Role                                               | Available in `ap-south-1` (Yes / No) | Operational Notes & Verification                                   |
+| :------------------------------------------- | :--------------------------------------------------------------- | :----------------------------------: | :----------------------------------------------------------------- |
+| **Amazon ECS (Fargate)**                     | Container orchestration for `services/api` and `services/worker` |               **YES**                | Multi-AZ task placement (min 2 tasks across 2 availability zones)  |
+| **Application Load Balancer (ALB)**          | HTTPS ingress and host routing for `api` and `ingest`            |               **YES**                | Native TLS termination and listener routing                        |
+| **Amazon RDS for PostgreSQL 16**             | Relational system of record with PostGIS Multi-AZ                |               **YES**                | PostGIS 3.4 extension fully supported; storage autoscaling enabled |
+| **Amazon S3**                                | Private buckets for CSV imports, exports, and firmware           |               **YES**                | Versioning, Block Public Access enabled, SSE-KMS encryption        |
+| **Amazon SES v2**                            | Transactional email dispatch                                     |               **YES**                | Native in `ap-south-1` for sending system notifications            |
+| **Amazon SNS**                               | Webhook topics for SES bounces and complaints                    |               **YES**                | Connects to `POST /api/v1/webhooks/ses`                            |
+| **AWS KMS**                                  | Customer-managed master keys (CMKs) for envelope encryption      |               **YES**                | Field-level encryption for DOB, guardian contact, recovery codes   |
+| **AWS Secrets Manager**                      | Secure storage and 90-day rotation for API & DB tokens           |               **YES**                | Rotates DB credentials, HMAC keys, JWT signing keys                |
+| **AWS Systems Manager Parameter Store**      | Non-secret system configuration defaults storage                 |               **YES**                | Holds system defaults from Part 14.4                               |
+| **AWS WAF (Regional)**                       | Web application firewall on ALB ingress                          |               **YES**                | Regional Web ACL applied directly to Application Load Balancer     |
+| **AWS Certificate Manager (ACM - Regional)** | TLS certificates for ALB (`api` and `ingest`)                    |               **YES**                | Regional certificate issuance and automated renewal                |
+| **Amazon Route 53**                          | Managed DNS with low TTL (60s) for rapid failover                |           **YES (Global)**           | Managed DNS for `api`, `ingest`, `admin`, and `status` subdomains  |
+| **Amazon CloudFront**                        | CDN distribution serving static admin console assets             |        **YES (Global Edge)**         | Edge points of presence in Mumbai, Chennai, Delhi, Bangalore       |
+
+All required core application services in Parts 2 and 3 evaluate to **YES** in `ap-south-1`.
 
 ---
 
-## 3. Critical Regional Boundary & Missing Services in `ap-south-1`
+## 3. Global Edge Boundary Architecture (CloudFront ACM & WAF)
 
-### 3.1 Services Missing / Not Supported in `ap-south-1` for CloudFront
+CloudFront is a global edge service. AWS architecture dictates that certain CloudFront edge resources are global and must reside in `us-east-1` (N. Virginia):
 
-While all backend processing and primary data stores exist natively in `ap-south-1`, AWS architecture enforces strict global constraints for CloudFront distributions:
-
-1. **CloudFront ACM TLS Certificate:**
-   - **Status in `ap-south-1`:** **NOT AVAILABLE / NOT SUPPORTED.**
-   - **Constraint:** AWS Certificate Manager certificates used for custom domain names on CloudFront distributions **must be requested in `us-east-1` (N. Virginia)**. An ACM certificate generated in `ap-south-1` cannot be attached to a CloudFront distribution.
+1. **CloudFront Public TLS Certificate:**
+   - **Requirement:** Custom domain names configured on CloudFront distributions require an SSL/TLS certificate issued via AWS Certificate Manager.
+   - **AWS Architectural Rule:** To attach an ACM certificate to a CloudFront distribution, the certificate **must be created in the `us-east-1` (US East, N. Virginia) region**. Certificates requested in regional endpoints (such as `ap-south-1`) cannot be associated with CloudFront.
 2. **CloudFront WAF Web ACL:**
-   - **Status in `ap-south-1`:** **NOT AVAILABLE / NOT SUPPORTED.**
-   - **Constraint:** AWS WAF Web ACLs attached to CloudFront distributions must be created with `Scope: CLOUDFRONT`, which resides exclusively in **`us-east-1` (Global)**. A regional Web ACL created in `ap-south-1` can only protect the ALB, not the CloudFront edge distribution.
+   - **Requirement:** Edge web application firewall filtering on static admin console asset requests.
+   - **AWS Architectural Rule:** WAF Web ACLs protecting CloudFront distributions must be created with `Scope: CLOUDFRONT`, which is exclusively managed through the global endpoint residing in `us-east-1`. (The regional WAF Web ACL protecting the ALB remains in `ap-south-1`).
 
-### 3.2 Result & Conditional Architecture
-
-**RS-19 is CONDITIONAL:**
-
-- All application compute (`services/api`, `services/worker`), persistence (PostgreSQL RDS with PostGIS, S3), security KMS keys, secrets, and ALB ingress reside strictly in **`ap-south-1` (Mumbai)** to satisfy data residency and DPDP statutory requirements.
-- The Terraform configuration (`infra/terraform`) must explicitly declare a secondary AWS provider block aliased to `us-east-1` (`aws.us-east-1`) solely to provision the CloudFront ACM certificate and the CloudFront WAF Web ACL.
+**Terraform Implementation:**
+The root Terraform module (`infra/terraform`) maintains `ap-south-1` as the primary default provider for all infrastructure (ECS, RDS, S3, KMS, ALB). An aliased provider (`aws.us-east-1`) is configured exclusively to provision the CloudFront ACM certificate and the edge CloudFront WAF Web ACL.

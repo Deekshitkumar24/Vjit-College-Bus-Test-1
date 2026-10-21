@@ -171,7 +171,6 @@ export const SYSTEM_DEFAULTS: Record<string, number | string | number[] | string
   'retention.sos_incident_years': 5,
   'retention.attendance_years': 2,
   'retention.notification_days': 90,
-  'retention.consent_years': 5,
 
   // ── Calendar and service hours (§35) ──
   'service.hours': '05:30 to 22:30',
@@ -184,7 +183,6 @@ export const SYSTEM_DEFAULTS: Record<string, number | string | number[] | string
 
   // ── Absence evaluator (§18.6, §25, §35) ──
   'absence.evaluate_interval_min': 5,
-  'absence.alert_limit_per_student_per_day': 1,
 };
 
 /** All key names from SW-MVP-1.0 §35. Used by tests to verify completeness. */

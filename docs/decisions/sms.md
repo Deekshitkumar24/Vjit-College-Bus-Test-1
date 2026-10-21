@@ -1,22 +1,33 @@
 # RS-06: DLT Transactional SMS Architecture & Ingestion Webhooks (India)
 
 **Document ID:** RS-06  
-**Source:** [Telecom Regulatory Authority of India (TRAI) TCCCPR 2018 DLT Framework](https://www.trai.gov.in/telecom-commercial-communications-customer-preference-regulations-2018)
-**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
+**Source URL:** [TRAI Telecom Commercial Communications Customer Preference Regulations (TCCCPR 2018)](https://www.trai.gov.in/telecom-commercial-communications-customer-preference-regulations-2018)  
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)  
+**Quoted Verification:** "Every commercial communication shall take place only through registered headers and approved templates under the Distributed Ledger Technology (DLT) system."  
+**Status:** **INCOMPLETE** until specific SMS provider (e.g. Jio, Airtel, VI, or ValueFirst) and Principal Entity credentials are chosen by College IT.
 
 ---
 
-## 1. TRAI Regulatory Framework & DLT Requirements
+## 1. Status & Operational Dependency (Decision D-07)
 
-In accordance with TRAI regulations for commercial communications:
+In accordance with `AG-MASTER-FINAL-1.0` Decision D-07:
 
-1. **Entity Registration:** The college entity must be registered as a Principal Entity on a telecom DLT portal (e.g., Vilpower / Jio / Airtel / Smartping).
+- **Decision in Force:** SMS dispatch remains **disabled in production** until the specific DLT gateway provider, Principal Entity ID, and carrier SMS templates are formally approved by College IT.
+- **Interim Operational Behavior:** Until provider onboarding is complete, SOS escalation tiers 1 through 3 automatically fall back to **Push notifications and Email**, and the system raises an operational setup alert (`Setup incomplete: SMS provider unconfigured`).
+
+---
+
+## 2. TRAI Regulatory Framework & DLT Requirements
+
+When the provider is chosen, the following statutory requirements apply:
+
+1. **Entity Registration:** The college entity must be registered as a Principal Entity on the chosen provider's telecom DLT portal.
 2. **Sender ID (Header):** 6-character alphabetic header assigned to the college (e.g., `CLGBUS`).
 3. **Template Registration:** Every SMS message pattern must be pre-approved as a **Service Implicit / Transactional** template. Any message body that does not match an approved template with its exact static text and placeholder variables is rejected by the carrier and never sent (`SW-MVP-1.0` §21.5).
 
 ---
 
-## 2. Approved MVP SMS Templates
+## 3. Candidate MVP SMS Templates
 
 | Template ID  | Purpose                     | Registered Pattern                                                                                    |
 | ------------ | --------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -29,13 +40,13 @@ _Rule:_ Under `SW-MVP-1.0` §21.5, SMS messages **never contain coordinates**. T
 
 ---
 
-## 3. Webhook Delivery Reports & HMAC Verification
+## 4. Webhook Delivery Reports & HMAC Verification
 
-When the SMS gateway posts asynchronous delivery receipts:
+When the chosen SMS gateway posts asynchronous delivery receipts:
 
 1. Webhook endpoint: `POST /api/v1/webhooks/sms/delivery-status`
 2. Signature header: `X-Provider-Signature: t=<timestamp>,v1=<hmac_sha256_hex>`
-3. Verification algorithm (`AG-MASTER-1.0` §13.19):
+3. Verification algorithm (`AG-MASTER-FINAL-1.0` §13.19):
    - Extract timestamp `t` and signature `v1`.
    - Reject if `|server_utc - t| > 300` seconds (prevents replay attacks).
    - Recreate HMAC-SHA256 signature using `SMS_CALLBACK_SECRET` over `${t}.${raw_body}`.

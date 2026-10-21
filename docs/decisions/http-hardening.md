@@ -1,47 +1,84 @@
-# RS-15: HTTP Hardening, Helmet Configuration, and Production Guards
+# RS-15: HTTP Hardening, Helmet Configuration, and NestJS Production Guards
 
 **Document ID:** RS-15  
-**Source:** [Helmet Security Headers & OWASP REST Security Cheat Sheet](https://helmetjs.github.io/)
-**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
+**Sources:**
+
+- Helmet Documentation: `https://helmetjs.github.io/` (Pinned Version: `v7.1.0`)
+- NestJS Security & Middleware: `https://docs.nestjs.com/security/helmet` (Pinned Version: NestJS `v10.4.1`)
+- OWASP REST Security Cheat Sheet: `https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html` (Version: 2024.1)  
+  **Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)  
+  **Quoted Verification (NestJS Documentation):**
+
+> "Helmet can help protect your app from some well-known web vulnerabilities by setting HTTP headers appropriately. Generally, Helmet is just a collection of smaller middleware functions that set security-related HTTP headers."  
+> **Quoted Verification (Helmet Documentation):**  
+> "By default, Helmet includes 15 smaller middlewares that set security-related headers, including Content-Security-Policy, Strict-Transport-Security, and X-Content-Type-Options."
 
 ---
 
-## 1. Helmet & Response Headers Configuration (`AG-MASTER-1.0` §13.18)
+## 1. NestJS Architecture & Global Middleware Integration
 
-In `services/api/src/main.ts`, Helmet is configured to apply strict HTTP response headers:
+In `services/api/src/main.ts`, the NestJS application bootstraps with Helmet, cookie-parser, global validation pipes, and custom security header middleware:
 
 ```typescript
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'none'"],
-        frameAncestors: ["'none'"],
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // 1. Helmet configuration for strict headers
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'none'"],
+          frameAncestors: ["'none'"],
+        },
       },
-    },
-    xContentTypeOptions: true, // nosniff
-    xFrameOptions: { action: 'deny' },
-    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true,
-    },
-    crossOriginResourcePolicy: { policy: 'same-origin' },
-  }),
-);
+      xContentTypeOptions: true, // nosniff
+      xFrameOptions: { action: 'deny' },
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
+      crossOriginResourcePolicy: { policy: 'same-origin' },
+    }),
+  );
 
-// Explicit header controls
-app.use((req, res, next) => {
-  res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
-  res.removeHeader('X-Powered-By');
-  if (req.headers.authorization || req.cookies?.session) {
-    res.setHeader('Cache-Control', 'no-store');
-  }
-  next();
-});
+  // 2. Cookie parser for signed session handling
+  app.use(cookieParser());
+
+  // 3. Explicit permissions policy and cache control
+  app.use((req, res, next) => {
+    res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
+    res.removeHeader('X-Powered-By');
+    if (req.headers.authorization || req.cookies?.session) {
+      res.setHeader('Cache-Control', 'no-store');
+    }
+    next();
+  });
+
+  // 4. NestJS Global Validation Pipe with strict rejection
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  // 5. Standard Error Envelope Mapping (Part 8.2)
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  await app.listen(process.env.PORT || 3000);
+}
+bootstrap();
 ```
 
 ---

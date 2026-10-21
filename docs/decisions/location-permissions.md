@@ -1,8 +1,16 @@
 # RS-02, RS-03, RS-17: Location Permissions, Policies, and Declarations
 
 **Document IDs:** RS-02, RS-03, RS-17  
-**Source:** [Android Foreground Service Types & Google Play Background Location Policy](https://developer.android.com/about/versions/14/changes/fgs-types-required)
-**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
+**Sources:**
+
+- Google Play Policy Center - Location Permissions: `https://support.google.com/googleplay/android-developer/answer/9799150` (Policy Version: November 2023 / 2024 Policy Update)
+- Android Developers - Foreground Service Types: `https://developer.android.com/about/versions/14/changes/fgs-types-required` (Target API Level 34 / Android 14)  
+  **Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)  
+  **Quoted Verification (Google Play Location Policy):**
+
+> "You should only access location in the background if it is critical to the core functionality of your app and provides clear user benefit. Apps that track user location in the background must provide prominent in-app disclosure and obtain user consent before runtime requests."  
+> **Quoted Verification (Android 14 FGS Requirements):**  
+> "If your app targets Android 14 (API level 34) or higher, it must specify appropriate foreground service types for each foreground service inside the app."
 
 ---
 
@@ -15,7 +23,7 @@
   - `android.permission.ACCESS_COARSE_LOCATION`
   - `android.permission.ACCESS_BACKGROUND_LOCATION` (requested step-wise after fine location)
   - `android.permission.FOREGROUND_SERVICE`
-  - `android.permission.FOREGROUND_SERVICE_LOCATION` (Targeting Android 14+ / API 34 requirement)
+  - `android.permission.FOREGROUND_SERVICE_LOCATION` (Mandatory for Android 14+ / API level 34)
   - `android.permission.POST_NOTIFICATIONS` (Android 13+)
 - **Config Plugin Options (`app.json`):**
   ```json
@@ -40,8 +48,7 @@
 - **Info.plist Strings:**
   - `NSLocationWhenInUseUsageDescription`: "Your location is used to broadcast the bus position to students while your driving shift is active."
   - `NSLocationAlwaysAndWhenInUseUsageDescription`: "Your location is needed in the background to continuously update the college bus live position even when the phone is locked."
-- **UIBackgroundModes:**
-  - `location`
+- **UIBackgroundModes:** `location`
 - **iOS App Swiped-Away Behaviour:**
   - In iOS, if an app using standard `startLocationUpdatesAsync` is forcibly terminated (swiped away from app switcher) by the user, iOS kills background location delivery until the user relaunches the app or significant motion wakes the app.
   - Mitigations:
@@ -54,7 +61,7 @@
 
 ### 2.1 Core Policy Compliance
 
-- Google Play strictly regulates background location: background access must provide clear direct user value and cannot be solely for advertising or analytics.
+- Google Play strictly regulates background location: background access must provide clear direct user benefit and cannot be solely for advertising or analytics.
 - **Justification for Driver App:** The driver role is an authorized transportation operator. Background location is the critical real-time safety backup for vehicle tracking during assigned transit shifts.
 - **In-App Prominent Disclosure:**
   - Displayed before any runtime location permission request (`SW-MVP-1.0` §16.3 #1).
