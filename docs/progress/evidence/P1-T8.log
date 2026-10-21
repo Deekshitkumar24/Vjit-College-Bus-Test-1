@@ -1,0 +1,98 @@
+# Task Evidence: P1-T8 Snapshot API & Scope Resolution
+
+**Task ID:** P1-T8  
+**Scope:** Snapshot API with scope resolution, ETag, 3-second cache per route version, and 404 rule (Part 5.6 & 6.9).  
+**Date:** 2026-10-21  
+
+---
+
+## Command 1: Unit & Pipeline Tests for Snapshot API & Scope Resolution
+Command: `pnpm --filter @collegebus/domain test ; pnpm --filter @collegebus/api test`
+
+Output:
+```
+> @collegebus/domain@1.0.0 test:unit
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/device-links.spec.ts (5 tests) 10ms
+ ✓ test/snapshot.spec.ts (14 tests) 17ms
+ ✓ test/source-selector.spec.ts (13 tests) 19ms
+ ✓ test/driver-telemetry.spec.ts (12 tests) 20ms
+ ✓ test/device-tokens.spec.ts (7 tests) 22ms
+ ✓ test/device-health.spec.ts (17 tests) 24ms
+ ✓ test/gps-quality.spec.ts (14 tests) 25ms
+
+ Test Files  7 passed (7)
+      Tests  82 passed (82)
+   Start at  23:18:43
+   Duration  3.05s
+
+> @collegebus/api@1.0.0 test:unit
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/authorization-harness.spec.ts (3 tests) 15ms
+ ✓ test/health.spec.ts (2 tests) 8ms
+ ✓ test/telemetry-pipeline.spec.ts (4 tests) 23ms
+ ✓ test/heartbeat-pipeline.spec.ts (5 tests) 28ms
+ ✓ test/driver-pipeline.spec.ts (7 tests) 34ms
+ ✓ test/source-selector-pipeline.spec.ts (9 tests) 31ms
+ ✓ test/snapshot-pipeline.spec.ts (9 tests) 50ms
+ ✓ test/auth.spec.ts (8 tests) 2942ms
+ ✓ test/telemetry.spec.ts (3 tests) 12ms
+
+ Test Files  9 passed (9)
+      Tests  50 passed (50)
+   Start at  23:18:48
+   Duration  26.14s
+```
+
+---
+
+## Command 2: Lint, Formatting & Typecheck
+Command: `pnpm lint ; pnpm typecheck`
+
+Output:
+```
+> college-bus-tracker@1.0.0 lint
+> turbo run lint && prettier --check "packages/**/*.{ts,tsx,js,json,md}" "services/**/*.{ts,tsx,js,json,md}" "scripts/**/*.{ts,tsx,js,json,md}" "docs/**/*.{ts,tsx,js,json,md}"
+
+Tasks:    7 successful, 7 total
+All matched files use Prettier code style!
+
+> college-bus-tracker@1.0.0 typecheck
+> turbo run typecheck
+
+Tasks:    11 successful, 11 total
+Time:     6.589s
+```
+
+---
+
+## Command 3: Route Inventory & No-Mock Verification
+Command: `pnpm verify:routes-auth ; pnpm verify:no-mock`
+
+Output:
+```
+verify:routes-auth PASSED. 20 routes checked with zero unauthorized public endpoints.
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+```
+
+---
+
+## Files Changed:
+- `packages/contracts/src/snapshot.dto.ts`
+- `packages/contracts/src/index.ts`
+- `packages/domain/src/snapshot.ts`
+- `packages/domain/src/index.ts`
+- `packages/domain/test/snapshot.spec.ts`
+- `services/api/src/modules/snapshot/snapshot.service.ts`
+- `services/api/src/modules/snapshot/snapshot.controller.ts`
+- `services/api/src/modules/snapshot/snapshot.module.ts`
+- `services/api/src/app.module.ts`
+- `services/api/test/snapshot-pipeline.spec.ts`
+- `scripts/verify-routes-auth.ts`
+- `docs/progress/evidence/P1-T8.log`

@@ -7,6 +7,7 @@ import { HeartbeatModule } from './modules/heartbeat/heartbeat.module.js';
 import { ShiftModule } from './modules/shift/shift.module.js';
 import { DriverModule } from './modules/driver/driver.module.js';
 import { SelectorModule } from './modules/selector/selector.module.js';
+import { SnapshotModule } from './modules/snapshot/snapshot.module.js';
 import { GlobalAuthGuard } from './common/guards/auth.guard.js';
 import { RolesGuard } from './common/guards/roles.guard.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
@@ -23,6 +24,7 @@ import { IdempotencyMiddleware } from './common/middleware/idempotency.middlewar
     ShiftModule,
     DriverModule,
     SelectorModule,
+    SnapshotModule,
   ],
   providers: [
     {
