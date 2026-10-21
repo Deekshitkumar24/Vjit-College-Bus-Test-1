@@ -1,0 +1,64 @@
+=== Evidence for Task P3-T5: Tracking Mode Switcher & Driver SOS Emergency ===
+Timestamp: 2026-10-22T01:37:30Z
+Executed by: Antigravity Autonomous Agent
+
+1. Scope Verified:
+- Tracking Mode Switcher (SW-MVP-1.0 §16.3 #6 & D-13):
+  - 3 options: AUTO (default per D-13), HARDWARE, PHONE.
+  - Confirmation sheet with optional reason note (up to 140 chars per §16.3 #6).
+  - Validation: Rejects notes > 140 chars with explicit error.
+  - Top bar mode indicator: Shows active mode metadata with dedicated badges:
+    * AUTO: "Auto · Intelligent Failover"
+    * HARDWARE: "Hardware Only"
+    * PHONE: "Driver Phone Live"
+  - Backend endpoint POST /api/v1/driver/mode updates tracking mode, bus active source, and persists audit note.
+- Driver SOS Emergency Trigger (SW-MVP-1.0 §16.3 #7 & L-2):
+  - Guarded 2-second hold trigger preventing accidental press.
+  - Category picker implementing L-2 locked decisions:
+    EMERGENCY, MEDICAL, BREAKDOWN, OTHER, UNKNOWN.
+  - Real-time 3-step incident progression sheet:
+    * Step 1: "Received by server" (immediate server acknowledgement with incidentId and timestamp)
+    * Step 2: "Faculty and Coordinators notified"
+    * Step 3: "Acknowledged by [name]" with coordinator timestamp
+  - Shift end guard: Enforces SW-MVP-1.0 §15.4 by blocking driver manual shift termination while SOS incident is OPEN on the bus.
+
+2. Test Execution Commands & Outputs:
+pnpm --filter @collegebus/mobile test test/driver-mode-sos.spec.ts
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/driver-mode-sos.spec.ts (10 tests) 33ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+
+pnpm --filter @collegebus/api test:unit test/driver-pipeline.spec.ts
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/driver-pipeline.spec.ts (11 tests) 44ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+
+3. Verification Commands:
+- pnpm typecheck: PASSED (12/12 successful)
+- pnpm lint: PASSED (0 errors, 100% Prettier formatted)
+- pnpm verify:no-mock: PASSED (0 mock data patterns)
+- pnpm verify:routes-auth: PASSED (27 routes checked with zero unauthorized public endpoints)
+- pnpm test:unit: PASSED (11/11 package suites, 125 mobile + 60 API tests passing)
+
+4. Files Created/Modified:
+- packages/contracts/src/driver.dto.ts
+- services/api/src/modules/driver/driver.controller.ts
+- services/api/src/modules/driver/driver.service.ts
+- services/api/test/driver-pipeline.spec.ts
+- scripts/verify-routes-auth.ts
+- apps/mobile/src/driver/mode-switcher.ts
+- apps/mobile/src/driver/driver-sos-manager.ts
+- apps/mobile/src/driver/index.ts
+- apps/mobile/test/driver-mode-sos.spec.ts
+- apps/mobile/test/location-buffer.spec.ts
+- docs/progress/evidence/P3-T5.log
