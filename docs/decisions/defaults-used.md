@@ -27,7 +27,7 @@ The build uses these defaults. Each one is recorded here when utilized in implem
 | **Supported Operating Systems**       | Android 10 and later, iOS 16 and later                                                     | `SW-MVP-1.0` §41 #15, `AG-MASTER-1.0` Part 18.1 |
 | **Regional Disaster Recovery**        | Accept 4-hour regional recovery for MVP                                                    | `SW-MVP-1.0` §41 #16, `AG-MASTER-1.0` Part 18.1 |
 | **Bot Protection on OTP**             | Cloudflare Turnstile on driver sign-in OTP requests after first attempt in an hour         | `AG-MASTER-1.0` §13.4, §13.11, Conflict C-02    |
-| **Device Status BENCH (Q4)**          | Confirmed: BENCH is an active device status in devices.status enum                     | AG-MASTER-1.0 Part 7.2, Part 21.1, P4-T9       |
-| **SOS Category Storage (Q5)**         | Confirmed: Stored in sos_incidents.category column                                      | AG-MASTER-1.0 Part 7.7, Part 21.1              |
-| **SSO Provider (Q12)**                | Confirmed: Both Google Workspace and Microsoft Entra ID supported via runtime config       | User Decision, AG-MASTER-1.0 Part 8.3, RS-09   |
-| **AWS Region (Q15)**                  | Confirmed: AWS India Region p-south-1 (Mumbai)                                          | User Decision, AG-MASTER-1.0 Part 18.1, RS-19  |
+| **Device Status BENCH (Q4)**          | Confirmed: BENCH is an active device status in devices.status enum                         | AG-MASTER-1.0 Part 7.2, Part 21.1, P4-T9        |
+| **SOS Category Storage (Q5)**         | Confirmed: Stored in sos_incidents.category column                                         | AG-MASTER-1.0 Part 7.7, Part 21.1               |
+| **SSO Provider (Q12)**                | Confirmed: Both Google Workspace and Microsoft Entra ID supported via runtime config       | User Decision, AG-MASTER-1.0 Part 8.3, RS-09    |
+| **AWS Region (Q15)**                  | Confirmed: AWS India Region p-south-1 (Mumbai)                                             | User Decision, AG-MASTER-1.0 Part 18.1, RS-19   |

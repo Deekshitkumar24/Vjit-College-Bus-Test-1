@@ -1,8 +1,8 @@
 # RS-08: Cloudflare Turnstile Server-Side Verification
 
 **Document ID:** RS-08  
-**Source:** Cloudflare Turnstile Documentation  
-**Date Checked:** 20 October 2026
+**Source:** [Cloudflare Turnstile Server-Side Validation Documentation](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

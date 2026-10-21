@@ -1,8 +1,8 @@
 # RS-15: HTTP Hardening, Helmet Configuration, and Production Guards
 
 **Document ID:** RS-15  
-**Source:** Helmet Documentation, OWASP REST Security Cheat Sheet, NestJS Security Guide  
-**Date Checked:** 20 October 2026
+**Source:** [Helmet Security Headers & OWASP REST Security Cheat Sheet](https://helmetjs.github.io/)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

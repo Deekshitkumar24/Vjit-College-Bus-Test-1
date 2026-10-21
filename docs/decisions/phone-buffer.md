@@ -1,8 +1,8 @@
 # RS-20: expo-sqlite Offline Storage & Background Buffer for Driver App
 
 **Document ID:** RS-20  
-**Source:** `expo-sqlite` (v14) Documentation, React Native TaskManager Guides  
-**Date Checked:** 20 October 2026
+**Source:** [Expo SQLite SDK Documentation & TaskManager Background Execution](https://docs.expo.dev/versions/latest/sdk/sqlite/)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

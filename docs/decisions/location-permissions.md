@@ -1,8 +1,8 @@
 # RS-02, RS-03, RS-17: Location Permissions, Policies, and Declarations
 
 **Document IDs:** RS-02, RS-03, RS-17  
-**Sources:** Android Developers Documentation, Google Play Console Policy Center, Apple Developer Guidelines  
-**Date Checked:** 20 October 2026
+**Source:** [Android Foreground Service Types & Google Play Background Location Policy](https://developer.android.com/about/versions/14/changes/fgs-types-required)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

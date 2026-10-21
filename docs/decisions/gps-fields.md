@@ -1,8 +1,8 @@
 # RS-14: Expo Location API Fields (Android vs iOS) & Mock Detection
 
 **Document ID:** RS-14  
-**Source:** `expo-location` (v17) Documentation and Native Source Code  
-**Date Checked:** 20 October 2026
+**Source:** [Expo Location SDK Documentation & Source](https://docs.expo.dev/versions/latest/sdk/location/)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

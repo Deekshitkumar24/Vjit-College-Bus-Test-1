@@ -1,8 +1,8 @@
 # RS-13: MapLibre GL JS & MapLibre React Native Architecture
 
 **Document ID:** RS-13  
-**Source:** MapLibre GL JS Documentation, MapLibre React Native Documentation  
-**Date Checked:** 20 October 2026
+**Source:** [MapLibre GL JS & MapLibre React Native Documentation](https://maplibre.org/maplibre-gl-js/docs/)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

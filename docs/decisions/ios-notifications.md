@@ -1,8 +1,8 @@
 # RS-04, RS-18: iOS Notifications, Background Modes, and App Store Privacy Labels
 
 **Document IDs:** RS-04, RS-18  
-**Sources:** Apple Developer Documentation, App Store Review Guidelines  
-**Date Checked:** 20 October 2026
+**Source:** [Apple Developer Documentation: UNNotificationInterruptionLevel & App Store Review Guidelines](https://developer.apple.com/documentation/usernotifications/unnotificationinterruptionlevel)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

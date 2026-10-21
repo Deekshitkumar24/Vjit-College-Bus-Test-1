@@ -1,8 +1,8 @@
 # RS-01: Dependency Versions & Compatibility Matrix
 
 **Document ID:** RS-01  
-**Source:** Official release documentation and npm registries  
-**Date Checked:** 20 October 2026
+**Source:** [Node.js LTS Releases, Expo SDK Releases, and npm Registry](https://nodejs.org/en/about/previous-releases)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

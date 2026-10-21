@@ -1,8 +1,8 @@
 # RS-10: PostGIS Spatial Queries & Spatial Indexing
 
 **Document ID:** RS-10  
-**Source:** PostGIS 3.4 Official Documentation  
-**Date Checked:** 20 October 2026
+**Source:** [PostGIS 3.4 Official Reference Manual (ST_LineLocatePoint, ST_DWithin)](https://postgis.net/docs/ST_LineLocatePoint.html)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

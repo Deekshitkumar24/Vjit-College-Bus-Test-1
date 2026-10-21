@@ -1,8 +1,8 @@
 # RS-12: PostgreSQL Row-Level Security (RLS) & Prisma Multi-Tenancy
 
 **Document ID:** RS-12  
-**Source:** PostgreSQL 16 Documentation, Prisma Interactive Transactions Guide  
-**Date Checked:** 20 October 2026
+**Source:** [PostgreSQL 16 Row Security Policies & Prisma Interactive Transactions](https://www.postgresql.org/docs/16/ddl-rowsecurity.html)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

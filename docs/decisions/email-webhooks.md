@@ -1,8 +1,8 @@
 # RS-07: AWS SNS Webhook Signature Verification for SES Bounces & Complaints
 
 **Document ID:** RS-07  
-**Source:** Amazon SNS Developer Guide, AWS SES Event Publishing Guidelines  
-**Date Checked:** 20 October 2026
+**Source:** [AWS SNS Message Signature Verification & SES Event Publishing](https://docs.aws.amazon.com/sns/latest/dg/sns-verify-signature-of-message.html)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

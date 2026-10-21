@@ -1,8 +1,8 @@
 # RS-09: OpenID Connect Single Sign-On (Google Workspace & Entra ID)
 
 **Document ID:** RS-09  
-**Source:** OpenID Connect Core 1.0 Specification, openid-client (v5) Documentation  
-**Date Checked:** 20 October 2026
+**Source:** [OpenID Connect Core 1.0 Specification & node-openid-client](https://openid.net/specs/openid-connect-core-1_0.html)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

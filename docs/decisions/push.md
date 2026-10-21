@@ -1,8 +1,8 @@
 # RS-05: FCM HTTP v1 API & Priority Push Configuration
 
 **Document ID:** RS-05  
-**Source:** Firebase Cloud Messaging HTTP v1 API Documentation, APNs Provider API  
-**Date Checked:** 20 October 2026
+**Source:** [Firebase Cloud Messaging HTTP v1 API & Apple APNs Provider API](https://firebase.google.com/docs/cloud-messaging/migrate-v1)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

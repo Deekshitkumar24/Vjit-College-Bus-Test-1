@@ -1,8 +1,8 @@
 # RS-06: DLT Transactional SMS Architecture & Ingestion Webhooks (India)
 
 **Document ID:** RS-06  
-**Source:** Telecom Regulatory Authority of India (TRAI) TCCCPR 2018, DLT Provider Protocols  
-**Date Checked:** 20 October 2026
+**Source:** [Telecom Regulatory Authority of India (TRAI) TCCCPR 2018 DLT Framework](https://www.trai.gov.in/telecom-commercial-communications-customer-preference-regulations-2018)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 

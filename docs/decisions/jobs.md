@@ -1,8 +1,8 @@
 # RS-11: pg-boss Background Queue Architecture & Job Scheduling
 
 **Document ID:** RS-11  
-**Source:** pg-boss (v10) GitHub and Documentation  
-**Date Checked:** 20 October 2026
+**Source:** [pg-boss Queue Architecture & Documentation](https://github.com/timgit/pg-boss)
+**Date Checked:** 20 October 2026 (Re-confirmed 21 October 2026)
 
 ---
 
