@@ -6,3 +6,4 @@ export * from './snapshot.dto.js';
 export * from './attendance.dto.js';
 export * from './request.dto.js';
 export * from './manifest.dto.js';
+export * from './sos.dto.js';
