@@ -75,6 +75,9 @@ importers:
       '@collegebus/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@collegebus/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
     devDependencies:
       '@types/node':
         specifier: ^22.5.0

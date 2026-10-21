@@ -30,7 +30,7 @@ Phase P2 has fully built, tested, and empirically verified the entire mobile use
 | **P2-T1** | Mobile navigation tree, offline cache store, snapshot polling client with 304 ETag                                    | **DONE** | `da561c0`  | `docs/progress/evidence/P2-T1.log` |
 | **P2-T2** | Live map, bus heading marker, authoritative source badges, camera bounds, D-11 OpenStreetMap tile provider            | **DONE** | `37e23ef`  | `docs/progress/evidence/P2-T2.log` |
 | **P2-T3** | Stop arrival card, next-stop countdown, stop status timeline, 300m corridor off-route banner                          | **DONE** | `4538661`  | `docs/progress/evidence/P2-T3.log` |
-| **P2-T4** | QR attendance scanner, rotating HMAC token validator (15s window, anti-replay), offline attendance queue               | **DONE** | `60ad047`  | `docs/progress/evidence/P2-T4.log` |
+| **P2-T4** | QR attendance scanner, rotating HMAC token validator (15s window, anti-replay), offline attendance queue              | **DONE** | `60ad047`  | `docs/progress/evidence/P2-T4.log` |
 | **P2-T5** | Stop change & leave requests, Zod validation, status badge presenters, cancel action, offline sync                    | **DONE** | `1e74d59`  | `docs/progress/evidence/P2-T5.log` |
 | **P2-T6** | Faculty passenger manifest, manual check-in toggle, filter engine, D-12 morning-present/afternoon-absent safety alert | **DONE** | `a3dde2b`  | `docs/progress/evidence/P2-T6.log` |
 | **P2-T7** | Emergency SOS trigger (3-second guarded hold, GPS capture, L-2 category routing, security hotline fallback)           | **DONE** | `38e2a8d`  | `docs/progress/evidence/P2-T7.log` |
