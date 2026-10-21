@@ -1,0 +1,65 @@
+=== Evidence for Task P3-T4: Background Location Tracking & 24h SQLite Buffer ===
+Timestamp: 2026-10-22T01:23:05Z
+Executed by: Antigravity Autonomous Agent
+
+1. Scope Verified:
+- PhoneLocationBuffer implementing SQLite table & WAL mode per RS-20 schema:
+  CREATE TABLE IF NOT EXISTS phone_sample_buffer (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    shift_id TEXT NOT NULL,
+    seq INTEGER NOT NULL,
+    recorded_at TEXT NOT NULL,
+    lat REAL NOT NULL,
+    lng REAL NOT NULL,
+    accuracy_m REAL NOT NULL,
+    speed_mps REAL,
+    heading_deg REAL,
+    provider TEXT NOT NULL,
+    is_mock INTEGER NOT NULL,
+    created_at TEXT NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_buffer_shift_seq ON phone_sample_buffer (shift_id, seq ASC);
+- Buffer capacity sizing: 24 hours of data (8,640 samples @ 10s intervals) with safe FIFO eviction.
+- Sequential FIFO batch flush: Chronological query (ORDER BY seq ASC LIMIT 50) and deletion up to server-confirmed ack_seq.
+- Persistent foreground service notification: Ongoing notification 'Bus [number] · Tracking Active' (channel TRACKING, priority HIGH).
+- Adaptive cadence engine: 10s when moving (> 3 km/h = ~0.833 m/s), 30s when stopped (Part 5.3).
+- Driver screen banner: "Sending saved location, N points" displayed during replay until buffer is fully emptied (§16.3 #10).
+- Network resilience: Preserves buffer intact across HTTP 500 / offline periods, resumes flush on reconnect.
+
+2. Test Execution Command:
+pnpm --filter @collegebus/mobile test
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/shift-lifecycle.spec.ts (8 tests) 38ms
+ ✓ test/driver-roster.spec.ts (6 tests) 28ms
+ ✓ test/route-guard.spec.ts (5 tests) 11ms
+ ✓ test/pre-trip-diagnostics.spec.ts (13 tests) 20ms
+ ✓ test/eta-stop-card.spec.ts (8 tests) 18ms
+ ✓ test/navigation-store.spec.ts (10 tests) 60ms
+ ✓ test/map-marker.spec.ts (12 tests) 16ms
+ ✓ test/emergency-sos.spec.ts (7 tests) 29ms
+ ✓ test/qr-attendance.spec.ts (8 tests) 33ms
+ ✓ test/student-requests.spec.ts (11 tests) 39ms
+ ✓ test/faculty-manifest.spec.ts (11 tests) 86ms
+ ✓ test/mobile-flows.integration.spec.ts (5 tests) 40ms
+ ✓ test/location-buffer.spec.ts (11 tests) 60ms
+
+ Test Files  13 passed (13)
+      Tests  115 passed (115)
+   Start at  01:23:00
+   Duration  1.89s (transform 2.97s, setup 0ms, collect 5.55s, tests 479ms, environment 6ms, prepare 6.49s)
+
+3. Verification Commands:
+- pnpm typecheck: PASSED (12/12 successful)
+- pnpm lint: PASSED (0 errors, 100% Prettier formatted)
+- pnpm verify:no-mock: PASSED (0 mock data patterns)
+- pnpm verify:routes-auth: PASSED (24 routes checked with zero unauthorized public endpoints)
+
+4. Files Created/Modified:
+- apps/mobile/src/driver/location-buffer.ts
+- apps/mobile/src/driver/location-collector.ts
+- apps/mobile/src/driver/index.ts
+- apps/mobile/test/location-buffer.spec.ts
+- docs/progress/evidence/P3-T4.log
