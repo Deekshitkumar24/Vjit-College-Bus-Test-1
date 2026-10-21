@@ -310,7 +310,7 @@ A rigorous comparative review of `HW-SPEC-1.0` and `SW-MVP-1.0` identifies the f
 ### 6.2 Ingestion Conflict Handling (200 vs 409)
 
 - In `SW-MVP-1.0` §11.5 (step 7) and `HW-SPEC-1.0` §11, when a sample with an existing `(device_id, boot_id, seq)` is received with different content, it is rejected with reason `CONFLICT`. The response is returned as HTTP 200 with an entry in the `rejected` array (`[{"seq": ..., "reason": "CONFLICT"}]`), allowing the device to advance its `ack_seq` and continue operation.
-- In contrast, the error code table in `SW-MVP-1.0` §27 lists `CONFLICT` as returning HTTP 409 (`State conflict, for example a duplicate CONFLICT sample`). (Note: the expectation that returning HTTP 409 at the transport level causes the hardware to retry or halt the whole batch rather than dropping the conflicting sample is an inference, not an explicit statement from the specification).
+- In contrast, the error code table in `SW-MVP-1.0` §27 lists `CONFLICT` as returning HTTP 409 (`State conflict, for example a duplicate CONFLICT sample`). (Note: the claim that HTTP 409 makes the hardware retry or halt the batch is an inference, not a statement from the specification).
 
 ### 6.3 Firmware Download URL Missing from Heartbeat
 
@@ -346,7 +346,7 @@ The data model in `SW-MVP-1.0` §10 omits database structures for three required
 
 1. **Student Approaching Alert Threshold:** `SW-MVP-1.0` §16.1 (workflow 5) defines that students can adjust their stop approaching alert threshold between 2 and 15 minutes (default 5 minutes). No column in `users`, `student_profiles`, or `notification_preferences` (§10.1, §10.4, §10.9) stores this value.
 2. **Bus Default Mode:** `SW-MVP-1.0` §13.2 and §15.2 state that a new shift starts in `AUTO` unless the coordinator sets a different default mode for that bus. However, the `buses` table in §10.2 contains no `default_mode` column.
-3. **Driver Mode Switch Note:** `SW-MVP-1.0` §16.3 (workflow 6) states that when a driver changes tracking mode, an optional note of up to 140 characters is stored. However, `source_switches` in §10.5 defines only `bus_id, from_source, to_source, reason_code, actor_type, actor_id, at`, omitting a note column.
+3. **Driver Mode Switch Note:** `SW-MVP-1.0` §16.3 only (workflow 6) states that when a driver changes tracking mode, an optional note of up to 140 characters is stored (no mention in §13.2). However, `source_switches` in §10.5 defines only `bus_id, from_source, to_source, reason_code, actor_type, actor_id, at`, omitting a note column.
 
 ### 6.9 SIM Plan, APN, and Data Caps
 
@@ -383,14 +383,14 @@ All 16 formal open decisions defined in `SW-MVP-1.0` §41, detailing recommended
 
 ### 6.12 Implementation Additions Outside the Specification
 
-To ensure clarity across teams, the following items originate from implementation and hardening prompt instructions rather than the core specification text:
+The following items are additions introduced by the build prompt and hardening guidelines that are not in the original specification, listed so the team can tell them apart:
 
-- **Cloudflare Turnstile on OTP:** Anti-bot / rate-abuse challenge layer on driver sign-in OTP requests.
-- **`push_tokens` Table:** Dedicated relational persistence for FCM / APNs device tokens.
-- **`rate_counters` Storage:** Storage mechanism for tracking per-endpoint and per-sender ingestion rates.
-- **`idempotency_keys` Table:** Explicit 24-hour cache table for storing responses to idempotent mutations.
-- **`is_synthetic` Flag:** Schema discriminator column ensuring synthetic/simulator records never blend with production data.
-- **`expo-sqlite` Engine:** Local SQLite storage engine on the driver mobile device for offline location sample buffering up to 24 hours.
+- **Turnstile on OTP:** Cloudflare Turnstile anti-bot challenge on driver sign-in OTP requests (`F-AUTH-02`).
+- **`push_tokens`:** Dedicated database table for persisting mobile push notification device tokens (FCM/APNs).
+- **`rate_counters`:** Persistence table for tracking atomic sliding-window rate limits.
+- **`idempotency_keys`:** Database table for caching responses to prevent duplicate operations and detect mutation conflicts.
+- **`is_synthetic`:** Column on business tables flagging synthetic and simulation data to prevent leakage into production.
+- **`expo-sqlite`:** Local SQLite database on the driver mobile app for storing offline location samples for up to 24 hours.
 
 ---
 
@@ -398,18 +398,33 @@ To ensure clarity across teams, the following items originate from implementatio
 
 The following 15 numbered questions must be answered before building:
 
-1. **Device activation on first request:** Should a device be ACTIVE from its first request, or only after a separate activation step? _(Blocks: M1)_
-2. **Firmware download URL:** How does the device receive its firmware download URL? _(Blocks: M1 and M4)_
-3. **Duplicate sample response, 200 or 409:** For a duplicate sample with different content, should the response be 200 with a rejected entry, or HTTP 409? _(Blocks: M1)_
-4. **BENCH device status:** Is BENCH a device status? _(Blocks: M0 and M4)_
-5. **SOS category storage:** Where is the SOS category stored? _(Blocks: M0 and M5)_
-6. **GNSS source:** Is the GNSS source inside the EC200U-CN, or a separate NEO-6M? (`HW-SPEC-1.0` §5.2, §22 #1) _(Blocks: firmware freeze; SW-MVP-1.0 §41 #14)_
-7. **LOW_VEHICLE_BATTERY threshold:** Should the device send LOW_VEHICLE_BATTERY at 11.8 V (12 V) or 23.5 V (24 V), or only near the 11.0 V and 22.0 V cut-offs? (`HW-SPEC-1.0` §6.3; `SW-MVP-1.0` §12, §35; Section 6.6) _(Blocks: M1 and the hardware firmware)_
-8. **Mix of 12 V and 24 V buses:** What is the mix of 12 V and 24 V buses? (`HW-SPEC-1.0` §22 #3) _(Blocks: the hardware build)_
-9. **Backup battery in the MVP:** Is the backup battery included in the MVP? (`HW-SPEC-1.0` §6.4, §22 #4) _(Blocks: the hardware build)_
-10. **Tamper switches and door sensors:** Are the door sensors and tamper switches in the MVP production batch? (`HW-SPEC-1.0` §5.9, §5.10, §22 #7, #8) _(Blocks: the hardware build and M4)_
-11. **Security visibility of all active buses:** Should Security see all active buses, read-only? (`SW-MVP-1.0` §5, §41 #6) _(Blocks: M4; SW-MVP-1.0 §41 #6)_
-12. **SSO provider:** Will college SSO use Google Workspace or Microsoft Entra ID? (`SW-MVP-1.0` §8) _(Blocks: M0)_
-13. **Driver phones, college-issued or personal:** Will drivers use college-issued phones or their own phones? (`SW-MVP-1.0` §41 #5) _(Blocks: M3; SW-MVP-1.0 §41 #5)_
-14. **DLT registration:** Which DLT entity and SMS templates are registered? (`SW-MVP-1.0` §21.5) _(Blocks: M5)_
-15. **AWS region:** Which AWS region will host the system? (`SW-MVP-1.0` §41 #2) _(Blocks: M0; SW-MVP-1.0 §41 #2)_
+1. **Device activation on first request:** Should a device be ACTIVE from its first request, or only after a separate activation step?
+   - **Blocks:** M1.
+2. **Firmware download URL:** How does the device receive its firmware download URL?
+   - **Blocks:** M1 and M4.
+3. **Duplicate sample response, 200 or 409:** For a duplicate sample with different content, should the response be 200 with a rejected entry, or HTTP 409?
+   - **Blocks:** M1.
+4. **BENCH device status:** Is BENCH a device status?
+   - **Blocks:** M0 and M4.
+5. **SOS category storage:** Where is the SOS category stored?
+   - **Blocks:** M0 and M5.
+6. **GNSS source:** Is the GNSS source inside the EC200U-CN, or a separate NEO-6M? (`HW-SPEC-1.0` §5.2, §22 #1)
+   - **Blocks:** the firmware freeze (SW-MVP-1.0 §41 #14).
+7. **LOW_VEHICLE_BATTERY threshold:** Should the device send LOW_VEHICLE_BATTERY at 11.8 V (12 V) or 23.5 V (24 V), or only near the 11.0 V and 22.0 V cut-offs? (`HW-SPEC-1.0` §6.3; `SW-MVP-1.0` §12, §35; Section 6.6)
+   - **Blocks:** M1 and the hardware firmware.
+8. **Mix of 12 V and 24 V buses:** What is the mix of 12 V and 24 V buses? (`HW-SPEC-1.0` §22 #3)
+   - **Blocks:** the hardware build.
+9. **Backup battery in the MVP:** Is the backup battery included in the MVP? (`HW-SPEC-1.0` §6.4, §22 #4)
+   - **Blocks:** the hardware build.
+10. **Tamper switches and door sensors:** Are the door sensors and tamper switches in the MVP production batch? (`HW-SPEC-1.0` §5.9, §5.10, §22 #7, #8)
+    - **Blocks:** the hardware build and M4.
+11. **Security visibility of all active buses:** Should Security see all active buses, read-only? (`SW-MVP-1.0` §5, §41 #6)
+    - **Blocks:** M4 (SW-MVP-1.0 §41 #6).
+12. **SSO provider:** Will college SSO use Google Workspace or Microsoft Entra ID? (`SW-MVP-1.0` §8)
+    - **Blocks:** M0.
+13. **Driver phones, college-issued or personal:** Will drivers use college-issued phones or their own phones? (`SW-MVP-1.0` §41 #5)
+    - **Blocks:** M3 (SW-MVP-1.0 §41 #5).
+14. **DLT registration:** Which DLT entity and SMS templates are registered? (`SW-MVP-1.0` §21.5)
+    - **Blocks:** M5.
+15. **AWS region:** Which AWS region will host the system? (`SW-MVP-1.0` §41 #2)
+    - **Blocks:** M0 (SW-MVP-1.0 §41 #2).
