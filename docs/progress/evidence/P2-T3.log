@@ -1,0 +1,62 @@
+================================================================================
+TASK: P2-T3 - Stop Arrival & ETA Card Suite, Progress Timeline, Off-Route Banner (> 300m), and Monotonic Countdown
+DATE: 2026-10-22
+STATUS: DONE
+================================================================================
+
+COMMAND 1:
+pnpm --filter @collegebus/mobile test
+
+OUTPUT 1:
+> @collegebus/mobile@1.0.0 test C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/route-guard.spec.ts (5 tests) 10ms
+ ✓ test/map-marker.spec.ts (12 tests) 15ms
+ ✓ test/eta-stop-card.spec.ts (8 tests) 14ms
+ ✓ test/navigation-store.spec.ts (10 tests) 46ms
+
+ Test Files  4 passed (4)
+      Tests  35 passed (35)
+   Start at  00:13:43
+   Duration  1.26s (transform 628ms, setup 0ms, collect 890ms, tests 84ms, environment 1ms, prepare 1.64s)
+
+--------------------------------------------------------------------------------
+
+COMMAND 2:
+pnpm test:unit
+
+OUTPUT 2:
+ Tasks:    11 successful, 11 total
+Cached:    10 cached, 11 total
+  Time:    3.015s
+
+--------------------------------------------------------------------------------
+
+COMMAND 3:
+pnpm typecheck; pnpm lint; pnpm verify:routes-auth; pnpm verify:no-mock
+
+OUTPUT 3:
+> turbo run typecheck
+ Tasks:    12 successful, 12 total
+ Time:    2.821s
+
+> turbo run lint && prettier --check
+ Tasks:    8 successful, 8 total
+All matched files use Prettier code style!
+
+> tsx scripts/verify-routes-auth.ts
+verify:routes-auth PASSED. 20 routes checked with zero unauthorized public endpoints.
+
+> tsx scripts/verify-no-mock.ts
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+
+--------------------------------------------------------------------------------
+
+FILES CHANGED:
+- apps/mobile/src/eta/stop-progress-card.ts
+- apps/mobile/src/eta/off-route-banner.ts
+- apps/mobile/src/eta/eta-countdown.ts
+- apps/mobile/test/eta-stop-card.spec.ts
