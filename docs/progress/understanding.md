@@ -383,14 +383,18 @@ All 16 formal open decisions defined in `SW-MVP-1.0` §41, detailing recommended
 
 ### 6.12 Implementation Additions Outside the Specification
 
-The following items are additions introduced by the build prompt and hardening guidelines that are not in the original specification, listed so the team can tell them apart:
+The following items are additions introduced by the build prompt and hardening guidelines that are not in the original specification, listed and marked so the team can decide whether to accept them:
 
-- **Turnstile on OTP:** Cloudflare Turnstile anti-bot challenge on driver sign-in OTP requests (`F-AUTH-02`).
-- **`push_tokens`:** Dedicated database table for persisting mobile push notification device tokens (FCM/APNs).
-- **`rate_counters`:** Persistence table for tracking atomic sliding-window rate limits.
-- **`idempotency_keys`:** Database table for caching responses to prevent duplicate operations and detect mutation conflicts.
-- **`is_synthetic`:** Column on business tables flagging synthetic and simulation data to prevent leakage into production.
-- **`expo-sqlite`:** Local SQLite database on the driver mobile app for storing offline location samples for up to 24 hours.
+- **Student approach threshold:** `student_profiles.approach_threshold_min`, range 2 to 15, default 5 (defined by the build prompt, not in the specification).
+- **Bus default mode:** `buses.default_mode`, default `AUTO` (defined by the build prompt, not in the specification).
+- **Driver mode-switch note:** `source_switches.note`, up to 140 characters (defined by the build prompt, not in the specification).
+- **SOS category:** `sos_incidents.category` (`EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN`) (defined by the build prompt, not in the specification).
+- **Turnstile on OTP:** Cloudflare Turnstile anti-bot challenge on driver sign-in OTP requests (`F-AUTH-02`) (defined by the build prompt, not in the specification).
+- **`push_tokens`:** Dedicated database table for persisting mobile push notification device tokens (`FCM`/`APNs`) (defined by the build prompt, not in the specification).
+- **`rate_counters`:** Persistence table for tracking atomic sliding-window rate limits (defined by the build prompt, not in the specification).
+- **`idempotency_keys`:** Database table for caching responses to prevent duplicate operations and detect mutation conflicts (defined by the build prompt, not in the specification).
+- **`is_synthetic`:** Column on business tables flagging synthetic and simulation data to prevent leakage into production (defined by the build prompt, not in the specification).
+- **`expo-sqlite`:** Local SQLite database on the driver mobile app for storing offline location samples for up to 24 hours (defined by the build prompt, not in the specification).
 
 ---
 
@@ -407,7 +411,7 @@ The following 15 numbered questions must be answered before building:
 4. **BENCH device status:** Is BENCH a device status?
    - **Blocks:** M0 and M4.
 5. **SOS category storage:** Where is the SOS category stored?
-   - **Blocks:** M0 and M5.
+   - **Blocks:** M0 and M3.
 6. **GNSS source:** Is the GNSS source inside the EC200U-CN, or a separate NEO-6M? (`HW-SPEC-1.0` §5.2, §22 #1)
    - **Blocks:** the firmware freeze (SW-MVP-1.0 §41 #14).
 7. **LOW_VEHICLE_BATTERY threshold:** Should the device send LOW_VEHICLE_BATTERY at 11.8 V (12 V) or 23.5 V (24 V), or only near the 11.0 V and 22.0 V cut-offs? (`HW-SPEC-1.0` §6.3; `SW-MVP-1.0` §12, §35; Section 6.6)
@@ -425,6 +429,6 @@ The following 15 numbered questions must be answered before building:
 13. **Driver phones, college-issued or personal:** Will drivers use college-issued phones or their own phones? (`SW-MVP-1.0` §41 #5)
     - **Blocks:** M3 (SW-MVP-1.0 §41 #5).
 14. **DLT registration:** Which DLT entity and SMS templates are registered? (`SW-MVP-1.0` §21.5)
-    - **Blocks:** M5.
+    - **Blocks:** M3.
 15. **AWS region:** Which AWS region will host the system? (`SW-MVP-1.0` §41 #2)
     - **Blocks:** M0 (SW-MVP-1.0 §41 #2).
