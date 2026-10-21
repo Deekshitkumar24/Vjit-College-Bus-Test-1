@@ -74,6 +74,10 @@ if (process.argv[1] && process.argv[1].endsWith('verify-routes-auth.ts')) {
     { method: 'POST', path: '/api/v1/telemetry', isPublic: true, roles: [] },
     { method: 'POST', path: '/api/v1/heartbeat', isPublic: true, roles: [] },
     { method: 'POST', path: '/api/v1/events', isPublic: true, roles: [] },
+    { method: 'POST', path: '/api/v1/shifts/claim', isPublic: false, roles: ['DRV'] },
+    { method: 'POST', path: '/api/v1/shifts/end', isPublic: false, roles: ['DRV'] },
+    { method: 'POST', path: '/api/v1/driver/locations', isPublic: false, roles: ['DRV'] },
+    { method: 'POST', path: '/api/v1/driver/status', isPublic: false, roles: ['DRV'] },
     { method: 'GET', path: '/api/v1/health', isPublic: true, roles: [] },
     { method: 'GET', path: '/api/v1/health/ready', isPublic: true, roles: [] },
   ];

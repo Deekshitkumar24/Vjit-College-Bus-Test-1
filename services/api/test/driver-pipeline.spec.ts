@@ -1,0 +1,304 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { ShiftService } from '../src/modules/shift/shift.service.js';
+import { DriverService } from '../src/modules/driver/driver.service.js';
+import { DriverRosterEntry } from '@collegebus/domain';
+import { DriverLocationsBatchDto, DriverStatusDto } from '@collegebus/contracts';
+
+describe('Driver Phone Pipeline & Shift Claim (P1-T5, Part 5.3 & 6.7)', () => {
+  let shiftService: ShiftService;
+  let driverService: DriverService;
+  const baseTime = new Date('2026-10-21T07:30:00Z');
+
+  beforeEach(() => {
+    shiftService = new ShiftService();
+    driverService = new DriverService(shiftService);
+  });
+
+  describe('Shift Claim Issuance & Mutual Exclusion (Part 6.7)', () => {
+    it('issues shift claim for rostered driver, enforces bus mutual exclusion and end-shift lifecycle', async () => {
+      const roster: DriverRosterEntry = {
+        id: 'roster_1',
+        driver_id: 'drv_101',
+        bus_id: 'bus_07',
+        valid_from: new Date('2026-10-01T00:00:00Z'),
+        valid_to: new Date('2026-11-01T00:00:00Z'),
+      };
+      shiftService.addRosterEntry(roster);
+
+      // 1. Successfully start shift
+      const claim = await shiftService.startShift(
+        'drv_101',
+        {
+          bus_id: 'bus_07',
+          route_id: 'route_12',
+          trip_type: 'MORNING',
+        },
+        baseTime,
+      );
+
+      expect(claim.shift_id).toBeDefined();
+      expect(claim.bus_id).toBe('bus_07');
+      expect(claim.driver_id).toBe('drv_101');
+      expect(claim.route_id).toBe('route_12');
+      expect(claim.trip_id).toBeDefined();
+
+      // 2. Reject second driver claiming the same bus while active
+      const secondRoster: DriverRosterEntry = {
+        id: 'roster_2',
+        driver_id: 'drv_102',
+        bus_id: 'bus_07',
+        valid_from: new Date('2026-10-01T00:00:00Z'),
+        valid_to: new Date('2026-11-01T00:00:00Z'),
+      };
+      shiftService.addRosterEntry(secondRoster);
+
+      await expect(
+        shiftService.startShift(
+          'drv_102',
+          {
+            bus_id: 'bus_07',
+            route_id: 'route_12',
+            trip_type: 'MORNING',
+          },
+          baseTime,
+        ),
+      ).rejects.toThrow('Bus already has an ongoing active shift');
+
+      // 3. Successfully end shift
+      const endedShift = await shiftService.endShift(
+        'drv_101',
+        claim.shift_id,
+        new Date(baseTime.getTime() + 3600 * 1000),
+      );
+      expect(endedShift.status).toBe('COMPLETED');
+      expect(endedShift.ended_at).toBeDefined();
+
+      // 4. After shift ends, another shift can now be claimed on the bus
+      const newClaim = await shiftService.startShift(
+        'drv_102',
+        {
+          bus_id: 'bus_07',
+          route_id: 'route_12',
+          trip_type: 'AFTERNOON',
+        },
+        new Date(baseTime.getTime() + 7200 * 1000),
+      );
+      expect(newClaim.shift_id).toBeDefined();
+    });
+  });
+
+  describe('Driver Location Telemetry Ingestion (Part 5.3 & SW-MVP §11.7)', () => {
+    let activeShiftId: string;
+
+    beforeEach(async () => {
+      shiftService.addRosterEntry({
+        id: 'roster_3',
+        driver_id: 'drv_201',
+        bus_id: 'bus_09',
+        valid_from: new Date('2026-10-01T00:00:00Z'),
+        valid_to: null,
+      });
+
+      const claim = await shiftService.startShift(
+        'drv_201',
+        {
+          bus_id: 'bus_09',
+          route_id: 'route_33',
+          trip_type: 'MORNING',
+        },
+        baseTime,
+      );
+      activeShiftId = claim.shift_id;
+    });
+
+    it('ingests valid phone locations, converts m/s to km/h, and returns adaptive standby cadence (30s)', async () => {
+      const batch: DriverLocationsBatchDto = {
+        shift_id: activeShiftId,
+        app_version: '1.2.0',
+        device_model: 'Pixel 8',
+        samples: [
+          {
+            seq: 1,
+            recorded_at: baseTime.toISOString(),
+            lat: 12.9716,
+            lng: 77.5946,
+            accuracy_m: 14.2,
+            speed_mps: 12.5, // 12.5 * 3.6 = 45.0 km/h
+            heading_deg: 90,
+            provider: 'GPS',
+            is_mock: false,
+          },
+        ],
+      };
+
+      const res = await driverService.ingestLocations('drv_201', batch, baseTime);
+
+      expect(res.ack_seq).toBe(1);
+      expect(res.rejected).toHaveLength(0);
+      expect(res.phone_interval_s).toBe(30); // Default Standby cadence
+      expect(res.active_source).toBe('HW');
+
+      const stored = driverService.getStoredSamples();
+      expect(stored).toHaveLength(1);
+      expect(stored[0]?.bus_id).toBe('bus_09');
+      expect(stored[0]?.speed_kmh).toBe(45.0);
+    });
+
+    it('returns adaptive fallback cadence (10s) when active source is PHONE', async () => {
+      driverService.setBusActiveSource('bus_09', 'PHONE');
+
+      const batch: DriverLocationsBatchDto = {
+        shift_id: activeShiftId,
+        app_version: '1.2.0',
+        device_model: 'Pixel 8',
+        samples: [
+          {
+            seq: 2,
+            recorded_at: baseTime.toISOString(),
+            lat: 12.972,
+            lng: 77.595,
+            accuracy_m: 18.0,
+            speed_mps: 8.0,
+            heading_deg: 95,
+            provider: 'FUSED',
+            is_mock: false,
+          },
+        ],
+      };
+
+      const res = await driverService.ingestLocations('drv_201', batch, baseTime);
+      expect(res.phone_interval_s).toBe(10); // Fallback cadence per Part 5.3
+      expect(res.active_source).toBe('PHONE');
+    });
+
+    it('rejects mock locations from live state but stores them flagged (Part 5.3 & Conflict C-03/C-10)', async () => {
+      const batch: DriverLocationsBatchDto = {
+        shift_id: activeShiftId,
+        app_version: '1.2.0',
+        device_model: 'Pixel 8',
+        samples: [
+          {
+            seq: 3,
+            recorded_at: baseTime.toISOString(),
+            lat: 12.972,
+            lng: 77.595,
+            accuracy_m: 10.0,
+            speed_mps: 10.0,
+            heading_deg: 0,
+            provider: 'GPS',
+            is_mock: true, // Mocked location
+          },
+        ],
+      };
+
+      const res = await driverService.ingestLocations('drv_201', batch, baseTime);
+      expect(res.rejected).toHaveLength(1);
+      expect(res.rejected[0]).toEqual({ seq: 3, reason: 'MOCK_LOCATION' });
+
+      // Stored flagged per Part 5.3
+      const stored = driverService.getStoredSamples();
+      expect(stored.some((s) => s.seq === 3 && s.is_mock === true)).toBe(true);
+    });
+
+    it('rejects conflicting sample sequence with per-sample 200 CONFLICT (Conflict C-09 & OV-1)', async () => {
+      const batch1: DriverLocationsBatchDto = {
+        shift_id: activeShiftId,
+        app_version: '1.2.0',
+        device_model: 'Pixel 8',
+        samples: [
+          {
+            seq: 5,
+            recorded_at: baseTime.toISOString(),
+            lat: 12.9716,
+            lng: 77.5946,
+            accuracy_m: 15,
+            speed_mps: 10,
+            heading_deg: 90,
+            provider: 'GPS',
+            is_mock: false,
+          },
+        ],
+      };
+      await driverService.ingestLocations('drv_201', batch1, baseTime);
+
+      // Duplicate sample with different coordinates and same seq
+      const batch2: DriverLocationsBatchDto = {
+        shift_id: activeShiftId,
+        app_version: '1.2.0',
+        device_model: 'Pixel 8',
+        samples: [
+          {
+            seq: 5,
+            recorded_at: baseTime.toISOString(),
+            lat: 13.0827, // Conflicting latitude
+            lng: 80.2707,
+            accuracy_m: 15,
+            speed_mps: 10,
+            heading_deg: 90,
+            provider: 'GPS',
+            is_mock: false,
+          },
+        ],
+      };
+
+      const res2 = await driverService.ingestLocations('drv_201', batch2, baseTime);
+      expect(res2.rejected).toHaveLength(1);
+      expect(res2.rejected[0]).toEqual({ seq: 5, reason: 'CONFLICT' });
+    });
+
+    it('rejects uploads once shift has been completed (Part 6.7 step 5)', async () => {
+      await shiftService.endShift('drv_201', activeShiftId, new Date(baseTime.getTime() + 1000));
+
+      const batch: DriverLocationsBatchDto = {
+        shift_id: activeShiftId,
+        app_version: '1.2.0',
+        device_model: 'Pixel 8',
+        samples: [
+          {
+            seq: 10,
+            recorded_at: baseTime.toISOString(),
+            lat: 12.9716,
+            lng: 77.5946,
+            accuracy_m: 10,
+            speed_mps: 5,
+            heading_deg: 0,
+            provider: 'GPS',
+            is_mock: false,
+          },
+        ],
+      };
+
+      await expect(driverService.ingestLocations('drv_201', batch, baseTime)).rejects.toThrow(
+        'Shift is no longer active',
+      );
+    });
+
+    it('records driver status diagnostics (SW-MVP section 11.7)', async () => {
+      const statusDto: DriverStatusDto = {
+        app_version: '1.2.0',
+        os: 'ANDROID',
+        os_version: '14.0',
+        location_permission: 'ALWAYS',
+        notifications_permission: 'GRANTED',
+        battery_percent: 88,
+        battery_optimisation_exempt: true,
+        background_running: true,
+        gps_enabled: true,
+        network: 'CELLULAR',
+      };
+
+      const res = await driverService.recordDriverStatus(
+        'drv_201',
+        statusDto,
+        activeShiftId,
+        baseTime,
+      );
+      expect(res.status).toBe('RECORDED');
+
+      const saved = driverService.getDriverStatus('drv_201');
+      expect(saved).toBeDefined();
+      expect(saved?.battery_percent).toBe(88);
+      expect(saved?.location_permission).toBe('ALWAYS');
+    });
+  });
+});

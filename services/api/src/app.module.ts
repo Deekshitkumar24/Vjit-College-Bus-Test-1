@@ -4,6 +4,8 @@ import { HealthModule } from './modules/health/health.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { TelemetryModule } from './modules/telemetry/telemetry.module.js';
 import { HeartbeatModule } from './modules/heartbeat/heartbeat.module.js';
+import { ShiftModule } from './modules/shift/shift.module.js';
+import { DriverModule } from './modules/driver/driver.module.js';
 import { GlobalAuthGuard } from './common/guards/auth.guard.js';
 import { RolesGuard } from './common/guards/roles.guard.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
@@ -12,7 +14,7 @@ import { RateLimiterMiddleware } from './common/middleware/rate-limiter.middlewa
 import { IdempotencyMiddleware } from './common/middleware/idempotency.middleware.js';
 
 @Module({
-  imports: [HealthModule, AuthModule, TelemetryModule, HeartbeatModule],
+  imports: [HealthModule, AuthModule, TelemetryModule, HeartbeatModule, ShiftModule, DriverModule],
   providers: [
     {
       provide: APP_GUARD,

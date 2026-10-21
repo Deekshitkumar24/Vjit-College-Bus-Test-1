@@ -1,0 +1,44 @@
+=== P1-T5 EVIDENCE LOG: Driver Phone Pipeline & Shift Claim (Part 5.3 & 6.7) ===
+Date: 2026-10-21T22:50:06+05:30
+Author: Antigravity Autonomous Agent
+
+Command:
+pnpm --filter @collegebus/domain test:unit test/driver-telemetry.spec.ts; pnpm --filter @collegebus/api test:unit test/driver-pipeline.spec.ts
+
+Output:
+> @collegebus/domain@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> vitest run test/driver-telemetry.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/driver-telemetry.spec.ts (12 tests) 19ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run test/driver-pipeline.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/driver-pipeline.spec.ts (7 tests) 23ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+
+Key Capabilities Verified:
+1. Shift Claim Preconditions & Locking (Part 6.7):
+   - Roster check: Driver must have active roster entry (valid_from <= now <= valid_to) for bus; unrostered driver rejected with NOT_ROSTERED.
+   - Bus mutual exclusion: At most one ACTIVE shift per bus. Second driver attempting to claim same bus rejected with BUS_SHIFT_ALREADY_ACTIVE.
+   - Driver mutual exclusion: Driver already on active shift cannot start concurrent shift on another bus (DRIVER_ALREADY_ON_SHIFT).
+   - Issues shift claim containing shift_id, bus_id, driver_id, route_id, trip_id, started_at.
+   - Shift end lifecycle: POST /api/v1/shifts/end transitions status to COMPLETED; once ended, claim stops allowing telemetry uploads.
+2. Driver Phone Ingestion Pipeline (Part 5.3 & SW-MVP section 11.7):
+   - Auth & scope: Authenticated via driver context with active shift; non-existent or completed shifts reject uploads with 401/403.
+   - Sample attribution: Attributed directly to the shift's bus_id (phone attribution is shift-bound, not via device link).
+   - Speed conversion: speed_mps converted to km/h (multiplied by 3.6).
+   - Adaptive cadence: Response returns phone_interval_s = 30s in Standby mode (HW active), and 10s in Fallback mode (PHONE active).
+   - Mock filter (C-03 / C-10): Samples with is_mock = true are rejected from live state (MOCK_LOCATION) and stored with flag; never update live state.
+   - Conflict handling (C-09 / OV-1): Duplicate sample sequence with conflicting payload rejected with per-sample HTTP 200 { seq, reason: 'CONFLICT' }; identical duplicates accepted silently.
+   - Provider & accuracy filter: Samples with provider = NETWORK or accuracy_m > 50 rejected from live tracking.
+   - Driver diagnostics: POST /api/v1/driver/status records OS, permissions (location, notifications), battery %, network type, and background execution state.
