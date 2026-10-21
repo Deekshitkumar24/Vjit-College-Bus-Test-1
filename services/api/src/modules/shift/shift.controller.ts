@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Get,
   Body,
   Headers,
   HttpCode,
@@ -10,16 +11,33 @@ import {
 } from '@nestjs/common';
 import { ShiftService } from './shift.service.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
-import { StartShiftSchema, ShiftClaimDto } from '@collegebus/contracts';
-import { z } from 'zod';
-
-const EndShiftSchema = z.object({
-  shift_id: z.string().min(1),
-});
+import {
+  StartShiftSchema,
+  ShiftClaimDto,
+  EndShiftSchema,
+  ActiveShiftResponseDto,
+} from '@collegebus/contracts';
 
 @Controller('shifts')
 export class ShiftController {
   constructor(private readonly shiftService: ShiftService) {}
+
+  @Get('active')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async getActiveShift(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+  ): Promise<ActiveShiftResponseDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    return this.shiftService.getActiveShiftStatus(driverId);
+  }
 
   @Post('claim')
   @Roles('DRV')
@@ -64,7 +82,11 @@ export class ShiftController {
       });
     }
 
-    const shift = await this.shiftService.endShift(driverId, parseResult.data.shift_id);
+    const shift = await this.shiftService.endShift(
+      driverId,
+      parseResult.data.shift_id,
+      parseResult.data.reason,
+    );
     return {
       status: shift.status,
       ended_at: shift.ended_at ? shift.ended_at.toISOString() : new Date().toISOString(),

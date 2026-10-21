@@ -55,19 +55,50 @@ export class ShiftService {
     );
   }
 
+  private openSosBuses = new Set<string>();
+  private busLastMovement = new Map<string, Date>();
+
+  setBusOpenSos(busId: string, isOpen: boolean) {
+    if (isOpen) {
+      this.openSosBuses.add(busId);
+    } else {
+      this.openSosBuses.delete(busId);
+    }
+  }
+
+  recordBusMovement(busId: string, now: Date = new Date()) {
+    this.busLastMovement.set(busId, now);
+  }
+
   clear() {
     this.rosters = [];
     this.shifts.clear();
+    this.openSosBuses.clear();
+    this.busLastMovement.clear();
   }
 
   /**
    * Starts a shift with mutual-exclusion and roster validation (Part 6.7).
+   * Implements AC-DRV-04: mid-shift restart resumes the same shift without duplication.
    */
   async startShift(
     driverId: string,
     dto: StartShiftDto,
     now: Date = new Date(),
   ): Promise<ShiftClaimDto> {
+    // AC-DRV-04: If driver already holds an active shift on this bus, resume it
+    const currentActive = this.getActiveShiftForDriver(driverId);
+    if (currentActive && currentActive.bus_id === dto.bus_id) {
+      return {
+        shift_id: currentActive.id,
+        bus_id: currentActive.bus_id,
+        driver_id: driverId,
+        route_id: currentActive.route_id,
+        trip_id: currentActive.trip_id,
+        started_at: currentActive.started_at.toISOString(),
+      };
+    }
+
     const existingActiveShifts = Array.from(this.shifts.values()).filter(
       (s) => s.status === 'ACTIVE',
     );
@@ -111,6 +142,7 @@ export class ShiftService {
     };
 
     this.shifts.set(shiftId, shift);
+    this.busLastMovement.set(dto.bus_id, now);
 
     return {
       shift_id: shiftId,
@@ -123,9 +155,73 @@ export class ShiftService {
   }
 
   /**
-   * Ends an active shift.
+   * Returns active shift status including idle and timeout alerts (§15.3, §15.4).
    */
-  async endShift(driverId: string, shiftId: string, now: Date = new Date()): Promise<ShiftRecord> {
+  getActiveShiftStatus(driverId: string, now: Date = new Date()) {
+    const shift = this.getActiveShiftForDriver(driverId);
+    if (!shift) {
+      return {
+        has_active_shift: false,
+        shift: null,
+      };
+    }
+
+    const elapsedMs = now.getTime() - shift.started_at.getTime();
+    const fourteenHoursMs = 14 * 3600 * 1000;
+    const thirteenAndHalfHoursMs = 13.5 * 3600 * 1000;
+
+    // Automated 14-hour timeout (§15.4)
+    if (elapsedMs >= fourteenHoursMs) {
+      shift.status = 'COMPLETED';
+      shift.ended_at = now;
+      return {
+        has_active_shift: false,
+        shift: null,
+        timeout_ended: true,
+      };
+    }
+
+    // 20-minute idle prompt check (§15.4)
+    const lastMovement = this.busLastMovement.get(shift.bus_id) ?? shift.started_at;
+    const idleDurationMs = now.getTime() - lastMovement.getTime();
+    const isIdleWarning = idleDurationMs >= 20 * 60 * 1000;
+
+    // After 30 minutes idle (20m idle + 10m prompt without movement), auto-ends with AUTO_IDLE
+    if (idleDurationMs >= 30 * 60 * 1000) {
+      shift.status = 'COMPLETED';
+      shift.ended_at = now;
+      return {
+        has_active_shift: false,
+        shift: null,
+        auto_idle_ended: true,
+      };
+    }
+
+    return {
+      has_active_shift: true,
+      shift: {
+        shift_id: shift.id,
+        bus_id: shift.bus_id,
+        driver_id: shift.driver_id,
+        route_id: shift.route_id,
+        trip_id: shift.trip_id,
+        started_at: shift.started_at.toISOString(),
+        idle_warning: isIdleWarning,
+        timeout_warning: elapsedMs >= thirteenAndHalfHoursMs,
+      },
+    };
+  }
+
+  /**
+   * Ends an active shift per SW-MVP-1.0 §15.4.
+   * Blocks manual end when an SOS incident is open for the bus.
+   */
+  async endShift(
+    driverId: string,
+    shiftId: string,
+    reason: 'MANUAL' | 'AUTO_IDLE' | 'TIMEOUT' | 'ADMIN' = 'MANUAL',
+    now: Date = new Date(),
+  ): Promise<ShiftRecord> {
     const shift = this.shifts.get(shiftId);
     if (!shift) {
       throw new NotFoundException({
@@ -134,7 +230,7 @@ export class ShiftService {
       });
     }
 
-    if (shift.driver_id !== driverId) {
+    if (reason !== 'ADMIN' && shift.driver_id !== driverId) {
       throw new BadRequestException({
         code: 'SHIFT_NOT_OWNED',
         message: 'Driver does not own this shift',
@@ -145,6 +241,15 @@ export class ShiftService {
       throw new ConflictException({
         code: 'SHIFT_ALREADY_ENDED',
         message: `Shift is already in status ${shift.status}`,
+      });
+    }
+
+    // SW-MVP-1.0 §15.4: Driver cannot end a shift while an SOS incident is OPEN
+    if (reason === 'MANUAL' && this.openSosBuses.has(shift.bus_id)) {
+      throw new ConflictException({
+        code: 'SOS_INCIDENT_OPEN',
+        message:
+          'Driver cannot end shift while an SOS incident is open for this bus. Only coordinator can end with a reason.',
       });
     }
 

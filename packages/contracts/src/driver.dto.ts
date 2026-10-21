@@ -20,6 +20,36 @@ export interface ShiftClaimDto {
   started_at: string;
 }
 
+export const EndShiftSchema = z
+  .object({
+    shift_id: z.string().min(1),
+    reason: z.enum(['MANUAL', 'AUTO_IDLE', 'TIMEOUT', 'ADMIN']).default('MANUAL'),
+    note: z.string().max(250).optional(),
+  })
+  .strict();
+
+export type EndShiftDto = z.infer<typeof EndShiftSchema>;
+
+export const ActiveShiftResponseSchema = z
+  .object({
+    has_active_shift: z.boolean(),
+    shift: z
+      .object({
+        shift_id: z.string(),
+        bus_id: z.string(),
+        driver_id: z.string(),
+        route_id: z.string(),
+        trip_id: z.string(),
+        started_at: z.string(),
+        idle_warning: z.boolean().default(false),
+        timeout_warning: z.boolean().default(false),
+      })
+      .nullable(),
+  })
+  .strict();
+
+export type ActiveShiftResponseDto = z.infer<typeof ActiveShiftResponseSchema>;
+
 export const DriverLocationSampleSchema = z
   .object({
     seq: z.number().int().nonnegative(),
