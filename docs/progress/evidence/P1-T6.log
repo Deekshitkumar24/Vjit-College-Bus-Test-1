@@ -1,0 +1,33 @@
+=== P1-T6 EVIDENCE LOG: GPS Quality, Plausibility, and Validity Rules (Part 9.1, 9.2, 9.14) ===
+Date: 2026-10-21T22:54:30+05:30
+Author: Antigravity Autonomous Agent
+
+Command:
+pnpm --filter @collegebus/domain test:unit test/gps-quality.spec.ts
+
+Output:
+> @collegebus/domain@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> vitest run test/gps-quality.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/gps-quality.spec.ts (14 tests) 20ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+
+Key Capabilities Verified:
+1. Fix Validity Rules (Part 9.1):
+   - Hardware tracker validity: gps_valid === true, satellites >= 4 (minSatellites), hdop <= 5.0 (maxHdop), isBuffered === false.
+   - Phone backup validity: accuracy_m <= 50m, provider !== NETWORK, is_mock === false.
+   - Source freshness: Evaluates lastValidFixAt within 60s of current time.
+2. Coordinate and Unit Rules (Part 9.2):
+   - Haversine great-circle distance in meters (matching PostGIS geography ST_Distance).
+   - Coordinate precision: WGS84 coordinates rounded to 6 decimal places (~0.1m precision).
+   - Coordinate sanity: Validates range (-90..90, -180..180) and rejects Null Island (0, 0).
+   - Unit conversions: Knots to km/h (* 1.852), m/s to km/h (* 3.6), km/h to m/s (/ 3.6).
+3. Plausibility & Tracker Checks (Part 9.14):
+   - Kinematic jump check: Implied speed = (distance / elapsed) * 3.6; speed > 150 km/h flagged as implausible jump.
+   - Reference reset: Time gaps exceeding 30 minutes reset reference baseline.
+   - Frozen position detection: Claimed speed > 5 km/h for >= 5 minutes with < 10m total displacement flags GPS frozen alert.
+   - Source disagreement check: Distance between sources > 500m for >= 2 minutes triggers tracker swap alert; distance > 300m for >= 10 minutes logged.
