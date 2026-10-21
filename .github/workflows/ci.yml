@@ -56,10 +56,18 @@ jobs:
       - name: Unit Tests
         run: pnpm test:unit
 
-      - name: Integration Tests (Real Database PostGIS, RLS Isolation, Audit Trigger & Migrations)
+      - name: Build Monorepo
+        run: pnpm build
+
+      - name: Integration Tests (Real Database PostGIS, Audit Trigger & Migrations)
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/collegebus_test
         run: pnpm test:int
+
+      - name: Row-Level Security (RLS) Isolation Tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/collegebus_test
+        run: pnpm test:rls
 
       - name: Verify No Mock / Synthetic Data Leakage (R-M1, R-M6)
         run: pnpm verify:no-mock
@@ -69,3 +77,6 @@ jobs:
 
       - name: Verify Expand-Only Migration Policy (P0-T5)
         run: npx tsx scripts/check-migrations.ts
+
+      - name: Security Scan (Dependency Audit)
+        run: pnpm security:scan

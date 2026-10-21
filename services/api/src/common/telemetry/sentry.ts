@@ -24,11 +24,16 @@ export function initSentry(config: SentryConfig): boolean {
   return true;
 }
 
-export function captureException(error: Error | unknown, context?: Record<string, unknown>): string | undefined {
+export function captureException(
+  error: Error | unknown,
+  context?: Record<string, unknown>,
+): string | undefined {
   if (!sentryInitialized) {
     return undefined;
   }
-  return Sentry.captureException(error, { extra: context });
+  return context
+    ? Sentry.captureException(error, { extra: context })
+    : Sentry.captureException(error);
 }
 
 export function isSentryInitialized(): boolean {

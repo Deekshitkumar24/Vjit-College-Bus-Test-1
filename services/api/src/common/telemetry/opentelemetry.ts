@@ -12,7 +12,7 @@ export async function withSpan<T>(
   attributes?: Record<string, string | number | boolean>,
 ): Promise<T> {
   const tracer = getTracer();
-  const span = tracer.startSpan(spanName, { attributes });
+  const span = attributes ? tracer.startSpan(spanName, { attributes }) : tracer.startSpan(spanName);
 
   return context.with(trace.setSpan(context.active(), span), async () => {
     try {

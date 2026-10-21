@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { initSentry, captureException, isSentryInitialized } from '../src/common/telemetry/sentry.js';
+import {
+  initSentry,
+  captureException,
+  isSentryInitialized,
+} from '../src/common/telemetry/sentry.js';
 import { getTracer, withSpan } from '../src/common/telemetry/opentelemetry.js';
 
 describe('Telemetry Baseline (P0-T15, Part 2 & Part 14.5)', () => {
