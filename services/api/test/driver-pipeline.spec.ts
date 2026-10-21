@@ -457,4 +457,101 @@ describe('Driver Phone Pipeline & Shift Claim (P1-T5, Part 5.3 & 6.7)', () => {
       expect(acknowledged.status).toBe('RESPONDING');
     });
   });
+
+  describe('Passenger Manifest & Manual Check-in (P3-T6)', () => {
+    it('manages passenger manifest, records manual checkin and guest boarding', () => {
+      const tripId = 'trip_20261021_09';
+
+      // 1. Initial manifest
+      const initialManifest = driverService.getTripManifest('drv_201', tripId);
+      expect(initialManifest.total_expected).toBeGreaterThan(0);
+      expect(initialManifest.total_boarded).toBe(0);
+
+      // 2. Manual checkin for expected student
+      const checkinRes = driverService.recordManualCheckin(
+        'drv_201',
+        {
+          trip_id: tripId,
+          student_id: 'stu_101',
+          is_guest: false,
+          reason: 'CARD_FORGOTTEN',
+          note: 'ID card left at home',
+        },
+        baseTime,
+      );
+      expect(checkinRes.success).toBe(true);
+      expect(checkinRes.status).toBe('MANUAL_CHECKIN');
+      expect(checkinRes.reason).toBe('CARD_FORGOTTEN');
+
+      // 3. Guest checkin
+      const guestRes = driverService.recordManualCheckin(
+        'drv_201',
+        {
+          trip_id: tripId,
+          student_id: 'stu_guest_99',
+          is_guest: true,
+          reason: 'FLAGGED_GUEST',
+          note: 'Visiting symposium student',
+        },
+        baseTime,
+      );
+      expect(guestRes.success).toBe(true);
+      expect(guestRes.status).toBe('FLAGGED_GUEST');
+
+      // 4. Manifest reflects boarded students
+      const updatedManifest = driverService.getTripManifest('drv_201', tripId);
+      expect(updatedManifest.total_boarded).toBe(2);
+    });
+  });
+
+  describe('Problem Reporting & Maintenance Ticketing (P3-T7)', () => {
+    it('creates maintenance ticket with priority derivation and location', () => {
+      // Breakdown -> HIGH
+      const breakdownTicket = driverService.reportProblem(
+        'drv_201',
+        {
+          category: 'BUS_BREAKDOWN',
+          bus_id: 'bus_07',
+          note: 'Radiator leaking coolant rapidly',
+          lat: 12.9716,
+          lng: 77.5946,
+          accuracy_m: 12,
+        },
+        baseTime,
+      );
+
+      expect(breakdownTicket.ticket_id).toBeDefined();
+      expect(breakdownTicket.category).toBe('BUS_BREAKDOWN');
+      expect(breakdownTicket.priority).toBe('HIGH');
+      expect(breakdownTicket.status).toBe('OPEN');
+
+      // Tracker issue -> MEDIUM
+      const trackerTicket = driverService.reportProblem(
+        'drv_201',
+        {
+          category: 'TRACKER_PROBLEM',
+          bus_id: 'bus_07',
+          note: 'EC200U tracker not sending heartbeats',
+        },
+        baseTime,
+      );
+      expect(trackerTicket.priority).toBe('MEDIUM');
+
+      // Other -> LOW
+      const otherTicket = driverService.reportProblem(
+        'drv_201',
+        {
+          category: 'OTHER',
+          bus_id: 'bus_07',
+          note: 'Road works near main campus gate',
+        },
+        baseTime,
+      );
+      expect(otherTicket.priority).toBe('LOW');
+
+      // Stored and retrievable
+      const allTickets = driverService.getAllTickets();
+      expect(allTickets.length).toBe(3);
+    });
+  });
 });

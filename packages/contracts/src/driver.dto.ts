@@ -213,3 +213,43 @@ export const DriverManualCheckinResponseSchema = z
   .strict();
 
 export type DriverManualCheckinResponseDto = z.infer<typeof DriverManualCheckinResponseSchema>;
+
+export const DriverProblemCategorySchema = z.enum([
+  'BUS_BREAKDOWN',
+  'TRACKER_PROBLEM',
+  'PHONE_PROBLEM',
+  'OTHER',
+]);
+export type DriverProblemCategory = z.infer<typeof DriverProblemCategorySchema>;
+
+export const DriverTicketPrioritySchema = z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']);
+export type DriverTicketPriority = z.infer<typeof DriverTicketPrioritySchema>;
+
+export const DriverProblemReportRequestSchema = z
+  .object({
+    category: DriverProblemCategorySchema,
+    bus_id: z.string().min(1),
+    shift_id: z.string().optional(),
+    note: z.string().min(5).max(500),
+    lat: z.number().min(-90).max(90).optional(),
+    lng: z.number().min(-180).max(180).optional(),
+    accuracy_m: z.number().min(0).optional(),
+  })
+  .strict();
+
+export type DriverProblemReportRequestDto = z.infer<typeof DriverProblemReportRequestSchema>;
+
+export const DriverProblemReportResponseSchema = z
+  .object({
+    ticket_id: z.string(),
+    category: DriverProblemCategorySchema,
+    priority: DriverTicketPrioritySchema,
+    status: z.enum(['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']),
+    bus_id: z.string(),
+    driver_id: z.string(),
+    reported_at: z.string().datetime(),
+    message: z.string(),
+  })
+  .strict();
+
+export type DriverProblemReportResponseDto = z.infer<typeof DriverProblemReportResponseSchema>;

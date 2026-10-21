@@ -26,6 +26,8 @@ import {
   SosTriggerResponseDto,
   DriverManualCheckinRequestSchema,
   DriverManualCheckinResponseDto,
+  DriverProblemReportRequestSchema,
+  DriverProblemReportResponseDto,
 } from '@collegebus/contracts';
 
 @Controller('driver')
@@ -275,5 +277,32 @@ export class DriverController {
     }
 
     return this.driverService.getTripManifest(driverId, tripId);
+  }
+
+  @Post('tickets')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async reportProblem(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Body() body: unknown,
+  ): Promise<DriverProblemReportResponseDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    const parseResult = DriverProblemReportRequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      throw new BadRequestException({
+        code: 'INVALID_PROBLEM_REPORT_PAYLOAD',
+        message: 'Problem report payload validation failed',
+        details: parseResult.error.flatten(),
+      });
+    }
+
+    return this.driverService.reportProblem(driverId, parseResult.data);
   }
 }

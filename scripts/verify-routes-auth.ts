@@ -87,6 +87,7 @@ if (process.argv[1] && process.argv[1].endsWith('verify-routes-auth.ts')) {
     { method: 'GET', path: '/api/v1/driver/sos/:incidentId', isPublic: false, roles: ['DRV'] },
     { method: 'POST', path: '/api/v1/driver/checkin', isPublic: false, roles: ['DRV'] },
     { method: 'GET', path: '/api/v1/driver/manifest/:tripId', isPublic: false, roles: ['DRV'] },
+    { method: 'POST', path: '/api/v1/driver/tickets', isPublic: false, roles: ['DRV'] },
     {
       method: 'GET',
       path: '/api/v1/snapshot',

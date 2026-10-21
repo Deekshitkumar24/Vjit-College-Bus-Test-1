@@ -22,6 +22,9 @@ import {
   DriverManualCheckinRequestDto,
   DriverManualCheckinResponseDto,
   DriverManualCheckinReason,
+  DriverProblemReportRequestDto,
+  DriverProblemReportResponseDto,
+  DriverTicketPriority,
 } from '@collegebus/contracts';
 import { ShiftService } from '../shift/shift.service.js';
 
@@ -117,6 +120,21 @@ export interface StoredManifestStudentItem {
   reason?: DriverManualCheckinReason | null;
 }
 
+export interface StoredMaintenanceTicket {
+  ticket_id: string;
+  category: 'BUS_BREAKDOWN' | 'TRACKER_PROBLEM' | 'PHONE_PROBLEM' | 'OTHER';
+  priority: DriverTicketPriority;
+  status: 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
+  bus_id: string;
+  driver_id: string;
+  shift_id: string | null;
+  note: string;
+  lat: number | null;
+  lng: number | null;
+  accuracy_m: number | null;
+  reported_at: Date;
+}
+
 @Injectable()
 export class DriverService {
   constructor(private readonly shiftService: ShiftService) {}
@@ -129,6 +147,7 @@ export class DriverService {
   private sosIncidents = new Map<string, StoredDriverSosIncident>();
   private manualCheckins = new Map<string, StoredManualCheckinRecord[]>();
   private tripStudents = new Map<string, StoredManifestStudentItem[]>();
+  private tickets = new Map<string, StoredMaintenanceTicket>();
   private busMetadata = new Map<
     string,
     { bus_number: string; registration_number: string; route_id: string; route_name: string }
@@ -242,6 +261,7 @@ export class DriverService {
     this.sosIncidents.clear();
     this.manualCheckins.clear();
     this.tripStudents.clear();
+    this.tickets.clear();
   }
 
   private computeSignature(sample: DriverPhoneSampleInput): string {
@@ -681,5 +701,55 @@ export class DriverService {
         ? `Guest student flagged and boarded (${dto.reason})`
         : `Manual check-in recorded for student (${dto.reason})`,
     };
+  }
+
+  reportProblem(
+    driverId: string,
+    dto: DriverProblemReportRequestDto,
+    now: Date = new Date(),
+  ): DriverProblemReportResponseDto {
+    let priority: DriverTicketPriority = 'LOW';
+    if (dto.category === 'BUS_BREAKDOWN') {
+      priority = 'HIGH';
+    } else if (dto.category === 'TRACKER_PROBLEM' || dto.category === 'PHONE_PROBLEM') {
+      priority = 'MEDIUM';
+    }
+
+    const ticketId = `tkt_${now.getTime()}_${Math.random().toString(36).substring(2, 8)}`;
+    const ticket: StoredMaintenanceTicket = {
+      ticket_id: ticketId,
+      category: dto.category,
+      priority,
+      status: 'OPEN',
+      bus_id: dto.bus_id,
+      driver_id: driverId,
+      shift_id: dto.shift_id ?? null,
+      note: dto.note,
+      lat: dto.lat ?? null,
+      lng: dto.lng ?? null,
+      accuracy_m: dto.accuracy_m ?? null,
+      reported_at: now,
+    };
+
+    this.tickets.set(ticketId, ticket);
+
+    return {
+      ticket_id: ticketId,
+      category: dto.category,
+      priority,
+      status: 'OPEN',
+      bus_id: dto.bus_id,
+      driver_id: driverId,
+      reported_at: now.toISOString(),
+      message: `Maintenance ticket opened for ${dto.category} (${priority})`,
+    };
+  }
+
+  getTicket(ticketId: string): StoredMaintenanceTicket | undefined {
+    return this.tickets.get(ticketId);
+  }
+
+  getAllTickets(): StoredMaintenanceTicket[] {
+    return Array.from(this.tickets.values());
   }
 }
