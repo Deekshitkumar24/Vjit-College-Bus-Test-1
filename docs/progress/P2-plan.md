@@ -39,7 +39,7 @@ The following sections from `SW-MVP-1.0` have been reviewed for Phase P2:
 | **P2-T5** | **Student requests & leave module:** Stop change request submission, trip leave application, history & status badges (`PENDING`, `APPROVED`, etc.)     |    **DONE**     | `docs/progress/evidence/P2-T5.log` | Complete. Commit `1e74d59`. Stop change & leave validation, status badges, cancel actions, offline sync.         |
 | **P2-T6** | **Faculty attendance manifest & safety alert:** Live passenger manifest, manual check-in toggle, morning-present/afternoon-absent safety alert (D-12)  |    **DONE**     | `docs/progress/evidence/P2-T6.log` | Complete. Commit `a3dde2b`. Passenger manifest, manual check-in toggle, and D-12 morning discrepancy alert.      |
 | **P2-T7** | **Emergency SOS trigger:** Guarded 3-second hold trigger, GPS capture, category picker (L-2), incident dispatch, active emergency banner               |    **DONE**     | `docs/progress/evidence/P2-T7.log` | Complete. Commit `38e2a8d`. 3s hold trigger, GPS capture, L-2 category routing, and active emergency state.      |
-| **P2-T8** | **Integration test harness & verification:** End-to-end component and flow tests for mobile suite, offline resiliency, and permission boundaries       |    **DONE**     | `docs/progress/evidence/P2-T8.log` | Complete. 77/77 tests passing across 9 test files, zero mock data, zero lint errors.                             |
+| **P2-T8** | **Integration test harness & verification:** End-to-end component and flow tests for mobile suite, offline resiliency, and permission boundaries       |    **DONE**     | `docs/progress/evidence/P2-T8.log` | Complete. Commit `602db65`. 77/77 tests passing across 9 test files, zero mock data, zero lint errors.           |
 
 ---
 
