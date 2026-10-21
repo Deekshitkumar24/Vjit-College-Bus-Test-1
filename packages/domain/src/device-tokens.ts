@@ -12,6 +12,7 @@ export interface DeviceRecord {
   previous_token_expires_at?: Date | null;
   first_used_at?: Date | null;
   revoked_at?: Date | null;
+  vehicle_class?: 'V12' | 'V24';
 }
 
 export interface KeyRing {

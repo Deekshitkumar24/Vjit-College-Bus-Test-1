@@ -3,6 +3,7 @@ import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HealthModule } from './modules/health/health.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { TelemetryModule } from './modules/telemetry/telemetry.module.js';
+import { HeartbeatModule } from './modules/heartbeat/heartbeat.module.js';
 import { GlobalAuthGuard } from './common/guards/auth.guard.js';
 import { RolesGuard } from './common/guards/roles.guard.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
@@ -11,7 +12,7 @@ import { RateLimiterMiddleware } from './common/middleware/rate-limiter.middlewa
 import { IdempotencyMiddleware } from './common/middleware/idempotency.middleware.js';
 
 @Module({
-  imports: [HealthModule, AuthModule, TelemetryModule],
+  imports: [HealthModule, AuthModule, TelemetryModule, HeartbeatModule],
   providers: [
     {
       provide: APP_GUARD,

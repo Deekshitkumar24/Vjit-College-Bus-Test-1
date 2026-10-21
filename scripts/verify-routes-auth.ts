@@ -16,6 +16,8 @@ export const REVIEWED_PUBLIC_ALLOWLIST = [
   'POST /api/v1/auth/otp/verify',
   'POST /api/v1/auth/refresh',
   'POST /api/v1/telemetry',
+  'POST /api/v1/heartbeat',
+  'POST /api/v1/events',
   'GET /api/v1/health',
   'GET /api/v1/health/ready',
 ];
@@ -69,6 +71,9 @@ if (process.argv[1] && process.argv[1].endsWith('verify-routes-auth.ts')) {
       isPublic: false,
       roles: ['SEC', 'COR', 'TEC', 'MGT', 'SAD'],
     },
+    { method: 'POST', path: '/api/v1/telemetry', isPublic: true, roles: [] },
+    { method: 'POST', path: '/api/v1/heartbeat', isPublic: true, roles: [] },
+    { method: 'POST', path: '/api/v1/events', isPublic: true, roles: [] },
     { method: 'GET', path: '/api/v1/health', isPublic: true, roles: [] },
     { method: 'GET', path: '/api/v1/health/ready', isPublic: true, roles: [] },
   ];
