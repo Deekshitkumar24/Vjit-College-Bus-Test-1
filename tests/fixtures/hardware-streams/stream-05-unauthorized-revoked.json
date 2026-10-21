@@ -1,0 +1,36 @@
+{
+  "description": "Recorded hardware stream 5: Security edge cases (invalid token, revoked device)",
+  "metadata": {
+    "device_id": "HW_905",
+    "serial_number": "SN-905-TEST",
+    "imei": "999999999999905",
+    "iccid": "9999999999999999905",
+    "vehicle_class": "V12",
+    "is_synthetic": true
+  },
+  "messages": [
+    {
+      "type": "telemetry",
+      "endpoint": "/telemetry",
+      "auth_override": "Bearer dvt_invalid_corrupted_token_0000000000000000000000000000000000000000",
+      "payload": {
+        "boot_id": "boot_rec_005",
+        "samples": [
+          {
+            "seq": 1,
+            "recorded_at": "2026-10-21T09:30:00.000Z",
+            "gps_valid": true,
+            "lat": 12.9716,
+            "lng": 77.5946,
+            "speed_kmh": 20.0,
+            "heading_deg": 90.0,
+            "satellites": 8,
+            "hdop": 1.2,
+            "ignition": "ON"
+          }
+        ]
+      },
+      "expected_status": 401
+    }
+  ]
+}

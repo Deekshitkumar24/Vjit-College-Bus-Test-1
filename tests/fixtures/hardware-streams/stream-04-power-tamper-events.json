@@ -1,0 +1,75 @@
+{
+  "description": "Recorded hardware stream 4: Power and tamper events (LOW_VEHICLE_BATTERY, POWER_DISCONNECTED, DEVICE_REBOOTED)",
+  "metadata": {
+    "device_id": "HW_904",
+    "serial_number": "SN-904-TEST",
+    "imei": "999999999999904",
+    "iccid": "9999999999999999904",
+    "vehicle_class": "V12",
+    "is_synthetic": true
+  },
+  "messages": [
+    {
+      "type": "event",
+      "endpoint": "/events",
+      "payload": {
+        "schema_version": 1,
+        "device_id": "HW_904",
+        "boot_id": "boot_rec_004_a",
+        "events": [
+          {
+            "type": "LOW_VEHICLE_BATTERY",
+            "occurred_at": "2026-10-21T09:00:00.000Z",
+            "seq": 1,
+            "data": {
+              "vehicle_battery_mv": 11700,
+              "device_battery_mv": 3900,
+              "lat": 12.97,
+              "lng": 77.59
+            }
+          },
+          {
+            "type": "POWER_DISCONNECTED",
+            "occurred_at": "2026-10-21T09:05:00.000Z",
+            "seq": 2,
+            "data": {
+              "vehicle_battery_mv": 0,
+              "device_battery_mv": 3850,
+              "lat": 12.97,
+              "lng": 77.59
+            }
+          }
+        ]
+      },
+      "expected_status": 200,
+      "expected_event_count": 2
+    },
+    {
+      "type": "heartbeat",
+      "endpoint": "/heartbeat",
+      "payload": {
+        "schema_version": 1,
+        "device_id": "HW_904",
+        "boot_id": "boot_rec_004_b",
+        "fw_version": "1.0.0",
+        "sent_at": "2026-10-21T09:06:00.000Z",
+        "uptime_s": 5,
+        "network_status": "REGISTERED",
+        "sim_status": "READY",
+        "signal_rssi_dbm": -70,
+        "vehicle_battery_mv": 0,
+        "device_battery_mv": 3840,
+        "gps_status": "FIX_VALID",
+        "buffer_bytes": 0,
+        "buffer_capacity_bytes": 65536,
+        "ignition": "OFF",
+        "temperature_c": 31.0
+      },
+      "expected_status": 200,
+      "expected_response": {
+        "schema_version": 1,
+        "pending_action": "NONE"
+      }
+    }
+  ]
+}

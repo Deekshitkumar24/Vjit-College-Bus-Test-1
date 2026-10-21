@@ -1,0 +1,86 @@
+{
+  "description": "Recorded hardware stream 3: Duplicate sample handling (Conflict C-09 / OV-1 per-sample 200 CONFLICT rejection)",
+  "metadata": {
+    "device_id": "HW_903",
+    "serial_number": "SN-903-TEST",
+    "imei": "999999999999903",
+    "iccid": "9999999999999999903",
+    "vehicle_class": "V12",
+    "is_synthetic": true
+  },
+  "messages": [
+    {
+      "type": "telemetry",
+      "endpoint": "/telemetry",
+      "payload": {
+        "boot_id": "boot_rec_003",
+        "samples": [
+          {
+            "seq": 1,
+            "recorded_at": "2026-10-21T08:30:00.000Z",
+            "gps_valid": true,
+            "lat": 12.9716,
+            "lng": 77.5946,
+            "speed_kmh": 20.0,
+            "heading_deg": 90.0,
+            "satellites": 8,
+            "hdop": 1.2,
+            "ignition": "ON"
+          }
+        ]
+      },
+      "expected_status": 200,
+      "expected_accepted": 1,
+      "expected_rejected": 0
+    },
+    {
+      "type": "telemetry",
+      "endpoint": "/telemetry",
+      "payload": {
+        "boot_id": "boot_rec_003",
+        "samples": [
+          {
+            "seq": 1,
+            "recorded_at": "2026-10-21T08:30:00.000Z",
+            "gps_valid": true,
+            "lat": 12.9716,
+            "lng": 77.5946,
+            "speed_kmh": 20.0,
+            "heading_deg": 90.0,
+            "satellites": 8,
+            "hdop": 1.2,
+            "ignition": "ON"
+          },
+          {
+            "seq": 1,
+            "recorded_at": "2026-10-21T08:30:05.000Z",
+            "gps_valid": true,
+            "lat": 12.9999,
+            "lng": 77.9999,
+            "speed_kmh": 50.0,
+            "heading_deg": 180.0,
+            "satellites": 8,
+            "hdop": 1.2,
+            "ignition": "ON"
+          },
+          {
+            "seq": 2,
+            "recorded_at": "2026-10-21T08:30:10.000Z",
+            "gps_valid": true,
+            "lat": 12.972,
+            "lng": 77.595,
+            "speed_kmh": 22.0,
+            "heading_deg": 90.0,
+            "satellites": 8,
+            "hdop": 1.2,
+            "ignition": "ON"
+          }
+        ]
+      },
+      "expected_status": 200,
+      "expected_accepted": 2,
+      "expected_rejected": 1,
+      "expected_rejection_reason": "CONFLICT"
+    }
+  ]
+}

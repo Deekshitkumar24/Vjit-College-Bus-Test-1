@@ -223,6 +223,19 @@ export function evaluateHardwareEvent(
         },
       };
 
+    case 'POWER_DISCONNECTED':
+    case 'POWER_CUT':
+      return {
+        status: 'PROCESSED',
+        action: 'OPEN_TICKET',
+        incident_id: null,
+        ticket: {
+          category: 'POWER_DISCONNECTED',
+          source: 'SYSTEM_ALERT',
+          description: 'Main vehicle power disconnect detected; operating on backup battery',
+        },
+      };
+
     case 'TAMPER':
       return {
         status: 'PROCESSED',

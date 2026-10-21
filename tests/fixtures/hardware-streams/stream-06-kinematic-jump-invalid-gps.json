@@ -1,0 +1,49 @@
+{
+  "description": "Recorded hardware stream 6: Kinematic jumps and invalid GPS fixes rejected per domain validation rules",
+  "metadata": {
+    "device_id": "HW_906",
+    "serial_number": "SN-906-TEST",
+    "imei": "999999999999906",
+    "iccid": "9999999999999999906",
+    "vehicle_class": "V12",
+    "is_synthetic": true
+  },
+  "messages": [
+    {
+      "type": "telemetry",
+      "endpoint": "/telemetry",
+      "payload": {
+        "boot_id": "boot_rec_006",
+        "samples": [
+          {
+            "seq": 1,
+            "recorded_at": "2026-10-21T10:00:00.000Z",
+            "gps_valid": false,
+            "lat": 0.0,
+            "lng": 0.0,
+            "speed_kmh": 0.0,
+            "heading_deg": 0.0,
+            "satellites": 2,
+            "hdop": 15.0,
+            "ignition": "ON"
+          },
+          {
+            "seq": 2,
+            "recorded_at": "2026-10-21T10:00:10.000Z",
+            "gps_valid": true,
+            "lat": 12.9716,
+            "lng": 77.5946,
+            "speed_kmh": 165.0,
+            "heading_deg": 90.0,
+            "satellites": 9,
+            "hdop": 1.1,
+            "ignition": "ON"
+          }
+        ]
+      },
+      "expected_status": 200,
+      "expected_accepted": 0,
+      "expected_rejected": 2
+    }
+  ]
+}

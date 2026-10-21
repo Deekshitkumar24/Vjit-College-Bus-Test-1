@@ -1,0 +1,70 @@
+================================================================================
+TASK: P1-T10 - Contract test harness: recorded hardware messages replay against telemetry endpoints
+DATE: 2026-10-21
+STATUS: DONE
+================================================================================
+
+COMMAND 1:
+pnpm --filter @collegebus/api exec vitest run test/contract-harness.spec.ts
+
+OUTPUT 1:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/contract-harness.spec.ts (6 tests) 21ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  23:36:56
+   Duration  2.05s (transform 330ms, setup 0ms, collect 1.08s, tests 21ms, environment 0ms, prepare 325ms)
+
+--------------------------------------------------------------------------------
+
+COMMAND 2:
+pnpm test:unit
+
+OUTPUT 2:
+> turbo run test:unit
+   • Running test:unit in 7 packages
+@collegebus/domain:test:unit:  Test Files  8 passed (8)
+@collegebus/domain:test:unit:       Tests  99 passed (99)
+@collegebus/api:test:unit:  Test Files  10 passed (10)
+@collegebus/api:test:unit:       Tests  56 passed (56)
+ Tasks:    9 successful, 9 total
+ Cached:    8 cached, 9 total
+ Time:    7.393s
+
+--------------------------------------------------------------------------------
+
+COMMAND 3:
+pnpm typecheck; pnpm lint; pnpm verify:routes-auth; pnpm verify:no-mock
+
+OUTPUT 3:
+> turbo run typecheck
+ Tasks:    11 successful, 11 total
+ Cached:    10 cached, 11 total
+ Time:    4.652s
+
+> turbo run lint && prettier --check ...
+ Tasks:    7 successful, 7 total
+ Cached:    6 cached, 7 total
+ Time:    4.243s
+All matched files use Prettier code style!
+
+> tsx scripts/verify-routes-auth.ts
+verify:routes-auth PASSED. 20 routes checked with zero unauthorized public endpoints.
+
+> tsx scripts/verify-no-mock.ts
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+
+--------------------------------------------------------------------------------
+
+FILES CHANGED:
+- packages/domain/src/device-health.ts
+- tests/fixtures/hardware-streams/stream-01-normal-route.json
+- tests/fixtures/hardware-streams/stream-02-reconnect-burst.json
+- tests/fixtures/hardware-streams/stream-03-duplicate-conflict.json
+- tests/fixtures/hardware-streams/stream-04-power-tamper-events.json
+- tests/fixtures/hardware-streams/stream-05-unauthorized-revoked.json
+- tests/fixtures/hardware-streams/stream-06-kinematic-jump-invalid-gps.json
+- services/api/test/harness/contract-test-harness.ts
+- services/api/test/contract-harness.spec.ts

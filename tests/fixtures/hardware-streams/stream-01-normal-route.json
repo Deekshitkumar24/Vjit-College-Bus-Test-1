@@ -1,0 +1,119 @@
+{
+  "description": "Recorded hardware stream 1: Normal route execution with first-use provisioning, telemetry batch, and normal heartbeat",
+  "metadata": {
+    "device_id": "HW_901",
+    "serial_number": "SN-901-TEST",
+    "imei": "999999999999901",
+    "iccid": "9999999999999999901",
+    "vehicle_class": "V12",
+    "is_synthetic": true
+  },
+  "messages": [
+    {
+      "type": "heartbeat",
+      "endpoint": "/heartbeat",
+      "payload": {
+        "schema_version": 1,
+        "device_id": "HW_901",
+        "boot_id": "boot_rec_001",
+        "fw_version": "1.0.0",
+        "sent_at": "2026-10-21T08:00:00.000Z",
+        "uptime_s": 120,
+        "network_status": "REGISTERED",
+        "sim_status": "READY",
+        "signal_rssi_dbm": -72,
+        "vehicle_battery_mv": 12600,
+        "device_battery_mv": 3950,
+        "gps_status": "FIX_VALID",
+        "buffer_bytes": 0,
+        "buffer_capacity_bytes": 65536,
+        "ignition": "ON",
+        "temperature_c": 26.5
+      },
+      "expected_status": 200,
+      "expected_response": {
+        "schema_version": 1,
+        "pending_action": "NONE",
+        "config": {
+          "moving_interval_s": 10,
+          "stopped_interval_s": 30,
+          "parked_heartbeat_s": 600
+        }
+      }
+    },
+    {
+      "type": "event",
+      "endpoint": "/events",
+      "payload": {
+        "schema_version": 1,
+        "device_id": "HW_901",
+        "boot_id": "boot_rec_001",
+        "events": [
+          {
+            "type": "IGNITION_ON",
+            "occurred_at": "2026-10-21T08:00:05.000Z",
+            "seq": 1,
+            "data": {
+              "vehicle_battery_mv": 12650,
+              "device_battery_mv": 3950,
+              "lat": 12.9716,
+              "lng": 77.5946,
+              "speed_kmh": 0,
+              "heading_deg": 0
+            }
+          }
+        ]
+      },
+      "expected_status": 200,
+      "expected_event_count": 1
+    },
+    {
+      "type": "telemetry",
+      "endpoint": "/telemetry",
+      "payload": {
+        "boot_id": "boot_rec_001",
+        "samples": [
+          {
+            "seq": 1,
+            "recorded_at": "2026-10-21T08:00:10.000Z",
+            "gps_valid": true,
+            "lat": 12.9716,
+            "lng": 77.5946,
+            "speed_kmh": 15.2,
+            "heading_deg": 45.0,
+            "satellites": 9,
+            "hdop": 1.1,
+            "ignition": "ON"
+          },
+          {
+            "seq": 2,
+            "recorded_at": "2026-10-21T08:00:20.000Z",
+            "gps_valid": true,
+            "lat": 12.9725,
+            "lng": 77.5955,
+            "speed_kmh": 28.4,
+            "heading_deg": 45.0,
+            "satellites": 9,
+            "hdop": 1.0,
+            "ignition": "ON"
+          },
+          {
+            "seq": 3,
+            "recorded_at": "2026-10-21T08:00:30.000Z",
+            "gps_valid": true,
+            "lat": 12.9734,
+            "lng": 77.5964,
+            "speed_kmh": 32.1,
+            "heading_deg": 46.0,
+            "satellites": 10,
+            "hdop": 0.9,
+            "ignition": "ON"
+          }
+        ]
+      },
+      "expected_status": 200,
+      "expected_accepted": 3,
+      "expected_rejected": 0
+    }
+  ]
+}
