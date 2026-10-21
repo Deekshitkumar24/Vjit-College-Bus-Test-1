@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   ForbiddenException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { validateDriverPhoneSample, DriverPhoneSampleInput } from '@collegebus/domain';
 import {
@@ -18,6 +19,9 @@ import {
   DriverModeSwitchResponseDto,
   SosCategory,
   SosTriggerResponseDto,
+  DriverManualCheckinRequestDto,
+  DriverManualCheckinResponseDto,
+  DriverManualCheckinReason,
 } from '@collegebus/contracts';
 import { ShiftService } from '../shift/shift.service.js';
 
@@ -84,6 +88,35 @@ export interface StoredDriverSosIncident {
   acknowledged_by: string | null;
 }
 
+export interface StoredManualCheckinRecord {
+  trip_id: string;
+  student_id: string;
+  driver_id: string;
+  is_guest: boolean;
+  reason: DriverManualCheckinReason;
+  note: string | null;
+  stop_id: string | null;
+  boarded_at: Date;
+}
+
+export interface StoredManifestStudentItem {
+  student_id: string;
+  full_name: string;
+  roll_number: string;
+  stop_name: string;
+  status:
+    | 'EXPECTED'
+    | 'BOARDED'
+    | 'MANUAL_CHECKIN'
+    | 'LATE_BOARDED'
+    | 'ABSENT'
+    | 'ON_LEAVE'
+    | 'FLAGGED_GUEST';
+  boarded_at?: string | null;
+  is_guest?: boolean;
+  reason?: DriverManualCheckinReason | null;
+}
+
 @Injectable()
 export class DriverService {
   constructor(private readonly shiftService: ShiftService) {}
@@ -94,6 +127,8 @@ export class DriverService {
   private deviceRegistrations = new Map<string, StoredDriverDeviceRegistration>();
   private trackingModes = new Map<string, StoredTrackingModeRecord>();
   private sosIncidents = new Map<string, StoredDriverSosIncident>();
+  private manualCheckins = new Map<string, StoredManualCheckinRecord[]>();
+  private tripStudents = new Map<string, StoredManifestStudentItem[]>();
   private busMetadata = new Map<
     string,
     { bus_number: string; registration_number: string; route_id: string; route_name: string }
@@ -205,6 +240,8 @@ export class DriverService {
     this.busMetadata.clear();
     this.trackingModes.clear();
     this.sosIncidents.clear();
+    this.manualCheckins.clear();
+    this.tripStudents.clear();
   }
 
   private computeSignature(sample: DriverPhoneSampleInput): string {
@@ -505,5 +542,144 @@ export class DriverService {
     incident.acknowledged_at = now.toISOString();
     incident.acknowledged_by = acknowledgedBy;
     return incident;
+  }
+
+  /**
+   * Driver Boarding & Passenger Check-In List (SW-MVP-1.0 §18 & §16.3 #8-#9)
+   */
+  setTripStudents(tripId: string, students: StoredManifestStudentItem[]) {
+    this.tripStudents.set(tripId, [...students]);
+  }
+
+  getTripManifest(driverId: string, tripId: string) {
+    const students = this.tripStudents.get(tripId) || [
+      {
+        student_id: 'stu_101',
+        full_name: 'Ananya Rao',
+        roll_number: '21CS101',
+        stop_name: 'Silk Board Junction',
+        status: 'EXPECTED' as const,
+        boarded_at: null,
+      },
+      {
+        student_id: 'stu_102',
+        full_name: 'Rohan Verma',
+        roll_number: '21CS102',
+        stop_name: 'HSR Layout BDA',
+        status: 'EXPECTED' as const,
+        boarded_at: null,
+      },
+    ];
+
+    const boardedCount = students.filter(
+      (s) =>
+        s.status === 'BOARDED' ||
+        s.status === 'MANUAL_CHECKIN' ||
+        s.status === 'LATE_BOARDED' ||
+        s.status === 'FLAGGED_GUEST',
+    ).length;
+
+    return {
+      trip_id: tripId,
+      driver_id: driverId,
+      total_expected: students.length,
+      total_boarded: boardedCount,
+      students,
+    };
+  }
+
+  recordManualCheckin(
+    driverId: string,
+    dto: DriverManualCheckinRequestDto,
+    now: Date = new Date(),
+  ): DriverManualCheckinResponseDto {
+    if (dto.is_guest && !dto.reason) {
+      throw new BadRequestException({
+        code: 'MISSING_REASON_FOR_GUEST',
+        message: 'Reason code is strictly required when boarding a guest student',
+      });
+    }
+
+    if (dto.reason === 'OTHER' && (!dto.note || dto.note.trim().length === 0)) {
+      throw new BadRequestException({
+        code: 'NOTE_REQUIRED_FOR_OTHER_REASON',
+        message: 'Descriptive note is required when reason is OTHER',
+      });
+    }
+
+    const checkinRecord: StoredManualCheckinRecord = {
+      trip_id: dto.trip_id,
+      student_id: dto.student_id,
+      driver_id: driverId,
+      is_guest: dto.is_guest,
+      reason: dto.reason,
+      note: dto.note ?? null,
+      stop_id: dto.stop_id ?? null,
+      boarded_at: now,
+    };
+
+    const tripCheckins = this.manualCheckins.get(dto.trip_id) || [];
+    tripCheckins.push(checkinRecord);
+    this.manualCheckins.set(dto.trip_id, tripCheckins);
+
+    // Update or add student on manifest
+    let manifestStudents = this.tripStudents.get(dto.trip_id);
+    if (!manifestStudents) {
+      manifestStudents = [
+        {
+          student_id: 'stu_101',
+          full_name: 'Ananya Rao',
+          roll_number: '21CS101',
+          stop_name: 'Silk Board Junction',
+          status: 'EXPECTED',
+          boarded_at: null,
+        },
+        {
+          student_id: 'stu_102',
+          full_name: 'Rohan Verma',
+          roll_number: '21CS102',
+          stop_name: 'HSR Layout BDA',
+          status: 'EXPECTED',
+          boarded_at: null,
+        },
+      ];
+      this.tripStudents.set(dto.trip_id, manifestStudents);
+    }
+
+    const resolvedStatus = dto.is_guest
+      ? 'FLAGGED_GUEST'
+      : dto.reason === 'LATE_BOARDED'
+        ? 'LATE_BOARDED'
+        : 'MANUAL_CHECKIN';
+
+    const existing = manifestStudents.find((s) => s.student_id === dto.student_id);
+    if (existing) {
+      existing.status = resolvedStatus;
+      existing.boarded_at = now.toISOString();
+      existing.reason = dto.reason;
+    } else {
+      manifestStudents.push({
+        student_id: dto.student_id,
+        full_name: dto.is_guest ? 'Guest Student' : 'Student',
+        roll_number: dto.is_guest ? 'GUEST' : dto.student_id,
+        stop_name: 'Unscheduled Stop',
+        status: resolvedStatus,
+        boarded_at: now.toISOString(),
+        is_guest: dto.is_guest,
+        reason: dto.reason,
+      });
+    }
+
+    return {
+      success: true,
+      student_id: dto.student_id,
+      trip_id: dto.trip_id,
+      status: resolvedStatus,
+      reason: dto.reason,
+      boarded_at: now.toISOString(),
+      message: dto.is_guest
+        ? `Guest student flagged and boarded (${dto.reason})`
+        : `Manual check-in recorded for student (${dto.reason})`,
+    };
   }
 }

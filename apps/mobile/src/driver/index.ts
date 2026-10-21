@@ -5,4 +5,5 @@ export * from './location-buffer.js';
 export * from './location-collector.js';
 export * from './mode-switcher.js';
 export * from './driver-sos-manager.js';
-
+export * from './driver-qr-generator.js';
+export * from './driver-checkin-manager.js';

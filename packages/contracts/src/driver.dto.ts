@@ -177,3 +177,39 @@ export const DriverModeSwitchResponseSchema = z
   .strict();
 
 export type DriverModeSwitchResponseDto = z.infer<typeof DriverModeSwitchResponseSchema>;
+
+export const DriverManualCheckinReasonSchema = z.enum([
+  'FLAGGED_GUEST',
+  'LATE_BOARDED',
+  'CARD_FORGOTTEN',
+  'OTHER',
+]);
+export type DriverManualCheckinReason = z.infer<typeof DriverManualCheckinReasonSchema>;
+
+export const DriverManualCheckinRequestSchema = z
+  .object({
+    trip_id: z.string().min(1),
+    student_id: z.string().min(1),
+    is_guest: z.boolean().default(false),
+    reason: DriverManualCheckinReasonSchema,
+    note: z.string().max(200).optional(),
+    stop_id: z.string().optional(),
+    timestamp: z.string().datetime().optional(),
+  })
+  .strict();
+
+export type DriverManualCheckinRequestDto = z.infer<typeof DriverManualCheckinRequestSchema>;
+
+export const DriverManualCheckinResponseSchema = z
+  .object({
+    success: z.boolean(),
+    student_id: z.string(),
+    trip_id: z.string(),
+    status: z.enum(['BOARDED', 'MANUAL_CHECKIN', 'LATE_BOARDED', 'FLAGGED_GUEST']),
+    reason: DriverManualCheckinReasonSchema,
+    boarded_at: z.string().datetime(),
+    message: z.string(),
+  })
+  .strict();
+
+export type DriverManualCheckinResponseDto = z.infer<typeof DriverManualCheckinResponseSchema>;

@@ -24,6 +24,8 @@ import {
   DriverModeSwitchResponseDto,
   SosCategorySchema,
   SosTriggerResponseDto,
+  DriverManualCheckinRequestSchema,
+  DriverManualCheckinResponseDto,
 } from '@collegebus/contracts';
 
 @Controller('driver')
@@ -228,5 +230,50 @@ export class DriverController {
     }
 
     return this.driverService.getSosIncident(incidentId);
+  }
+
+  @Post('checkin')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async manualCheckin(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Body() body: unknown,
+  ): Promise<DriverManualCheckinResponseDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    const parseResult = DriverManualCheckinRequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      throw new BadRequestException({
+        code: 'INVALID_MANUAL_CHECKIN_PAYLOAD',
+        message: 'Manual checkin payload validation failed',
+        details: parseResult.error.flatten(),
+      });
+    }
+
+    return this.driverService.recordManualCheckin(driverId, parseResult.data);
+  }
+
+  @Get('manifest/:tripId')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async getTripManifest(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Param('tripId') tripId: string,
+  ) {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    return this.driverService.getTripManifest(driverId, tripId);
   }
 }
