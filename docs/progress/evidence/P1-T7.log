@@ -1,0 +1,92 @@
+# Task Evidence: P1-T7 Source Selector Engine
+
+**Task ID:** P1-T7  
+**Scope:** Source selector with locked bus_state row, source_switches, outbox trigger, anti-flapping rules, and phone cadence in responses (Part 9.3 to 9.7).  
+**Date:** 2026-10-21  
+
+---
+
+## Command 1: Unit & Pipeline Tests for Source Selector & Anti-Flapping
+Command: `pnpm --filter @collegebus/domain test ; pnpm --filter @collegebus/api test`
+
+Output:
+```
+> @collegebus/domain@1.0.0 test:unit
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/device-tokens.spec.ts (7 tests) 15ms
+ ✓ test/source-selector.spec.ts (13 tests) 17ms
+ ✓ test/device-links.spec.ts (5 tests) 11ms
+ ✓ test/driver-telemetry.spec.ts (12 tests) 18ms
+ ✓ test/device-health.spec.ts (17 tests) 18ms
+ ✓ test/gps-quality.spec.ts (14 tests) 19ms
+
+ Test Files  6 passed (6)
+      Tests  68 passed (68)
+   Start at  23:08:39
+   Duration  1.58s
+
+> @collegebus/api@1.0.0 test:unit
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/authorization-harness.spec.ts (3 tests) 15ms
+ ✓ test/telemetry-pipeline.spec.ts (4 tests) 19ms
+ ✓ test/heartbeat-pipeline.spec.ts (5 tests) 23ms
+ ✓ test/source-selector-pipeline.spec.ts (9 tests) 24ms
+ ✓ test/health.spec.ts (2 tests) 8ms
+ ✓ test/driver-pipeline.spec.ts (7 tests) 26ms
+ ✓ test/telemetry.spec.ts (3 tests) 13ms
+ ✓ test/auth.spec.ts (8 tests) 2766ms
+
+ Test Files  8 passed (8)
+      Tests  41 passed (41)
+   Start at  23:08:43
+   Duration  5.39s
+```
+
+---
+
+## Command 2: Lint, Formatting & Typecheck
+Command: `pnpm lint ; pnpm typecheck`
+
+Output:
+```
+> college-bus-tracker@1.0.0 lint
+> turbo run lint && prettier --check "packages/**/*.{ts,tsx,js,json,md}" "services/**/*.{ts,tsx,js,json,md}" "scripts/**/*.{ts,tsx,js,json,md}" "docs/**/*.{ts,tsx,js,json,md}"
+
+Tasks:    7 successful, 7 total
+All matched files use Prettier code style!
+
+> college-bus-tracker@1.0.0 typecheck
+> turbo run typecheck
+
+Tasks:    11 successful, 11 total
+Time:     11.143s
+```
+
+---
+
+## Command 3: Route Inventory & No-Mock Verification
+Command: `pnpm verify:routes-auth ; pnpm verify:no-mock`
+
+Output:
+```
+verify:routes-auth PASSED. 19 routes checked with zero unauthorized public endpoints.
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+```
+
+---
+
+## Files Changed:
+- `packages/domain/src/source-selector.ts`
+- `packages/domain/src/index.ts`
+- `packages/domain/test/source-selector.spec.ts`
+- `services/api/src/modules/selector/selector.service.ts`
+- `services/api/src/modules/selector/selector.module.ts`
+- `services/api/src/app.module.ts`
+- `services/api/test/source-selector-pipeline.spec.ts`
+- `docs/progress/evidence/P1-T7.log`
