@@ -5,3 +5,4 @@ export * from './driver-telemetry.js';
 export * from './gps-quality.js';
 export * from './source-selector.js';
 export * from './snapshot.js';
+export * from './eta-stop-arrival.js';

@@ -1,0 +1,71 @@
+================================================================================
+TASK: P1-T9 - Route polyline projection, stop arrival detector, smoothed median moving speed, ETA calculation, and PostGIS progress query
+DATE: 2026-10-21
+STATUS: DONE
+================================================================================
+
+COMMAND 1:
+pnpm --filter @collegebus/domain exec vitest run
+
+OUTPUT 1:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/device-links.spec.ts (5 tests) 9ms
+ ✓ test/snapshot.spec.ts (14 tests) 15ms
+ ✓ test/driver-telemetry.spec.ts (12 tests) 16ms
+ ✓ test/source-selector.spec.ts (13 tests) 15ms
+ ✓ test/device-health.spec.ts (17 tests) 16ms
+ ✓ test/device-tokens.spec.ts (7 tests) 18ms
+ ✓ test/eta-stop-arrival.spec.ts (17 tests) 19ms
+ ✓ test/gps-quality.spec.ts (14 tests) 23ms
+
+ Test Files  8 passed (8)
+      Tests  99 passed (99)
+   Start at  23:25:50
+   Duration  1.54s (transform 1.61s, setup 0ms, collect 2.29s, tests 130ms, environment 4ms, prepare 3.19s)
+
+--------------------------------------------------------------------------------
+
+COMMAND 2:
+pnpm test:unit
+
+OUTPUT 2:
+> turbo run test:unit
+   • Running test:unit in 7 packages
+@collegebus/domain:test:unit:  Test Files  8 passed (8)
+@collegebus/domain:test:unit:       Tests  99 passed (99)
+@collegebus/api:test:unit:  Test Files  9 passed (9)
+@collegebus/api:test:unit:       Tests  50 passed (50)
+ Tasks:    9 successful, 9 total
+ Cached:    6 cached, 9 total
+ Time:    11.047s
+
+--------------------------------------------------------------------------------
+
+COMMAND 3:
+pnpm typecheck; pnpm lint; pnpm verify:routes-auth; pnpm verify:no-mock
+
+OUTPUT 3:
+> turbo run typecheck
+ Tasks:    11 successful, 11 total
+ Cached:    9 cached, 11 total
+ Time:    5.306s
+
+> turbo run lint && prettier --check ...
+ Tasks:    7 successful, 7 total
+ Cached:    6 cached, 7 total
+ Time:    4.762s
+All matched files use Prettier code style!
+
+> tsx scripts/verify-routes-auth.ts
+verify:routes-auth PASSED. 20 routes checked with zero unauthorized public endpoints.
+
+> tsx scripts/verify-no-mock.ts
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+
+--------------------------------------------------------------------------------
+
+FILES CHANGED:
+- packages/domain/src/eta-stop-arrival.ts
+- packages/domain/src/index.ts
+- packages/domain/test/eta-stop-arrival.spec.ts
