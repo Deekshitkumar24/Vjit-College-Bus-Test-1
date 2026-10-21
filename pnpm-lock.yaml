@@ -161,6 +161,28 @@ importers:
         specifier: ^2.0.5
         version: 2.1.9(@types/node@22.20.5)
 
+  packages/domain:
+    dependencies:
+      luxon:
+        specifier: ^3.5.0
+        version: 3.7.2
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.7.6
+      '@types/node':
+        specifier: ^22.5.0
+        version: 22.20.5
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.9
+        version: 2.1.9(@types/node@22.20.5)
+
   services/api:
     dependencies:
       '@collegebus/config':
@@ -172,6 +194,9 @@ importers:
       '@collegebus/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@collegebus/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@nestjs/common':
         specifier: ^10.4.1
         version: 10.4.22(reflect-metadata@0.2.2)(rxjs@7.8.2)
