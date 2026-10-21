@@ -1,0 +1,102 @@
+================================================================================
+TASK: P1-T11 - 50-bus fleet simulator in tools/simulator with dual sources, failure scenarios, and R-M5 guards
+DATE: 2026-10-21
+STATUS: DONE
+================================================================================
+
+COMMAND 1:
+pnpm --filter @collegebus/simulator exec vitest run
+
+OUTPUT 1:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/tools/simulator
+
+ ✓ test/simulator.spec.ts (7 tests) 48ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  23:48:22
+   Duration  1.43s (transform 192ms, setup 0ms, collect 254ms, tests 48ms, environment 1ms, prepare 526ms)
+
+--------------------------------------------------------------------------------
+
+COMMAND 2:
+pnpm --filter @collegebus/simulator run simulate
+
+OUTPUT 2:
+> @collegebus/simulator@1.0.0 simulate C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\tools\simulator
+> tsx src/index.ts
+
+================================================================
+COLLEGE BUS TRACKER - 50-BUS FLEET SIMULATOR (P1-T11, R-M5)
+Environment: local | Target: http://localhost:3000 | Ticks: 6
+================================================================
+Fleet initialized with 50 buses.
+
+--- SIMULATION SUMMARY ---
+Total Buses: 50
+Ticks Run: 6
+Telemetry Batches: 201
+Driver Phone Samples: 271
+Heartbeats: 125
+Events: 24
+Errors: 0
+Scenario Breakdown: {
+  NORMAL_DUAL: 25,
+  TRACKER_FAILED_PHONE_FALLBACK: 10,
+  DRIVER_ONLY: 5,
+  BOTH_LOST: 5,
+  FLAPPING: 3,
+  CRITICAL_EVENTS: 2
+}
+
+Fleet simulation completed successfully with zero errors.
+
+--------------------------------------------------------------------------------
+
+COMMAND 3:
+pnpm test:unit
+
+OUTPUT 3:
+> turbo run test:unit
+   • Running test:unit in 8 packages
+@collegebus/domain:test:unit:  Test Files  8 passed (8)
+@collegebus/domain:test:unit:       Tests  99 passed (99)
+@collegebus/api:test:unit:  Test Files  10 passed (10)
+@collegebus/api:test:unit:       Tests  56 passed (56)
+@collegebus/simulator:test:unit:  Test Files  1 passed (1)
+@collegebus/simulator:test:unit:       Tests  7 passed (7)
+ Tasks:    10 successful, 10 total
+ Time:    2.972s
+
+--------------------------------------------------------------------------------
+
+COMMAND 4:
+pnpm typecheck; pnpm lint; pnpm verify:routes-auth; pnpm verify:no-mock
+
+OUTPUT 4:
+> turbo run typecheck
+ Tasks:    12 successful, 12 total
+ Time:    2.238s
+
+> turbo run lint && prettier --check ...
+ Tasks:    8 successful, 8 total
+ Time:    42ms >>> FULL TURBO
+All matched files use Prettier code style!
+
+> tsx scripts/verify-routes-auth.ts
+verify:routes-auth PASSED. 20 routes checked with zero unauthorized public endpoints.
+
+> tsx scripts/verify-no-mock.ts
+verify:no-mock PASSED. Zero mock data patterns found in application code.
+
+--------------------------------------------------------------------------------
+
+FILES CHANGED:
+- tools/simulator/package.json
+- tools/simulator/tsconfig.json
+- tools/simulator/src/guards.ts
+- tools/simulator/src/route-paths.ts
+- tools/simulator/src/bus-agent.ts
+- tools/simulator/src/fleet-manager.ts
+- tools/simulator/src/index.ts
+- tools/simulator/test/simulator.spec.ts
