@@ -4,3 +4,4 @@ export * from './heartbeat.dto.js';
 export * from './driver.dto.js';
 export * from './snapshot.dto.js';
 export * from './attendance.dto.js';
+export * from './request.dto.js';
