@@ -12,6 +12,7 @@
     "typecheck": "turbo run typecheck",
     "test:unit": "turbo run test:unit",
     "test:int": "turbo run test:int",
+    "test:rls": "turbo run test:rls",
     "test:contract": "turbo run test:contract",
     "test:e2e:web": "turbo run test:e2e:web",
     "test:e2e:mobile": "turbo run test:e2e:mobile",
@@ -25,6 +26,7 @@
     "verify:no-mock": "tsx scripts/verify-no-mock.ts",
     "verify:prod-clean": "tsx scripts/verify-prod-clean.ts",
     "verify:routes-auth": "tsx scripts/verify-routes-auth.ts",
+    "verify:migrations": "tsx scripts/check-migrations.ts",
     "security:scan": "pnpm audit --prod --audit-level=high"
   },
   "devDependencies": {
