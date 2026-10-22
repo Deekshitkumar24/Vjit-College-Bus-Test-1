@@ -168,6 +168,8 @@ Each override names the master location it changes. Where an override and the ma
 | OV-17 | Part 1.10, phase report template                        | Each phase report must also give: the commit SHAs, the command output for each DONE claim, the NOT VERIFIED list, the configuration key count, the table count, and each research source with its date checked (A-5, A-8).                                                                                  |
 | OV-18 | Part 16, P0-T11 and P9-T6                               | Dev Terraform is applied in P0-T11. Staging is applied in P7. Production is applied in P9-T6.                                                                                                                                                                                                               |
 | OV-19 | Part 16, P0-T18 and P0-T19                              | These are minimal shells (Part B.5). Full screens are built in P2 and P4.                                                                                                                                                                                                                                   |
+| OV-20 | Part 2, Part 15, and P0-T4 (Testcontainers)             | Docker and Testcontainers are not used on the development machine. Native PostgreSQL 16 with PostGIS is used locally via DATABASE_URL_TEST (Section 1A). Test harness creates uniquely named test databases, runs migrations as app_migrator, and drops them. Superusers bypass RLS, so every RLS assertion must connect as app_runtime without BYPASSRLS. CI runs tests against a GitHub Actions PostGIS service container. (Decision O9). |
+
 
 ---
 
