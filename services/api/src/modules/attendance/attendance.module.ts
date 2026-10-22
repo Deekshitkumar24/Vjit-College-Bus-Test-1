@@ -4,6 +4,11 @@ import { AttendanceService } from './attendance.service.js';
 import { BoardingCutoffJob, AbsenceEvaluatorService } from './absence-evaluator.service.js';
 import { LeaveService } from './leave.service.js';
 import { AbsenceAlertsService } from './absence-alerts.service.js';
+import {
+  OperationalAlertsEngine,
+  CoordinatorSummaryJob,
+  AttendanceCsvExporter,
+} from './operational-alerts.service.js';
 
 @Module({
   controllers: [AttendanceController],
@@ -13,6 +18,9 @@ import { AbsenceAlertsService } from './absence-alerts.service.js';
     AbsenceEvaluatorService,
     LeaveService,
     AbsenceAlertsService,
+    OperationalAlertsEngine,
+    CoordinatorSummaryJob,
+    AttendanceCsvExporter,
   ],
   exports: [
     AttendanceService,
@@ -20,6 +28,9 @@ import { AbsenceAlertsService } from './absence-alerts.service.js';
     AbsenceEvaluatorService,
     LeaveService,
     AbsenceAlertsService,
+    OperationalAlertsEngine,
+    CoordinatorSummaryJob,
+    AttendanceCsvExporter,
   ],
 })
 export class AttendanceModule {}

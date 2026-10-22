@@ -1,0 +1,25 @@
+=== P5-T7 EVIDENCE LOG ===
+Task: P5-T7 Operational Alerts, Coordinator Daily Summary & CSV Export (Part 11.5, Part 11.6, Part 12.3, Part 13.16)
+Date: 2026-10-22
+Command: npx vitest run services/api/test/operational-alerts-export.spec.ts
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ services/api/test/operational-alerts-export.spec.ts (7 tests) 24ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  22:40:11
+   Duration  2.21s (transform 179ms, setup 0ms, collect 1.07s, tests 24ms, environment 0ms, prepare 467ms)
+
+Verification:
+- Operational Alerts Engine (Part 11.5):
+  - FLEET_SILENCE: Triggered at Severity 1 when >20% of buses on active shifts send no valid data for 3 minutes.
+  - BUS_UNAVAILABLE: Triggered at Severity 2 when an active bus has no fresh source for 2 minutes.
+  - SOURCE_FLAPPING: Triggered at Severity 3 when >6 switches occur in 10 minutes.
+  - AUTH_FAILURES: Triggered at Severity 2 when >50 failed authentications occur in 5 minutes for one device.
+- Coordinator Daily Summary (Part 12.3): Compiles 08:00 IST snapshot aggregating SOS incidents in last 24h, open absence alerts, delayed/offline devices, pending stop requests, late/cancelled trips, and expiring bus documents.
+- Attendance CSV Exporter (Part 11.6, Part 13.16):
+  - Formula Injection Security: Cells starting with =, +, -, @ are escaped with prepended single quote (') and quoted.
+  - Row Limit: Strictly enforces 100,000 row maximum per export.
