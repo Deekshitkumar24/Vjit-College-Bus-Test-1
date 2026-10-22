@@ -1,0 +1,53 @@
+=== Evidence Log: P3-T16 ===
+Task: P3-T16: SOS create-or-join service, outbox, tier-0 push core (AC-SOS-02, AC-SOS-03, T-CON-03)
+Date: 2026-10-22
+Governing References: SW-MVP-1.0 §19.1, Master Part 5.5, Part 11.1 §1-§5, Part 13.24, Part 20.17
+
+Command 1:
+pnpm --filter @collegebus/domain test:unit test/sos-engine.spec.ts
+
+Output:
+> @collegebus/domain@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> vitest run test/sos-engine.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/sos-engine.spec.ts (12 tests) 28ms
+   ✓ SOS Domain Engine (Part 11.1, AC-SOS-02, AC-SOS-03, T-CON-03)
+     ✓ Create-or-Join Decision Logic (Part 11.1 §1-§2)
+       ✓ creates a NEW incident when no active incident exists for the bus
+       ✓ JOINS existing active incident within dedupe window (60s) for the same bus
+       ✓ creates NEW incident if existing incident for the same bus is outside dedupe window
+       ✓ creates separate incidents for different buses concurrently
+       ✓ creates incident for user/student without bus_id
+     ✓ Outbox Event Generation (Part 11.1 §3, AC-SOS-02)
+       ✓ creates an SOS_TIER_0 outbox record with immediate priority and recipients
+     ✓ Concurrency & Advisory Lock Simulation (Part 11.1 §1, T-CON-03)
+       ✓ joins safely under simulated concurrent triggers within the 60s window
+     ✓ Status Progression & Resolution (Part 11.1 §4-§5)
+       ✓ supports state progression: OPEN -> ACKNOWLEDGED -> RESPONDING -> RESOLVED
+       ✓ prevents cancellation outside the 2-minute cancellation window
+       ✓ permits cancellation within the 2-minute cancellation window
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+
+Command 2:
+pnpm --filter @collegebus/api test:unit test/sos-pipeline.spec.ts
+
+Output:
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run test/sos-pipeline.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/sos-pipeline.spec.ts (5 tests) 15ms
+   ✓ SOS Service Pipeline (P3-T16, AC-SOS-02, AC-SOS-03, T-CON-03)
+     ✓ creates initial incident and writes SOS_TIER_0 outbox entry (AC-SOS-02)
+     ✓ joins existing incident within 60s window and appends JOINED event (AC-SOS-03)
+     ✓ handles concurrent requests with advisory lock deduplication (T-CON-03)
+     ✓ updates incident lifecycle steps: ACKNOWLEDGED -> RESOLVED
+     ✓ respects 2-minute cancellation window for sender cancellation
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

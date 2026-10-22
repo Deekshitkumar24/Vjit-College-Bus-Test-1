@@ -27,6 +27,7 @@ import {
   DriverTicketPriority,
 } from '@collegebus/contracts';
 import { ShiftService } from '../shift/shift.service.js';
+import { SosService } from './sos.service.js';
 
 export interface StoredDriverSample {
   shift_id: string;
@@ -137,7 +138,14 @@ export interface StoredMaintenanceTicket {
 
 @Injectable()
 export class DriverService {
-  constructor(private readonly shiftService: ShiftService) {}
+  constructor(
+    private readonly shiftService: ShiftService,
+    private readonly sosService?: SosService,
+  ) {
+    if (!this.sosService) {
+      this.sosService = new SosService();
+    }
+  }
 
   private sampleRegistry = new Map<string, StoredDriverSample>();
   private driverStatuses = new Map<string, StoredDriverStatus>();
@@ -477,7 +485,7 @@ export class DriverService {
   /**
    * Driver SOS Emergency Trigger (SW-MVP-1.0 §16.3 #7 & L-2)
    */
-  triggerSos(
+  async triggerSos(
     driverId: string,
     shiftId: string,
     payload: {
@@ -488,7 +496,7 @@ export class DriverService {
       note?: string | undefined;
     },
     now: Date = new Date(),
-  ): SosTriggerResponseDto {
+  ): Promise<SosTriggerResponseDto> {
     const shift = this.shiftService.getShift(shiftId);
     if (!shift) {
       throw new UnauthorizedException({
@@ -504,14 +512,26 @@ export class DriverService {
       });
     }
 
-    const incidentId = `sos_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    // Delegate to atomic SOS Create-or-Join engine (P3-T16, Part 11.1 §1-§5)
+    const sosResult = await this.sosService!.triggerOrJoin({
+      busId: shift.bus_id,
+      senderId: driverId,
+      senderRole: 'DRIVER',
+      source: 'DRIVER',
+      category: payload.category,
+      lat: payload.lat,
+      lng: payload.lng,
+      accuracy_m: payload.accuracy_m,
+      now,
+    });
+
     const securityPhone = '+91-80-2345-6789';
 
     // Mark SOS as open for bus on shiftService to block driver manual end per §15.4
     this.shiftService.setBusOpenSos(shift.bus_id, true);
 
-    this.sosIncidents.set(incidentId, {
-      incident_id: incidentId,
+    this.sosIncidents.set(sosResult.incidentId, {
+      incident_id: sosResult.incidentId,
       shift_id: shiftId,
       bus_id: shift.bus_id,
       driver_id: driverId,
@@ -531,12 +551,15 @@ export class DriverService {
     });
 
     return {
-      incident_id: incidentId,
+      incident_id: sosResult.incidentId,
       status: 'OPEN',
       category: payload.category,
       dispatched_at: now.toISOString(),
       security_phone: securityPhone,
-      message: 'SOS incident created. Coordinators and Security alerted.',
+      message:
+        sosResult.action === 'CREATE'
+          ? 'SOS incident created. Coordinators and Security alerted.'
+          : 'Joined active SOS incident for this bus.',
     };
   }
 

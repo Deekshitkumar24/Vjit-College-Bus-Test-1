@@ -420,7 +420,7 @@ describe('Driver Phone Pipeline & Shift Claim (P1-T5, Part 5.3 & 6.7)', () => {
       );
 
       // 1. Trigger SOS
-      const triggerRes = driverService.triggerSos(
+      const triggerRes = await driverService.triggerSos(
         'drv_sos',
         claim.shift_id,
         {

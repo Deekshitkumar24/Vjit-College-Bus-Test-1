@@ -7,3 +7,4 @@ export * from './source-selector.js';
 export * from './snapshot.js';
 export * from './eta-stop-arrival.js';
 export * from './pre-trip-diagnostics.js';
+export * from './sos-engine.js';
