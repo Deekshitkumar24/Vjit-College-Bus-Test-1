@@ -43,4 +43,9 @@ Date: 22 October 2026
 - **Change:** Confirmed and verified that all tasks P2-T1 to P2-T14 exist under their Part 16 IDs with dedicated unit test suites. Ran discrete verification for P2-T1 (`route-guard.spec.ts`), P2-T2 (`map-marker.spec.ts`), P2-T3 (`eta-stop-card.spec.ts`), P2-T5 (`faculty-manifest.spec.ts`), P2-T7 (`navigation-store.spec.ts`), P2-T9 (`qr-attendance.spec.ts`), P2-T10 (`student-requests.spec.ts`), and P2-T11 (`student-requests.spec.ts`), passing 65/65 tests. Saved evidence in `docs/progress/evidence/P2-discrete-tasks.log`.
 - **Files Modified:** `docs/progress/evidence/P2-discrete-tasks.log`, `docs/progress/corrections.md`.
 
+## Item 8: P3 Tasks Local Verification and Blocker Recording
+- **Change:** Confirmed and verified tasks P3-T1 to P3-T8 and P3-T15 to P3-T18 locally. Ran 74 mobile unit/integration tests (`shift-lifecycle.spec.ts` for T-SHF-01 to T-SHF-04, `location-buffer.spec.ts` for T-OFF-01 SQLite buffer, pre-trip diagnostics, driver boarding, SOS trigger, etc.) and 28 API backend tests (`driver-pipeline.spec.ts`, `driver-stops.spec.ts`, `driver-trip-summary.spec.ts`, `shift-auto-end.spec.ts`, `sos-pipeline.spec.ts`). Recorded evidence in `docs/progress/evidence/P3-local-verification.log`. Recorded physical device exits (AC-DRV-01 to AC-DRV-04) and 2-hour battery test (T-MOB-01) as BLOCKED-EXTERNAL on `E6` (physical reference phones), `E3` (college identity test tenant), and `E5` (Turnstile keys).
+- **Files Modified:** `docs/progress/evidence/P3-local-verification.log`, `docs/progress/corrections.md`.
+
+
 

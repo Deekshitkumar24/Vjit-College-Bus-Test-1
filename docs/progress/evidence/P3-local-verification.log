@@ -1,0 +1,22 @@
+P3 Local Task Verification:
+Mobile Driver Tests (P3-T1 to P3-T8):
+✓ test/driver-trip-summary.spec.ts (2 tests)
+✓ test/driver-roster.spec.ts (6 tests)
+✓ test/shift-lifecycle.spec.ts (8 tests) [T-SHF-01 to T-SHF-04]
+✓ test/pre-trip-diagnostics.spec.ts (13 tests)
+✓ test/driver-tickets.spec.ts (6 tests)
+✓ test/driver-boarding.spec.ts (12 tests)
+✓ test/driver-mode-sos.spec.ts (10 tests)
+✓ test/location-buffer.spec.ts (11 tests) [T-OFF-01 24h SQLite buffer]
+✓ test/driver-integration-suite.spec.ts (6 tests)
+Total mobile tests: 74 passed (74)
+
+API Backend Driver Tests (P3-T15 to P3-T18):
+✓ test/sos-pipeline.spec.ts (5 tests) [P3-T16]
+✓ test/driver-pipeline.spec.ts (13 tests) [P3-T1, P3-T4]
+✓ test/driver-trip-summary.spec.ts (2 tests) [P3-T17]
+✓ test/driver-stops.spec.ts (4 tests) [P3-T15]
+✓ test/shift-auto-end.spec.ts (4 tests) [P3-T18]
+Total backend tests: 28 passed (28)
+
+Device exits and battery test (T-MOB-01) remain BLOCKED-EXTERNAL (E6, E3, E5).
