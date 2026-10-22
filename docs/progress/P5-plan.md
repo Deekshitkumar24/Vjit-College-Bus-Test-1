@@ -46,7 +46,7 @@
 | **P5-T2** | **QR Token Generation & Scan Validation (Part 11.2):** Token format `v1.<key_version>.<payload>.<signature>`, 30s slots, HMAC-SHA256, validation pipeline steps 1-8, rate limit (10/min/user). | DONE | `docs/progress/evidence/P5-T2.log` | `T-ATT-01` (`packages/domain/test/qr-attendance.spec.ts`, `services/api/test/attendance-scan.spec.ts` - 13 tests passing) |
 | **P5-T3** | **Manual Check-In, FLAGGED_GUEST, LATE_BOARDED & Corrections:** Driver manual check-in, guest boarding, late check-in, coordinator corrections with reasons, duplicate guard, and concurrency locking. | DONE | `docs/progress/evidence/P5-T3.log` | `T-ATT-02`, `T-CON-01` (`services/api/test/attendance-manual-concurrency.spec.ts` - 5 tests passing) |
 | **P5-T4** | **Boarding-Cutoff Job & Absence Evaluator (Part 11.3):** Background boarding-cutoff job (+15m departure -> `ABSENT`), absence evaluator (morning present + afternoon absent -> `absence_alerts` row). | DONE | `docs/progress/evidence/P5-T4.log` | `T-ATT-03` (`services/api/test/absence-evaluator.spec.ts` - 3 tests passing) |
-| **P5-T5** | **Leave Flows for Students & Faculty (Part 11.9):** Student leave submission (up to 30m before departure), faculty bus leave, cancellation rules, sets status `ON_LEAVE`. | NOT STARTED | `docs/progress/evidence/P5-T5.log` | `T-ATT-04` (`services/api/test/leave-flow.spec.ts`) |
+| **P5-T5** | **Leave Flows for Students & Faculty (Part 11.9):** Student leave submission (up to 30m before departure), faculty bus leave, cancellation rules, sets status `ON_LEAVE`. | DONE | `docs/progress/evidence/P5-T5.log` | `T-ATT-04` (`services/api/test/leave-flow.spec.ts` - 4 tests passing) |
 | **P5-T6** | **Absence Alerts Management for Faculty & Coordinators:** Alerts list/detail, faculty acknowledgement, investigation notes, and `BOARDED_LATE` transition when boarding occurs after alert. | NOT STARTED | `docs/progress/evidence/P5-T6.log` | `services/api/test/absence-alerts-management.spec.ts` |
 | **P5-T7** | **Operational Alerts, Coordinator Summary & CSV Export:** Severity 1-3 operational alert engine, 08:00 IST daily coordinator summary, and streaming CSV export with formula injection guards (Part 13.16). | NOT STARTED | `docs/progress/evidence/P5-T7.log` | `services/api/test/operational-alerts-export.spec.ts` |
 
@@ -59,5 +59,5 @@
 | **T-ATT-01** | QR acceptance & expiry (Part 11.2) | QR from 30s ago accepted; QR from 65s ago returns `QR_EXPIRED` | **VERIFIED** |
 | **T-ATT-02** | Duplicate boarding prevention | Second scan returns `DUPLICATE_BOARDING` | **VERIFIED** |
 | **T-ATT-03** | Absence alert creation | Morning boarded + afternoon absent triggers `absence_alerts` within 5m of cutoff | **VERIFIED** |
-| **T-ATT-04** | Leave immunity | Approved leave prevents absence alert creation | NOT STARTED |
+| **T-ATT-04** | Leave immunity | Approved leave prevents absence alert creation | **VERIFIED** |
 | **T-CON-01** | Parallel scan concurrency | Two parallel scans create exactly one record | **VERIFIED** |
