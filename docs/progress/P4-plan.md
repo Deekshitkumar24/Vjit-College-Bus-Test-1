@@ -5,7 +5,7 @@
 **Prompt Contract:** `AG-MASTER-FINAL-1.0` (Version 1.0, 21 October 2026)  
 **Companion Specifications:** `docs/spec/SW-MVP-1.0.pdf` (§4, §5.4, §5.5, §16.4, §16.5, §16.6, §20, §21, §22, §23, §24, §25, §33, §35) and `docs/spec/HW-SPEC-1.0.pdf` (§13, §15, §17)  
 **Date:** 22 October 2026  
-**Status:** In Execution (Autonomous Mode)
+**Status:** IN PROGRESS (Blocked on written phase approvals; P4-T1 and P4-T2 in progress pending live API/deployed verification; no new tasks may start)
 
 ---
 
@@ -25,7 +25,7 @@
   - §33: Firmware rollout staged deployment and auto-pause safety gates.
   - §35: System configuration dictionary (88 keys).
 - `AG-MASTER-FINAL-1.0`:
-  - Part 16 (Phase P4 tasks P4-T1 through P4-T8).
+  - Part 16 (Phase P4 tasks P4-T1 through P4-T9).
   - Part 6.8 & Part 10.1: Security permissions matrix and role enforcement (`T-SEC-01`, `T-SEC-05`).
   - Overrides `OV-4`: P4-T1 extends the existing `apps/admin-web` shell established in P0-T19.
   - Decisions `L-1` (BENCH status), `C-05` (Firmware presigned URL & signature), `C-06` (Export 24h lifetime).
@@ -34,7 +34,7 @@
 
 ## 2. Locked Decisions & Defaults in Force (Part B)
 
-- **L-1:** BENCH is a device status: `devices.status` takes `PROVISIONED`, `ACTIVE`, `BENCH`, `REVOKED`, `RETIRED`. Bench devices are excluded from live fleet views and passenger alerts.
+- **L-1:** BENCH is a device status: `devices.status` takes `PROVISIONED`, `ACTIVE`, `BENCH`, `REVOKED`, `RETIRED`. Bench devices are excluded from live fleet views and passenger alerts (verified under P4-T9).
 - **L-4:** College SSO supports Google Workspace and Microsoft Entra ID with OpenID Connect.
 - **C-05:** Firmware updates provide presigned download URL (15-min TTL), SHA-256, image size, and cryptographic signature.
 - **C-06:** Report export links valid for 24 hours.
@@ -46,25 +46,33 @@
 
 ## 3. Task Inventory & Dependency Order
 
-| Task ID   | Scope                                                                                                                                                             |   Status    |            Evidence Log            | Verification Criteria & Deliverables                                                                                                                      |
-| :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------: | :--------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **P4-T1** | **Web Shell, Role Routing & MFA Enrolment:** Lazy-loaded admin routes, role guards (`COR`, `TEC`, `SAD`, `MGT`), idle timeout, TOTP MFA enrolment & recovery codes | **DONE** | `docs/progress/evidence/P4-T1.log` | Complete. Commit `9b44a12`. Extended `apps/admin-web`, implemented route guards, session idle tracker, MFA TOTP flow with 10 single-use recovery codes, and CloudFront security headers. |
-| **P4-T2** | **Buses & Devices Management:** Bus CRUD, batch device provisioning (one-time token text/QR), device links, token rotation, typed revocation (`AC-COR-01`, L-1)    | **DONE** | `docs/progress/evidence/P4-T2.log` | Complete. Bus manager, batch provisioning wizard, one-time token display, device link coordinator control, typed bus revocation triggering maintenance ticket. |
-| **P4-T3** | **Routes, Stops, Geometries & Timetables:** Stops library, ordered stop sequencing, map geometry / GeoJSON upload, timetables, route-bus assignments, holidays    | **PENDING** | `docs/progress/evidence/P4-T3.log` | Stops management with 50m radius, route geometry editor, stop ordering, calendar holiday exceptions, and bus-route binding.                               |
-| **P4-T4** | **Rosters, Faculty Assignments & Student Routes:** Driver roster scheduling, faculty bus oversight assignments, student route binding and stop assignment       | **PENDING** | `docs/progress/evidence/P4-T4.log` | Driver roster allocation, faculty safety assignment matrix, student route allocations with stop association.                                              |
-| **P4-T5** | **User Management, CSV Bulk Import & Deactivation:** CSV import engine with dry run, row error validation (`AC-COR-02`), user deactivation with date (`AC-COR-03`) | **PENDING** | `docs/progress/evidence/P4-T5.log` | User directory, CSV streaming parser with pre-flight dry run (blocking commit on bad rows), user deactivation with session termination.                  |
-| **P4-T6** | **Live Fleet Map, Source-Switch Log & Dual Track:** Real-time fleet map, authoritative source indicators, filterable switch log, dual track 10-minute comparison   | **PENDING** | `docs/progress/evidence/P4-T6.log` | Fleet overview map, status cards, source switch history with reason codes, dual track comparison view (hardware vs phone GPS paths).                       |
-| **P4-T7** | **Maintenance Tickets & Staged Firmware Rollout:** Ticket board, notes, 48h escalation, firmware release registration, staged canary rollout controller (C-05)    | **PENDING** | `docs/progress/evidence/P4-T7.log` | Ticket lifecycle manager, 48h coordinator auto-escalation, firmware release registry with presigned URLs, staged rollout with auto-pause safety limits.   |
-| **P4-T8** | **Settings, Feature Flags, Audit Logs & T-SEC-05 Verification:** System settings with reason notes, feature flag toggles, audit viewer, admin route 404 security  | **PENDING** | `docs/progress/evidence/P4-T8.log` | Super admin settings manager requiring audit reasons, feature flag manager, append-only audit log viewer, and `T-SEC-05` route authorization validation. |
+| Task ID   | Scope                                                                                                                                                             |    Status     |            Evidence Log            | Verification Criteria & Deliverables                                                                                                                                    |
+| :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----------: | :--------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **P4-T1** | **Web Shell, Role Routing & MFA Enrolment:** Lazy-loaded admin routes, role guards (`COR`, `TEC`, `SAD`, `MGT`), idle timeout, TOTP MFA enrolment & recovery codes | **IN PROGRESS** | `docs/progress/evidence/P4-T1.log` | Code written & unit tests pass (Commit `9b44a12`). IN PROGRESS until TOTP flow runs with real authenticator and CloudFront security headers are verified on a deployed host. |
+| **P4-T2** | **Buses & Devices Management:** Bus CRUD, batch device provisioning (one-time token text/QR), device links, token rotation, typed revocation (`AC-COR-01`)         | **IN PROGRESS** | `docs/progress/evidence/P4-T2.log` | Code written & unit tests pass (Commit `5a51c79`). IN PROGRESS until AC-COR-01 live API test verifies 5s rejection with DEVICE_REVOKED. Bench mode claimed only in P4-T9.      |
+| **P4-T3** | **Routes, Stops, Geometries & Timetables:** Stops library, ordered stop sequencing, map geometry / GeoJSON upload, timetables, route-bus assignments, holidays    | **NOT STARTED** | `docs/progress/evidence/P4-T3.log` | Stops management with 50m radius, route geometry editor, stop ordering, calendar holiday exceptions, and bus-route binding. STOP: blocked on written approval.                 |
+| **P4-T4** | **Rosters, Faculty Assignments & Student Routes:** Driver roster scheduling, faculty bus oversight assignments, student route binding and stop assignment       | **NOT STARTED** | `docs/progress/evidence/P4-T4.log` | Driver roster allocation, faculty safety assignment matrix, student route allocations with stop association.                                                            |
+| **P4-T5** | **User Management, CSV Bulk Import & Deactivation:** CSV import engine with dry run, row error validation (`AC-COR-02`), user deactivation with date (`AC-COR-03`) | **NOT STARTED** | `docs/progress/evidence/P4-T5.log` | User directory, CSV streaming parser with pre-flight dry run (blocking commit on bad rows), user deactivation with session termination.                                |
+| **P4-T6** | **Live Fleet Map, Source-Switch Log & Dual Track:** Real-time fleet map, authoritative source indicators, filterable switch log, dual track 10-minute comparison   | **NOT STARTED** | `docs/progress/evidence/P4-T6.log` | Fleet overview map, status cards, source switch history with reason codes, dual track comparison view (hardware vs phone GPS paths).                                     |
+| **P4-T7** | **Maintenance Tickets & Staged Firmware Rollout:** Ticket board, notes, 48h escalation, firmware release registration, staged canary rollout controller (C-05)    | **NOT STARTED** | `docs/progress/evidence/P4-T7.log` | Ticket lifecycle manager, 48h coordinator auto-escalation, firmware release registry with presigned URLs, staged rollout with auto-pause safety limits.                 |
+| **P4-T8** | **Settings, Feature Flags, Audit Logs & T-SEC-05 Verification:** System settings with reason notes, feature flag toggles, audit viewer, admin route 404 security  | **NOT STARTED** | `docs/progress/evidence/P4-T8.log` | Super admin settings manager requiring audit reasons, feature flag manager, append-only audit log viewer, and `T-SEC-05` route authorization validation.               |
+| **P4-T9** | **Bench Mode (Decision L-1, master Part 16):** Registration as BENCH, exclusion from fleet views, alerts, reports; dedicated bench acceptance test                 | **NOT STARTED** | `docs/progress/evidence/P4-T9.log` | Device BENCH lifecycle state, fleet exclusion filter, alert suppression, report exclusion, and dedicated bench test suite per master Part 16 & §16.5 workflow 7.       |
 
 ---
 
-## 4. Mandatory Phase P4 Exit Criteria
+## 4. Mandatory Phase P4 Exit Criteria (Master Part 16)
 
-1. **AC-COR-01:** Given a device is revoked, its next request is rejected within 5 seconds, and a maintenance ticket appears on the technician's list.
-2. **AC-COR-02:** Given a student CSV with 3 bad rows out of 400, the commit is blocked until the bad rows are fixed or removed, and the report lists the 3 row numbers.
-3. **AC-COR-03:** Given a deactivated user, the user disappears from all live views within 60 seconds.
-4. **AC-TEC-01:** Given a new device is provisioned, its token works once it is flashed, and the first heartbeat is recorded within 2 minutes of power-up.
-5. **AC-TEC-02:** Given a replacement, the old device's history remains visible, and no sample is ever attached to the wrong device.
-6. **T-SEC-05:** Each admin endpoint returns 404 (or 403) to a user without the authorized role.
-7. All admin web unit, component, and security suites pass cleanly with zero mock data and zero lint errors.
+1. **AC-COR-01:** Given a device is revoked, its next request is rejected within 5 seconds, and a maintenance ticket appears on the technician's list.  
+   - *Status:* **NOT VERIFIED** (Requires live API and DB integration verification).
+2. **AC-COR-02:** Given a student CSV with 3 bad rows out of 400, the commit is blocked until the bad rows are fixed or removed, and the report lists the 3 row numbers.  
+   - *Status:* **NOT VERIFIED** (Not yet reached).
+3. **AC-COR-03:** Given a deactivated user, the user disappears from all live views within 60 seconds.  
+   - *Status:* **NOT VERIFIED** (Not yet reached).
+4. **AC-TEC-01:** Given a new device is provisioned, its token works once it is flashed, and the first heartbeat is recorded within 2 minutes of power-up.  
+   - *Status:* **NOT VERIFIED** (Not yet reached).
+5. **AC-TEC-02:** Given a replacement, the old device's history remains visible, and no sample is ever attached to the wrong device.  
+   - *Status:* **NOT VERIFIED** (Not yet reached).
+6. **T-SEC-05:** Each admin endpoint returns 404 (or 403) to a user without the authorized role.  
+   - *Status:* **NOT VERIFIED** (Not yet reached).
+7. All admin web unit, component, and security suites pass cleanly with zero mock data and zero lint errors.  
+   - *Status:* **IN PROGRESS** (Unit suite passes locally; deployed and integration suites pending).

@@ -5,7 +5,7 @@
 **Prompt Contract:** `AG-MASTER-FINAL-1.0` (Version 1.0, 21 October 2026)  
 **Companion Specifications:** `docs/spec/SW-MVP-1.0.pdf` (§8, §11.7, §15, §16.3, §17.4, §18, §19, §28) and `docs/spec/HW-SPEC-1.0.pdf`  
 **Date:** 22 October 2026  
-**Status:** In Execution (Autonomous Mode)
+**Status:** IN PROGRESS (Awaiting physical reference phone testing and written owner approval)
 
 ---
 
@@ -42,23 +42,31 @@
 
 ## 3. Task Inventory & Dependency Order
 
-| Task ID   | Scope                                                                                                                                                              |  Status  |            Evidence Log            | Verification Criteria & Deliverables                                                                                                                         |
-| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------: | :--------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **P3-T1** | **Driver OTP sign-in, roster list & device registration:** OTP login, roster retrieval (assigned buses only, AC-DRV-01), phone device label binding & registration | **DONE** | `docs/progress/evidence/P3-T1.log` | Complete. Commit `f795f5a`. Driver roster API, AC-DRV-01 unrostered bus 403, phone label registration, 83/83 mobile + 58/58 API tests passing.               |
-| **P3-T2** | **Permissions & pre-trip check diagnostics:** 8 pre-trip checks (§15.1, hardware GREEN/AMBER/RED status, location Always, GPS fix < 50m, network reachability)     | **DONE** | `docs/progress/evidence/P3-T2.log` | Complete. Commit `da2af0e`. 8-check diagnostic engine, AC-DRV-02 warning and phone fallback, AC-DRV-03 location permission blocking and fix steps.           |
-| **P3-T3** | **Shift start, restart resume, idle detection & 14h timeout:** Shift start transaction, mid-shift restart resume <10s (AC-DRV-04), 20m idle prompt, 14h timeout    | **DONE** | `docs/progress/evidence/P3-T3.log` | Complete. Commit `9a0d173`. Shift lifecycle engine, AC-DRV-04 resume without duplication, 20m idle prompt, 14h timeout, and SOS block.                       |
-| **P3-T4** | **Background location tracking & 24h SQLite buffer:** Foreground service notification, adaptive cadence (10s moving / 30s stopped), SQLite buffer, batch flush     | **DONE** | `docs/progress/evidence/P3-T4.log` | Complete. Commit `bae7796`. Location collector, persistent notification state, SQLite buffer with 24h capacity (~8,640 samples), sequential FIFO flush.      |
-| **P3-T5** | **Tracking mode switcher & Driver SOS emergency:** Mode switch (Auto/Hardware/Phone) with confirmation & 140-char note, 2s hold SOS trigger, incident status sheet | **DONE** | `docs/progress/evidence/P3-T5.log` | Complete. Commit `e925c63`. Mode switch modal with note validation, 2s hold gesture controller, L-2 category routing, real-time incident status progression. |
-| **P3-T6** | **Boarding QR code display & manual check-in:** 30s rotating HMAC token generator with circular countdown timer, student check-in list with reason codes           | **DONE** | `docs/progress/evidence/P3-T6.log` | Complete. Commit `6de3ed6`. 30s rotating HMAC QR, circular countdown state, manifest manager, offline check-in queue & sync, 137 mobile tests passing.       |
-| **P3-T7** | **Report a problem & maintenance ticketing:** Problem reporter (`BUS_BREAKDOWN`, `TRACKER_PROBLEM`, `PHONE_PROBLEM`, `OTHER`), 500-char note, ticket generation    | **DONE** | `docs/progress/evidence/P3-T7.log` | Complete. Commit `8a5f84b`. Problem reporter, 5-500 char validation, priority derivation, offline queuing & sync, 143 mobile tests passing.                  |
-| **P3-T8** | **Mock-location handling & Driver integration test suite:** Mock GPS rejection (`is_mock`), driver warning banner, coordinator alert, full driver suite validation | **DONE** | `docs/progress/evidence/P3-T8.log` | Complete. Commit `8bc6bf0`. Mock banner, alert callback, AC-DRV-01 to AC-DRV-04 verified, 2h trip simulation, 149 mobile tests passing cleanly.              |
+| Task ID   | Scope                                                                                                                                                              |    Status     |            Evidence Log            | Verification Criteria & Deliverables                                                                                                                         |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----------: | :--------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **P3-T1** | **Driver OTP sign-in, roster list & device registration:** OTP login, roster retrieval (assigned buses only, AC-DRV-01), phone device label binding & registration | **COMPLETED** | `docs/progress/evidence/P3-T1.log` | Complete. Commit `f795f5a`. Driver roster API, AC-DRV-01 unrostered bus 403, phone label registration, 83/83 mobile + 58/58 API tests passing.               |
+| **P3-T2** | **Permissions & pre-trip check diagnostics:** 8 pre-trip checks (§15.1, hardware GREEN/AMBER/RED status, location Always, GPS fix < 50m, network reachability)     | **COMPLETED** | `docs/progress/evidence/P3-T2.log` | Complete. Commit `da2af0e`. 8-check diagnostic engine, AC-DRV-02 warning and phone fallback, AC-DRV-03 location permission blocking and fix steps.           |
+| **P3-T3** | **Shift start, restart resume, idle detection & 14h timeout:** Shift start transaction, mid-shift restart resume <10s (AC-DRV-04), 20m idle prompt, 14h timeout    | **COMPLETED** | `docs/progress/evidence/P3-T3.log` | Complete. Commit `9a0d173`. Shift lifecycle engine, AC-DRV-04 resume without duplication, 20m idle prompt, 14h timeout, and SOS block.                       |
+| **P3-T4** | **Background location tracking & 24h SQLite buffer:** Foreground service notification, adaptive cadence (10s moving / 30s stopped), SQLite buffer, batch flush     | **COMPLETED** | `docs/progress/evidence/P3-T4.log` | Complete. Commit `bae7796`. Location collector, persistent notification state, SQLite buffer with 24h capacity (~8,640 samples), sequential FIFO flush.      |
+| **P3-T5** | **Tracking mode switcher & Driver SOS emergency:** Mode switch (Auto/Hardware/Phone) with confirmation & 140-char note, 2s hold SOS trigger, incident status sheet | **COMPLETED** | `docs/progress/evidence/P3-T5.log` | Complete. Commit `e925c63`. Mode switch modal with note validation, 2s hold gesture controller, L-2 category routing, real-time incident status progression. |
+| **P3-T6** | **Boarding QR code display & manual check-in:** 30s rotating HMAC token generator with circular countdown timer, student check-in list with reason codes           | **COMPLETED** | `docs/progress/evidence/P3-T6.log` | Complete. Commit `6de3ed6`. 30s rotating HMAC QR, circular countdown state, manifest manager, offline check-in queue & sync, 137 mobile tests passing.       |
+| **P3-T7** | **Report a problem & maintenance ticketing:** Problem reporter (`BUS_BREAKDOWN`, `TRACKER_PROBLEM`, `PHONE_PROBLEM`, `OTHER`), 500-char note, ticket generation    | **COMPLETED** | `docs/progress/evidence/P3-T7.log` | Complete. Commit `8a5f84b`. Problem reporter, 5-500 char validation, priority derivation, offline queuing & sync, 143 mobile tests passing.                  |
+| **P3-T8** | **Mock-location handling & Driver integration test suite:** Mock GPS rejection (`is_mock`), driver warning banner, coordinator alert, full driver suite validation | **COMPLETED** | `docs/progress/evidence/P3-T8.log` | Complete. Commit `8bc6bf0`. Mock banner, alert callback, AC-DRV-01 to AC-DRV-04 verified, 2h trip simulation, 149 mobile tests passing cleanly.              |
 
 ---
 
-## 4. Mandatory Phase P3 Exit Criteria
+## 4. Mandatory Phase P3 Exit Criteria (Master Part 16)
 
-1. **AC-DRV-01:** Driver roster strictly isolates buses: unrostered buses are hidden, and direct API access to unrostered buses returns HTTP 403 Forbidden.
-2. **AC-DRV-02:** When hardware tracker status is RED (no heartbeat in 2 minutes), shift can start with a visible warning and driver phone becomes primary tracking source.
-3. **AC-DRV-03:** When location permission is not set to `Always`, shift start is blocked and the platform-specific fix screen is shown.
-4. **AC-DRV-04:** When app is closed mid-shift and reopened, the same active shift resumes automatically within 10 seconds with no duplicate shift created.
-5. All driver unit and integration test suites pass cleanly with zero mock data and zero lint errors.
+Per Master Part 16: *"Exit: AC-DRV-01 to 04 pass on device. Two-hour battery test passes on the reference phone."*
+Per Rule A-6: Unit tests and simulated software timers do not count as on-device evidence.
+
+1. **AC-DRV-01:** Driver roster strictly isolates buses (unrostered buses hidden; direct API returns HTTP 403 Forbidden).  
+   - *Status:* **NOT VERIFIED** on physical device (unit/API suite passed).
+2. **AC-DRV-02:** When hardware tracker status is RED (no heartbeat in 2 min), shift starts with visible warning and phone becomes primary tracking source.  
+   - *Status:* **NOT VERIFIED** on physical device (unit suite passed).
+3. **AC-DRV-03:** When location permission is not set to `Always`, shift start is blocked and platform-specific fix screen is shown.  
+   - *Status:* **NOT VERIFIED** on physical device (unit suite passed).
+4. **AC-DRV-04:** When app is closed mid-shift and reopened, the same active shift resumes automatically within 10 seconds without duplicate shifts.  
+   - *Status:* **NOT VERIFIED** on physical device (simulated 4ms in-memory restart does not count as on-device evidence).
+5. **Two-hour battery test passes on the reference phone:**  
+   - *Status:* **NOT VERIFIED** (Requires reference phone runtime).
