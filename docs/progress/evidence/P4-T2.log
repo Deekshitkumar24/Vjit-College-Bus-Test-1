@@ -1,0 +1,37 @@
+================================================================================
+Task ID: P4-T2 Buses & Devices Management
+Timestamp: 2026-10-22T10:48:45+05:30
+Author: Antigravity Autonomous Agent
+Prompt Contract: AG-MASTER-FINAL-1.0 (Phase P4)
+================================================================================
+
+Command Executed:
+pnpm --filter @collegebus/admin-web test:unit
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/guards.spec.ts (4 tests) 10ms
+ ✓ test/buses-devices.spec.ts (6 tests) 30ms
+ ✓ test/web-shell.spec.ts (11 tests) 29ms
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  10:48:16
+   Duration  4.04s
+
+Security & Quality Verification:
+- pnpm --filter @collegebus/admin-web lint: PASSED (0 warnings, 0 errors)
+- pnpm --filter @collegebus/admin-web typecheck: PASSED (0 errors)
+- pnpm verify:no-mock: PASSED (Zero mock data patterns)
+- Monorepo test:unit: 12/12 successful packages
+
+Acceptance Criteria Verified:
+1. AC-TEC-01: Device batch provisioning produces one-time token plaintext and QR code for flashing, creates PROVISIONED records (or BENCH per Locked Decision L-1).
+2. AC-TEC-02: Device replacement wizard retires old device, links new device, and maintains link history so samples remain attributed to the correct hardware.
+3. AC-COR-01: Device revocation requires typed confirmation of bus number; sets device status to REVOKED, unlinks from bus, rejects subsequent requests within 5 seconds with DEVICE_REVOKED, and automatically creates high-priority maintenance ticket on technician list.
+4. Authority Isolation: Technicians (TEC) are blocked from linking devices to buses (Coordinator/Super Admin only).
+================================================================================
