@@ -36,7 +36,7 @@ Note: An SOS trigger in the student app is not a P2 task in Part 16 (handled und
 | **P2-T5** | Faculty views: my buses with picker, bus detail with driver contact, today's attendance | **DONE** | `docs/progress/evidence/P2-T5.log` | Faculty manifest and driver contact (Commit `a3dde2b`) |
 | **P2-T6** | Approaching-alert setting, 2 to 15 minutes | **DONE** | `docs/progress/evidence/P2-T6.log` | Approaching alert preference slider clamped 2-15 min |
 | **P2-T7** | Offline states, cached-data banners, no-connection messages | **DONE** | `docs/progress/evidence/P2-T7.log` | Offline caching & banners (Commit `602db65`) |
-| **P2-T8** | Accessibility and externalised strings | **IN PROGRESS** | `docs/progress/evidence/P2-T8.log` | Screen reader labels & i18n |
+| **P2-T8** | Accessibility and externalised strings | **DONE** | `docs/progress/evidence/P2-T8.log` | Screen reader labels, roles, hints, multi-locale dictionary |
 | **P2-T9** | Boarding QR scanner (expo-camera), POST /attendance/scan, specific failure messages. Nothing queued offline | **DONE** | `docs/progress/evidence/P2-T9.log` | QR scanner, camera view, scan endpoint (Commit `60ad047`) |
 | **P2-T10** | Stop request screens: pin, name up to 60 characters, checks, status, votes | **DONE** | `docs/progress/evidence/P2-T10.log` | Stop change requests & status (Commit `1e74d59`) |
 | **P2-T11** | Leave screen: mark and cancel until the cutoff | **DONE** | `docs/progress/evidence/P2-T11.log` | Trip leave management & cancellation (Commit `1e74d59`) |
