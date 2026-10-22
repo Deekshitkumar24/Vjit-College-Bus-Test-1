@@ -7,7 +7,7 @@ Generated via automated verification scripts in `scripts/audit/` executed direct
 | Metric | Measured Count | Contract Baseline Reference | Status / Reconciliation |
 |---|---|---|---|
 | **Contract Configuration Keys** | 79 | `AG-MASTER-FINAL-1.0.md` Part 14.4 (75) + Part 20.17 (4) | Exact contract baseline |
-| **Seeded Configuration Keys** | 79 | `packages/config/src/defaults.ts` | 48 extra keys removed per OV-12; awaiting owner decision O8 |
+| **Seeded Configuration Keys** | 128 | `packages/config/src/defaults.ts` | 52 extra keys kept in defaults.ts as proposed amendment O8; OV-12 FAIL |
 | **Prisma Schema Models** | 55 | `packages/db/prisma/schema.prisma` | Mapped database entities |
 | **Partitioned Tables** | 2 | `location_samples`, `device_heartbeats` (Part 7.12) | Declarative PostgreSQL range partitioning |
 | **Total Physical Tables** | 57 | Contract Part 7 (56) + `push_tokens` (OV-15) | 55 Prisma models + 2 Partitioned tables = exactly 57 |
