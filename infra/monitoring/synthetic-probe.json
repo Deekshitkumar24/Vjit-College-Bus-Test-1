@@ -1,0 +1,11 @@
+{
+  "name": "collegebus-external-health-probe",
+  "schedule": "rate(1 minute)",
+  "artifactS3Location": "s3://collegebus-synthetics-artifacts/canaries",
+  "executionRoleArn": "arn:aws:iam::123456789012:role/service-role/CloudWatchSyntheticsRole",
+  "runtimeVersion": "syn-nodejs-puppeteer-6.2",
+  "endpoint": "https://api.dev.collegebus.internal/health/ready",
+  "timeoutInSeconds": 30,
+  "failureThreshold": 2,
+  "alarmAction": "arn:aws:sns:ap-south-1:123456789012:on-call-pager"
+}

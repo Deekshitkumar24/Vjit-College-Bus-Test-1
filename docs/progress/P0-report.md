@@ -10,7 +10,7 @@ P0-T6 | 6626da0 | Auth core: dual OIDC discrete settings with startup refusal, s
 P0-T7 | 92a1224 | Access control: Default-deny global guard, @Public, @Roles RBAC, verify:routes-auth | 30 routes audited | services/api/src/common/guards/auth.guard.ts, roles.guard.ts | DONE
 P0-T8 | 6fa0273 | HTTP hardening: Helmet, strict CSP, CORS allowlist, error envelope, X-Request-Id | 4 (Part 8) | services/api/src/main.ts, filters/http-exception.filter.ts | DONE
 P0-T9 | e4d29c7 | Rate limiter (429 + Retry-After) & Idempotency middleware (409) | 2 (T-SEC-04, Part 8.1) | services/api/src/common/middleware/rate-limiter.middleware.ts, idempotency.middleware.ts | DONE
-P0-T10 | d8c029a | Observability baseline: /health liveness and /health/ready probes | 2 (Part 2) | services/api/src/modules/health/health.controller.ts | DONE
+P0-T10 | d8c029a | Observability baseline: /health liveness and /health/ready probes | 2 (Part 2) | services/api/src/modules/health/health.controller.ts | IN PROGRESS (BLOCKED-EXTERNAL E1, E7)
 P0-T11 | 986227e | Dev infrastructure (Terraform): VPC, RDS Multi-AZ, ALB, S3, KMS, WAF | Awaiting AWS account E1 | infra/terraform/main.tf, variables.tf | IN PROGRESS
 P0-T12 | 90b42c2 | Admin MFA recovery codes: 10 single-use codes, Argon2id hashed | 1 (Part 13.20) | services/api/src/modules/auth/auth.service.ts | DONE
 P0-T13 | 90b42c2 | Authorisation test harness: permissions matrix check across 8 roles | 108 matrix evaluations | services/api/test/authorization-harness.spec.ts | DONE
