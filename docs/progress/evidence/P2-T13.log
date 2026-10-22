@@ -1,0 +1,27 @@
+=== P2-T13: Profile and Privacy Management ===
+Date: 2026-10-22T21:04:41+05:30
+Command: npx vitest run apps/mobile/test/privacy-profile.spec.ts
+
+--- 1. Failing run before implementation ---
+ FAIL  apps/mobile/test/privacy-profile.spec.ts [ apps/mobile/test/privacy-profile.spec.ts ]
+Error: Failed to load url ../src/privacy/profile-privacy-manager.js
+
+--- 2. Passing run after implementation ---
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ apps/mobile/test/privacy-profile.spec.ts (3 tests) 12ms
+   ✓ P2-T13: Profile and Privacy Management > retrieves user profile and queues profile correction request
+   ✓ P2-T13: Profile and Privacy Management > manages GDPR/DPDP privacy requests (data export, deletion, consent withdrawal)
+   ✓ P2-T13: Profile and Privacy Management > tracks session list and allows signing out of other devices
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:04:40
+   Duration  1.40s
+
+Result: PASS
+Scope delivered:
+- Profile display & profile correction submission
+- Data export request with 24-hour download link expiration (Decision C-06)
+- Account deletion and consent withdrawal ledger
+- Multi-session inventory with remote sign-out for all other devices
