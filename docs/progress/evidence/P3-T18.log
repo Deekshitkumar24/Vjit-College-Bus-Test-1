@@ -1,0 +1,23 @@
+=== Evidence Log: P3-T18 ===
+Task: P3-T18: Shift auto-end job (Part 12.3, 9.8). T-SHF-04.
+Date: 2026-10-22
+Governing References: SW-MVP-1.0 §15.4, Master Part 9.8, Part 12.3, Part 16 (P3-T18), Test ID: T-SHF-04
+
+Command 1:
+pnpm --filter @collegebus/api test:unit test/shift-auto-end.spec.ts
+
+Output:
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/shift-auto-end.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/shift-auto-end.spec.ts (4 tests) 21ms
+   ✓ Shift Auto-End Background Worker (P3-T18, Part 12.3, Part 9.8, T-SHF-04)
+     ✓ keeps shift ACTIVE when vehicle movement occurred recently (< 20 mins)
+     ✓ dispatches 10-minute warning when stationary for 20 minutes (Part 9.8)
+     ✓ automatically terminates shift after 30 minutes stationary and writes audit log (T-SHF-04)
+     ✓ automatically terminates shift reaching 14-hour hard timeout (Part 15.4, T-SHF-04)
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

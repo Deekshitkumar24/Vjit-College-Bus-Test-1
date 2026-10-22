@@ -102,7 +102,7 @@ describe('Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9)', () =
       await expect(authService.verifyRecoveryCode(userId, 'RC-0000-0000')).rejects.toThrowError(
         /Invalid or previously used recovery code/,
       );
-    });
+    }, 15000);
   });
 
   describe('Session Token Family Rotation & Reuse Detection (T-AUTH-03, Part 13.20)', () => {

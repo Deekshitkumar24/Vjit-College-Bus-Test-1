@@ -55,6 +55,14 @@ export class ShiftService {
     );
   }
 
+  getAllActiveShifts(): ShiftRecord[] {
+    return Array.from(this.shifts.values()).filter((s) => s.status === 'ACTIVE');
+  }
+
+  getBusLastMovement(busId: string): Date | undefined {
+    return this.busLastMovement.get(busId);
+  }
+
   private openSosBuses = new Set<string>();
   private busLastMovement = new Map<string, Date>();
 
