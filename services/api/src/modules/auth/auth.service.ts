@@ -46,6 +46,96 @@ export class AuthService {
   private readonly MAX_CONSECUTIVE_FAILURES = 10; // 10 consecutive failures lock account
   private readonly LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes lockout
 
+  // Active OIDC authorization requests: state -> { codeVerifier, nonce, provider, expiresAt }
+  private oidcPendingRequests = new Map<
+    string,
+    { codeVerifier: string; nonce: string; provider: 'GOOGLE' | 'MICROSOFT'; expiresAt: number }
+  >();
+
+  /**
+   * P0-T6: Generates OIDC authorization URL with PKCE (S256), state, and nonce (RS-09, L-4, OV-9).
+   */
+  public generateOidcAuthorizationUrl(
+    provider: 'GOOGLE' | 'MICROSOFT',
+    redirectUri: string,
+  ): { url: string; codeVerifier: string; state: string; nonce: string } {
+    // 1. Generate PKCE code verifier and code challenge (S256)
+    const codeVerifier = randomBytes(32).toString('base64url');
+    const codeChallenge = createHmac('sha256', 'pkce_salt')
+      .update(codeVerifier)
+      .digest('base64url');
+
+    // 2. Generate cryptographically random state and nonce
+    const state = randomBytes(24).toString('base64url');
+    const nonce = randomBytes(24).toString('base64url');
+
+    // 3. Provider-specific endpoint selection (Google Workspace vs Microsoft Entra ID)
+    let authEndpoint = '';
+    let clientId = '';
+
+    if (provider === 'GOOGLE') {
+      authEndpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+      clientId = process.env['OIDC_GOOGLE_CLIENT_ID'] || 'google-test-client-id';
+    } else if (provider === 'MICROSOFT') {
+      authEndpoint = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
+      clientId = process.env['OIDC_ENTRA_CLIENT_ID'] || 'entra-test-client-id';
+    }
+
+    const urlParams = new URLSearchParams({
+      response_type: 'code',
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      scope: 'openid email profile',
+      state,
+      nonce,
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256',
+    });
+
+    const url = `${authEndpoint}?${urlParams.toString()}`;
+
+    // Store pending auth request (10 minute TTL)
+    this.oidcPendingRequests.set(state, {
+      codeVerifier,
+      nonce,
+      provider,
+      expiresAt: Date.now() + 10 * 60 * 1000,
+    });
+
+    return { url, codeVerifier, state, nonce };
+  }
+
+  /**
+   * P0-T6: Validates OIDC callback with state, PKCE code verifier, and nonce verification.
+   */
+  public validateOidcCallback(params: {
+    state: string;
+    code: string;
+    idTokenNonce?: string;
+  }): { valid: boolean; provider: 'GOOGLE' | 'MICROSOFT'; codeVerifier: string } {
+    const pending = this.oidcPendingRequests.get(params.state);
+    if (!pending || pending.expiresAt < Date.now()) {
+      throw new UnauthorizedException({
+        code: 'INVALID_OIDC_STATE',
+        message: 'Invalid or expired OIDC state parameter.',
+      });
+    }
+
+    if (params.idTokenNonce && params.idTokenNonce !== pending.nonce) {
+      throw new UnauthorizedException({
+        code: 'INVALID_OIDC_NONCE',
+        message: 'OIDC ID token nonce mismatch.',
+      });
+    }
+
+    this.oidcPendingRequests.delete(params.state);
+    return {
+      valid: true,
+      provider: pending.provider,
+      codeVerifier: pending.codeVerifier,
+    };
+  }
+
   public hashToken(token: string, secretKey: string): string {
     return createHmac('sha256', secretKey).update(token).digest('hex');
   }

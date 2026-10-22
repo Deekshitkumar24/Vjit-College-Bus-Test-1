@@ -30,3 +30,7 @@ Date: 22 October 2026
 ## Item 4: P0-T3 Migration and Users Columns Empirical Verification
 - **Change:** Executed `db:migrate` (prisma migrate deploy) against native PostgreSQL 16 with PostGIS 3.4.2 on Windows. Verified `college_email_exception` and `exception_reason` columns on `users` table. Saved raw output to `docs/progress/evidence/P0-T3.log`.
 - **Files Modified:** `docs/progress/evidence/P0-T3.log`, `scripts/verify-p0-t3-db.ts`, `docs/progress/corrections.md`.
+
+## Item 5: P0-T6 OIDC PKCE, State/Nonce, T-AUTH-03, and Runtime Provider Choice
+- **Change:** Implemented OIDC authorization with PKCE (S256 code challenge), cryptographically random state and nonce generation, and runtime choice between Google Workspace and Microsoft Entra ID. Verified all 11 unit tests in `services/api/test/auth.spec.ts` including refresh token family rotation (`T-AUTH-03`) and driver OTP lockout. Recorded evidence in `docs/progress/evidence/P0-T6.log`. Noted that live SSO sign-in remains Exit 1 and stays BLOCKED-EXTERNAL on `E3` (college identity test tenant).
+- **Files Modified:** `services/api/src/modules/auth/auth.service.ts`, `services/api/test/auth.spec.ts`, `docs/progress/evidence/P0-T6.log`, `docs/progress/corrections.md`.

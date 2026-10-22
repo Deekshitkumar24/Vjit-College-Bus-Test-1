@@ -13,6 +13,53 @@ describe('Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9)', () =
     IdempotencyMiddleware.reset();
   });
 
+  describe('OIDC SSO with PKCE, State & Nonce (P0-T6, RS-09, L-4, OV-9)', () => {
+    it('generates authorization URL with code_challenge (S256), state, and nonce for Google Workspace', () => {
+      const redirectUri = 'https://portal.college.edu/auth/callback';
+      const result = authService.generateOidcAuthorizationUrl('GOOGLE', redirectUri);
+
+      expect(result.url).toContain('https://accounts.google.com/o/oauth2/v2/auth');
+      expect(result.url).toContain('code_challenge=');
+      expect(result.url).toContain('code_challenge_method=S256');
+      expect(result.url).toContain(`state=${result.state}`);
+      expect(result.url).toContain(`nonce=${result.nonce}`);
+      expect(result.codeVerifier.length).toBeGreaterThanOrEqual(43);
+    });
+
+    it('generates authorization URL with code_challenge (S256), state, and nonce for Microsoft Entra ID', () => {
+      const redirectUri = 'https://portal.college.edu/auth/callback';
+      const result = authService.generateOidcAuthorizationUrl('MICROSOFT', redirectUri);
+
+      expect(result.url).toContain('https://login.microsoftonline.com/common/oauth2/v2.0/authorize');
+      expect(result.url).toContain('code_challenge_method=S256');
+      expect(result.url).toContain(`state=${result.state}`);
+      expect(result.url).toContain(`nonce=${result.nonce}`);
+    });
+
+    it('validates matching state and nonce, and rejects mismatched state with INVALID_OIDC_STATE', () => {
+      const redirectUri = 'https://portal.college.edu/auth/callback';
+      const authReq = authService.generateOidcAuthorizationUrl('GOOGLE', redirectUri);
+
+      // Successful validation
+      const validated = authService.validateOidcCallback({
+        state: authReq.state,
+        code: 'auth_code_from_idp',
+        idTokenNonce: authReq.nonce,
+      });
+      expect(validated.valid).toBe(true);
+      expect(validated.provider).toBe('GOOGLE');
+      expect(validated.codeVerifier).toBe(authReq.codeVerifier);
+
+      // Tampered state fails
+      expect(() =>
+        authService.validateOidcCallback({
+          state: 'tampered-or-expired-state',
+          code: 'auth_code',
+        }),
+      ).toThrowError(/Invalid or expired OIDC state parameter/);
+    });
+  });
+
   describe('Driver OTP & Lockout (T-AUTH-01, Part 13.4, Part 13.20)', () => {
     it('dispatches a valid code and locks account after 5 consecutive incorrect attempts per code (C-06)', async () => {
       const email = 'driver.ops@college.edu';
