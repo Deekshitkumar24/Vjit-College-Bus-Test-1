@@ -1,19 +1,39 @@
 === P0-T6 Authentication Core Verification ===
-Date: 2026-10-22T15:08:14+05:30
-Command: pnpm --filter @collegebus/config test:unit
-Commit SHA: (P0-T6 correction)
+Date: 2026-10-22T19:56:20+05:30
+Commands:
+  1. npx vitest run packages/config/test/config.spec.ts
+  2. npx vitest run services/api/test/auth.spec.ts
 
-> @collegebus/config@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\config
-> vitest run
+--- 1. Dual OIDC Schema & Startup Refusal (OV-9, L-4) ---
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
 
- RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/config
-
- ✓ test/config.spec.ts (9 tests) 48ms
+ ✓ packages/config/test/config.spec.ts (9 tests) 23ms
+   ✓ Config Package Unit Tests (P0-T2, OV-9, OV-12) > loads environment variables matching Zod schema
+   ✓ Config Package Unit Tests (P0-T2, OV-9, OV-12) > refuses startup if required environment variables are missing
+   ✓ Config Package Unit Tests (P0-T2, OV-9, OV-12) > refuses startup if secrets contain banned insecure placeholders
+   ✓ Config Package Unit Tests (P0-T2, OV-9, OV-12) > verifies system_defaults table seeds 79 contract configuration keys (Part 14.4, Part 20.17)
+   ✓ Config Package Unit Tests (P0-T2, OV-9, OV-12) > refuses startup if Google Workspace OIDC configuration is incomplete (P0-T6, OV-9, L-4)
+   ✓ Config Package Unit Tests (P0-T2, OV-9, OV-12) > refuses startup if Microsoft Entra ID OIDC configuration is incomplete (P0-T6, OV-9, L-4)
+   ✓ Config Package Unit Tests (P0-T2, OV-9, OV-12) > accepts valid dual Google Workspace and Microsoft Entra ID OIDC configuration (P0-T6, OV-9, L-4)
 
  Test Files  1 passed (1)
       Tests  9 passed (9)
-   Start at  15:08:12
-   Duration  1.99s (transform 287ms, setup 0ms, collect 443ms, tests 48ms, environment 0ms, prepare 552ms)
+
+--- 2. Auth Service Core Verification (T-AUTH-01, T-AUTH-03, P0-T12) ---
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ services/api/test/auth.spec.ts (8 tests) 2376ms
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Driver OTP & Lockout (T-AUTH-01, Part 13.4, Part 13.20) > dispatches a valid code and locks account after 5 consecutive incorrect attempts per code (C-06)
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Driver OTP & Lockout (T-AUTH-01, Part 13.4, Part 13.20) > successfully verifies correct code and marks it single-use
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Driver OTP & Lockout (T-AUTH-01, Part 13.4, Part 13.20) > enforces F-AUTH-02: 10 consecutive failures across codes locks account for 15 minutes (C-06)
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Admin MFA Recovery Codes (P0-T12, Part 13.20) > generates 10 single-use recovery codes hashed with Argon2id and shown once 2349ms
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Session Token Family Rotation & Reuse Detection (T-AUTH-03, Part 13.20) > rotates refresh token cleanly on valid request
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Session Token Family Rotation & Reuse Detection (T-AUTH-03, Part 13.20) > revokes entire session family if an old/reused refresh token is presented
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Rate Limiter Middleware (T-SEC-04, Part 13.4) > returns 429 when route rate limits are exceeded
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Idempotency Middleware (Part 8.1) > catches conflicting payload submitted with same Idempotency-Key
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
 
 Result: PASS
 Dual OIDC (Google Workspace & Microsoft Entra ID, L-4, OV-9):
@@ -21,5 +41,6 @@ Dual OIDC (Google Workspace & Microsoft Entra ID, L-4, OV-9):
 - Google Workspace discrete config: GOOGLE_OIDC_ISSUER, GOOGLE_OIDC_CLIENT_ID, GOOGLE_OIDC_CLIENT_SECRET
 - Microsoft Entra ID discrete config: ENTRA_OIDC_ISSUER, ENTRA_OIDC_CLIENT_ID, ENTRA_OIDC_CLIENT_SECRET, ENTRA_OIDC_TENANT_ID
 - Startup refusal verified when either Google or Entra set is incomplete while enabled
-- Prohibited credential patterns checked on all OIDC secrets
+- Session token family rotation with breach reuse revocation (T-AUTH-03) verified
+- Driver OTP (6-digit, 10 min, HMAC hash, single-use, attempt limits, 15m lockout) verified
 Note: Live College Identity Tenant integration check tracked as Exit Criterion 1 (NOT VERIFIED until run against live tenant).
