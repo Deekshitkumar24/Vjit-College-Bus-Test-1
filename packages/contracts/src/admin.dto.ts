@@ -236,3 +236,59 @@ export const AssignBusToRouteSchema = z.object({
   effective_to: z.string().optional(),
 });
 export type AssignBusToRouteDto = z.infer<typeof AssignBusToRouteSchema>;
+
+// ==========================================
+// 7. Rosters, Faculty & Student Route Assignments (P4-T4)
+// ==========================================
+export const DriverRosterScheduleSchema = z.object({
+  id: z.string(),
+  driver_id: z.string(),
+  bus_id: z.string(),
+  valid_from: z.string().datetime(),
+  valid_to: z.string().datetime().nullable().optional(),
+  recurrence: z.enum(['DAILY', 'WEEKDAYS', 'CUSTOM']).default('DAILY'),
+});
+export type DriverRosterScheduleDto = z.infer<typeof DriverRosterScheduleSchema>;
+
+export const CreateDriverRosterScheduleSchema = z.object({
+  driver_id: z.string().min(1),
+  bus_id: z.string().min(1),
+  valid_from: z.string().datetime(),
+  valid_to: z.string().datetime().optional(),
+  recurrence: z.enum(['DAILY', 'WEEKDAYS', 'CUSTOM']).default('DAILY'),
+});
+export type CreateDriverRosterScheduleDto = z.infer<typeof CreateDriverRosterScheduleSchema>;
+
+export const FacultyBusAssignmentSchema = z.object({
+  id: z.string(),
+  faculty_id: z.string(),
+  bus_id: z.string(),
+  assigned_at: z.string(),
+  is_active: z.boolean(),
+});
+export type FacultyBusAssignmentDto = z.infer<typeof FacultyBusAssignmentSchema>;
+
+export const CreateFacultyBusAssignmentSchema = z.object({
+  faculty_id: z.string().min(1),
+  bus_id: z.string().min(1),
+});
+export type CreateFacultyBusAssignmentDto = z.infer<typeof CreateFacultyBusAssignmentSchema>;
+
+export const StudentRouteAssignmentSchema = z.object({
+  id: z.string(),
+  student_id: z.string(),
+  route_id: z.string(),
+  morning_stop_id: z.string(),
+  afternoon_stop_id: z.string(),
+  assigned_at: z.string(),
+  is_active: z.boolean(),
+});
+export type StudentRouteAssignmentDto = z.infer<typeof StudentRouteAssignmentSchema>;
+
+export const CreateStudentRouteAssignmentSchema = z.object({
+  student_id: z.string().min(1),
+  route_id: z.string().min(1),
+  morning_stop_id: z.string().min(1),
+  afternoon_stop_id: z.string().min(1),
+});
+export type CreateStudentRouteAssignmentDto = z.infer<typeof CreateStudentRouteAssignmentSchema>;

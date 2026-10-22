@@ -1,0 +1,25 @@
+=== P4-T4 Evidence Log ===
+Date: 2026-10-22
+Command: pnpm --filter @collegebus/admin-web test:unit test/rosters-assignments.spec.ts
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run "test/rosters-assignments.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/rosters-assignments.spec.ts (3 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+
+Full admin-web suite:
+ ✓ test/guards.spec.ts (4 tests)
+ ✓ test/routes-management.spec.ts (4 tests)
+ ✓ test/rosters-assignments.spec.ts (3 tests)
+ ✓ test/buses-devices.spec.ts (6 tests)
+ ✓ test/web-shell.spec.ts (11 tests)
+
+ Test Files  5 passed (5)
+      Tests  28 passed (28)
+Status: DONE
