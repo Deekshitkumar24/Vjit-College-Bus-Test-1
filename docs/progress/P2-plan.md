@@ -1,52 +1,52 @@
 # Phase Plan: P2 Student and Faculty Mobile Applications
 
 **Phase ID:** P2  
-**Goal:** Done, production-grade mobile experience for Students (STU) and Faculty (FAC), including live bus tracking, authoritative source badges, ETA progression, QR attendance scanning, leave/stop requests, faculty safety manifests, and emergency SOS.  
-**Prompt Contract:** `AG-MASTER-FINAL-1.0` (Version 1.0, 21 October 2026)  
+**Goal:** Production-grade mobile experience for Students (STU) and Faculty (FAC), including live bus tracking, authoritative source badges, ETA progression, QR attendance scanning, leave/stop requests, and privacy management per Master Part 16.  
+**Prompt Contract:** `AG-MASTER-FINAL-1.0` (Version 1.0, 21 October 2026) & `AG-MVP-PROMPT-2.0`  
 **Companion Specifications:** `docs/spec/SW-MVP-1.0.pdf` and `docs/spec/HW-SPEC-1.0.pdf`  
-**Date:** 21 October 2026  
-**Status:** In Execution (Autonomous Mode)
+**Date:** 22 October 2026  
+**Status:** IN PROGRESS (Re-mapped to Master Part 16 Task IDs per Correction 5A-3)
 
 ---
 
-## 1. Specification Sections Read (Part 21.3)
-
-The following sections from `SW-MVP-1.0` have been reviewed for Phase P2:
-
-- `SW-MVP-1.0`: §4 (User Classes & Permissions), §5.1-§5.2 (Student & Faculty Roles), §7 (Frontend Architectures), §13.7 (Authoritative Source Badges), §14 (ETA & Progress Calculations), §17 (Live Tracking & Map Displays), §18 (Attendance, QR Boarding, Morning-Present/Afternoon-Absent Safety Rule), §19 (Emergency SOS & Incident Response), §21 (Student Requests & Leaves), §28 (Offline Support & Caching).
+## 1. Specification & Contract Reference
+Master Part 16 defines exactly 14 tasks for Phase P2 (P2-T1 through P2-T14).
+Note: An SOS trigger in the student app is not a P2 task in Part 16 (handled under P3-T5 and P6-T7).
 
 ---
 
 ## 2. Locked Decisions & Defaults in Force (Part B)
-
-- **L-2:** SOS category stored in `sos_incidents.category`: `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN`.
+- **L-2:** SOS category stored in `sos_incidents.category`.
 - **L-3:** Security staff (SEC) see all active buses, read-only.
 - **D-10:** Boarding method: QR at launch with dynamic rotating HMAC token.
-- **D-11:** Map provider: MapLibre with OpenStreetMap tiles, tile provider switchable.
-- **D-12:** Morning-present, afternoon-absent rule: Automated escalation if a student boarded in the morning fails to board the afternoon return bus by scheduled departure.
+- **D-11:** Map provider: MapLibre with OpenStreetMap tiles.
+- **D-12:** Morning-present, afternoon-absent rule.
 - **OV-4:** P2-T1 extends the P0-T18 mobile shell (`apps/mobile`).
 
 ---
 
-## 3. Task Inventory & Dependency Order
+## 3. Task Inventory (Master Part 16 Task IDs)
 
-| Task ID   | Scope                                                                                                                                                  |  Status  |            Evidence Log            | Verification Criteria & Deliverables                                                                             |
-| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- | :------: | :--------------------------------: | :--------------------------------------------------------------------------------------------------------------- |
-| **P2-T1** | **Mobile navigation & state store:** Expo Router navigation tree for Student and Faculty tabs, offline cache store, snapshot poller with 304 ETag      | **DONE** | `docs/progress/evidence/P2-T1.log` | Done. Commit `da561c0`. 15/15 mobile tests passing. Router, cache, and 304 poller verified.                  |
-| **P2-T2** | **Live map & authoritative marker:** Map view, bus heading marker, source badges (`Live · bus tracker`, `Live · driver's phone`, `Delayed`, `Offline`) | **DONE** | `docs/progress/evidence/P2-T2.log` | Done. Commit `37e23ef`. Source badge resolution, marker rotation, camera bounds, and D-11 OSM tile provider. |
-| **P2-T3** | **Stop arrival & ETA card:** Next stop countdown, ETA calculation, stop list with progress badges (`PASSED`, `ARRIVING`, `ARRIVED`, `UPCOMING`)        | **DONE** | `docs/progress/evidence/P2-T3.log` | Done. Commit `4538661`. Stop progress timeline, 300m corridor off-route banner, and monotonic countdown.     |
-| **P2-T4** | **Student QR attendance scanner:** Camera scanner, rotating QR validator (HMAC token, 15s window, anti-replay), attendance recording endpoint          | **DONE** | `docs/progress/evidence/P2-T4.log` | Done. Commit `60ad047`. Rotating QR validator, 15s epoch, anti-replay nonce tracking, offline queueing.      |
-| **P2-T5** | **Student requests & leave module:** Stop change request submission, trip leave application, history & status badges (`PENDING`, `APPROVED`, etc.)     | **DONE** | `docs/progress/evidence/P2-T5.log` | Done. Commit `1e74d59`. Stop change & leave validation, status badges, cancel actions, offline sync.         |
-| **P2-T6** | **Faculty attendance manifest & safety alert:** Live passenger manifest, manual check-in toggle, morning-present/afternoon-absent safety alert (D-12)  | **DONE** | `docs/progress/evidence/P2-T6.log` | Done. Commit `a3dde2b`. Passenger manifest, manual check-in toggle, and D-12 morning discrepancy alert.      |
-| **P2-T7** | **Emergency SOS trigger:** Guarded 3-second hold trigger, GPS capture, category picker (L-2), incident dispatch, active emergency banner               | **DONE** | `docs/progress/evidence/P2-T7.log` | Done. Commit `38e2a8d`. 3s hold trigger, GPS capture, L-2 category routing, and active emergency state.      |
-| **P2-T8** | **Integration test harness & verification:** End-to-end component and flow tests for mobile suite, offline resiliency, and permission boundaries       | **DONE** | `docs/progress/evidence/P2-T8.log` | Done. Commit `602db65`. 77/77 tests passing across 9 test files, zero mock data, zero lint errors.           |
+| Task ID | Scope (Master Part 16) | Status | Evidence Log | Notes |
+|---|---|:---:|---|---|
+| **P2-T1** | Expo shell extension (OV-4): router, SecureStore, role switcher, guards | **DONE** | `docs/progress/evidence/P2-T1.log` | Shell extension, route guards, token storage (Commit `da561c0`) |
+| **P2-T2** | Home map: MapLibre, 10-second foreground polling, source badges, clustering, route line, stale styling | **DONE** | `docs/progress/evidence/P2-T2.log` | Map markers, source badges, 10s poll (Commit `37e23ef`) |
+| **P2-T3** | Bus detail: ETA to my stop, remaining stops, progress, data age, Not running and Trip completed | **DONE** | `docs/progress/evidence/P2-T3.log` | ETA countdown, progress badges, data age (Commit `4538661`) |
+| **P2-T4** | Notification centre and preferences; push token into push_tokens; SAFETY channel on Android | **IN PROGRESS** | `docs/progress/evidence/P2-T4.log` | Preferences & notification center |
+| **P2-T5** | Faculty views: my buses with picker, bus detail with driver contact, today's attendance | **DONE** | `docs/progress/evidence/P2-T5.log` | Faculty manifest and driver contact (Commit `a3dde2b`) |
+| **P2-T6** | Approaching-alert setting, 2 to 15 minutes | **IN PROGRESS** | `docs/progress/evidence/P2-T6.log` | Approaching alert preference slider |
+| **P2-T7** | Offline states, cached-data banners, no-connection messages | **DONE** | `docs/progress/evidence/P2-T7.log` | Offline caching & banners (Commit `602db65`) |
+| **P2-T8** | Accessibility and externalised strings | **IN PROGRESS** | `docs/progress/evidence/P2-T8.log` | Screen reader labels & i18n |
+| **P2-T9** | Boarding QR scanner (expo-camera), POST /attendance/scan, specific failure messages. Nothing queued offline | **DONE** | `docs/progress/evidence/P2-T9.log` | QR scanner, camera view, scan endpoint (Commit `60ad047`) |
+| **P2-T10** | Stop request screens: pin, name up to 60 characters, checks, status, votes | **DONE** | `docs/progress/evidence/P2-T10.log` | Stop change requests & status (Commit `1e74d59`) |
+| **P2-T11** | Leave screen: mark and cancel until the cutoff | **DONE** | `docs/progress/evidence/P2-T11.log` | Trip leave management & cancellation (Commit `1e74d59`) |
+| **P2-T12** | Attendance history: one row per date with morning and afternoon status | **IN PROGRESS** | `docs/progress/evidence/P2-T12.log` | Daily attendance ledger view |
+| **P2-T13** | Profile and privacy: name and phone, correction, export, deletion, consent withdrawal, consent history, sessions | **IN PROGRESS** | `docs/progress/evidence/P2-T13.log` | User privacy settings & consent management |
+| **P2-T14** | Trip completed view: visible for 30 minutes after the trip ends | **IN PROGRESS** | `docs/progress/evidence/P2-T14.log` | Post-trip completion screen with 30m TTL |
 
 ---
 
 ## 4. Mandatory Phase P2 Exit Criteria
-
-1. Student can view assigned bus on map with correct authoritative source badge and real-time ETA.
-2. QR attendance scanner validates rotating driver code and records student boarding.
-3. Faculty live manifest correctly displays boarded students and flags morning-present/afternoon-absent discrepancies.
-4. Emergency SOS can be triggered with 3-second hold and broadcasts incident with captured coordinates.
-5. All mobile unit and integration tests pass cleanly with zero mock data.
+- `AC-STU-01` to `AC-STU-05` and `AC-FAC-01` to `AC-FAC-03` pass on device (E3, E6, O7).
+- Acceptance tests named in master Part 10.3 and 10.4.
+- Status: **NOT VERIFIED** (Requires physical reference phones E6 and college identity tenant E3).
