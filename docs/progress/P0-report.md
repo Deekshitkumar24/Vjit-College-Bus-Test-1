@@ -15,7 +15,7 @@ P0-T11 | 986227e | Dev infrastructure (Terraform): VPC, RDS Multi-AZ, ALB, S3, K
 P0-T12 | 90b42c2 | Admin MFA recovery codes: 10 single-use codes, Argon2id hashed | 1 (Part 13.20) | services/api/src/modules/auth/auth.service.ts | DONE
 P0-T13 | 90b42c2 | Authorisation test harness: permissions matrix check across 8 roles | 108 matrix evaluations | services/api/test/authorization-harness.spec.ts | DONE
 P0-T14 | 33c0a5a | Audit log append-only trigger: rejection of UPDATE/DELETE on audit_logs | 1 (R-09, Part 7) | packages/db/src/rls-manager.ts, test/integration.spec.ts | DONE
-P0-T15 | 059a684 | Telemetry baseline: Sentry error capture & OpenTelemetry tracer | 3 (Part 14.5) | services/api/src/common/telemetry/sentry.ts, opentelemetry.ts | DONE
+P0-T15 | 059a684 | Telemetry baseline: Sentry error capture & OpenTelemetry tracer | 3 (Part 14.5) | services/api/src/common/telemetry/sentry.ts, opentelemetry.ts | IN PROGRESS (BLOCKED-EXTERNAL E4)
 P0-T16 | 1ad2a04 | CI/CD automation: GitHub Actions pipeline enforcing all checks | Awaiting GitHub Actions E2 | .github/workflows/ci.yml | IN PROGRESS
 P0-T17 | 7f26bf9 | Terraform environment accounts: dev, staging, production S3 backends | Awaiting AWS account E1 | infra/terraform/environments/ | IN PROGRESS
 P0-T18 | 3cfdfe8 | Minimal mobile shell: Expo Router, SecureStore, 4 roles guard | 5 (C-11) | apps/mobile/app/index.tsx, src/auth/route-guard.tsx | DONE
