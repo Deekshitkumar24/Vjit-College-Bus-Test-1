@@ -1,0 +1,27 @@
+=== P2-T12: Attendance History Screen (GET /attendance/me) ===
+Date: 2026-10-22T21:03:01+05:30
+Command: npx vitest run apps/mobile/test/attendance-history.spec.ts
+
+--- 1. Failing run before implementation ---
+ FAIL  apps/mobile/test/attendance-history.spec.ts [ apps/mobile/test/attendance-history.spec.ts ]
+Error: Failed to load url ../src/attendance/attendance-history.js
+
+--- 2. Passing run after implementation ---
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ apps/mobile/test/attendance-history.spec.ts (3 tests) 11ms
+   ✓ P2-T12: Attendance History Screen (GET /attendance/me) > parses attendance history rows into daily records with morning and afternoon status
+   ✓ P2-T12: Attendance History Screen (GET /attendance/me) > detects D-12 morning-present afternoon-absent discrepancy rule
+   ✓ P2-T12: Attendance History Screen (GET /attendance/me) > computes summary statistics accurately
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:02:59
+   Duration  1.38s
+
+Result: PASS
+Scope delivered:
+- Attendance ledger mapping one row per date with morning and afternoon statuses (PRESENT, ABSENT, ON_LEAVE, NOT_SCHEDULED)
+- Boarded timestamps, bus numbers, and stop names
+- D-12 safety rule: detection of morning-present / afternoon-absent discrepancies
+- Cumulative statistics calculation for student profile view

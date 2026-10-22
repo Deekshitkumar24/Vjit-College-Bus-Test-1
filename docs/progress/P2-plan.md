@@ -40,7 +40,7 @@ Note: An SOS trigger in the student app is not a P2 task in Part 16 (handled und
 | **P2-T9** | Boarding QR scanner (expo-camera), POST /attendance/scan, specific failure messages. Nothing queued offline | **DONE** | `docs/progress/evidence/P2-T9.log` | QR scanner, camera view, scan endpoint (Commit `60ad047`) |
 | **P2-T10** | Stop request screens: pin, name up to 60 characters, checks, status, votes | **DONE** | `docs/progress/evidence/P2-T10.log` | Stop change requests & status (Commit `1e74d59`) |
 | **P2-T11** | Leave screen: mark and cancel until the cutoff | **DONE** | `docs/progress/evidence/P2-T11.log` | Trip leave management & cancellation (Commit `1e74d59`) |
-| **P2-T12** | Attendance history: one row per date with morning and afternoon status | **IN PROGRESS** | `docs/progress/evidence/P2-T12.log` | Daily attendance ledger view |
+| **P2-T12** | Attendance history: one row per date with morning and afternoon status | **DONE** | `docs/progress/evidence/P2-T12.log` | Attendance history ledger with D-12 discrepancy detection |
 | **P2-T13** | Profile and privacy: name and phone, correction, export, deletion, consent withdrawal, consent history, sessions | **IN PROGRESS** | `docs/progress/evidence/P2-T13.log` | User privacy settings & consent management |
 | **P2-T14** | Trip completed view: visible for 30 minutes after the trip ends | **IN PROGRESS** | `docs/progress/evidence/P2-T14.log` | Post-trip completion screen with 30m TTL |
 
