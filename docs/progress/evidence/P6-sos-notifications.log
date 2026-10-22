@@ -1,0 +1,34 @@
+> @collegebus/api@1.0.0 test:unit
+> vitest run "test/p6-sos-notifications.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/p6-sos-notifications.spec.ts (10 tests) 2155ms
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-SOS-02: two triggers 20 seconds apart on same bus give one incident (deduplicated / joined)
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-SOS-03: two buses in the same second create two distinct incidents
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-CON-03: two parallel SOS triggers on the same bus create exactly one incident
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-SOS-04: tier 1 escalation triggers after 2 minutes without acknowledgement
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-SOS-05: cancellation is refused once incident has been acknowledged
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-SOS-06: missing recipient list raises setup alert
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-NTF-01: quiet hours applied at dispatch (non-SAFETY suppressed, SAFETY allowed)
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-NTF-02: rate limits (max 5/min) applied at dispatch
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > T-NTF-03: SMS template mismatch is blocked
+   ✓ Phase P6: SOS, Stop Requests, and Notifications (Real DB & API) > P6-T7: stop requests submission and voting lifecycle
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+ Duration  4.38s
+
+> @collegebus/mobile@1.0.0 test:unit
+> vitest run "test/emergency-sos.spec.ts" "test/notifications.spec.ts" "test/driver-mode-sos.spec.ts" "test/student-requests.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/notifications.spec.ts (5 tests)
+ ✓ test/emergency-sos.spec.ts (7 tests)
+ ✓ test/student-requests.spec.ts (11 tests)
+ ✓ test/driver-mode-sos.spec.ts (10 tests)
+
+ Test Files  4 passed (4)
+      Tests  33 passed (33)
+ Duration  2.00s
