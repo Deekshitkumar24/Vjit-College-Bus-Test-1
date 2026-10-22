@@ -34,3 +34,8 @@ Date: 22 October 2026
 ## Item 5: P0-T6 OIDC PKCE, State/Nonce, T-AUTH-03, and Runtime Provider Choice
 - **Change:** Implemented OIDC authorization with PKCE (S256 code challenge), cryptographically random state and nonce generation, and runtime choice between Google Workspace and Microsoft Entra ID. Verified all 11 unit tests in `services/api/test/auth.spec.ts` including refresh token family rotation (`T-AUTH-03`) and driver OTP lockout. Recorded evidence in `docs/progress/evidence/P0-T6.log`. Noted that live SSO sign-in remains Exit 1 and stays BLOCKED-EXTERNAL on `E3` (college identity test tenant).
 - **Files Modified:** `services/api/src/modules/auth/auth.service.ts`, `services/api/test/auth.spec.ts`, `docs/progress/evidence/P0-T6.log`, `docs/progress/corrections.md`.
+
+## Item 6: P0-T11, P0-T16, P0-T17 CI and AWS Blocker Status
+- **Change:** Verified and affirmed that P0-T11 (dev infrastructure), P0-T16 (CI/CD pipeline automation), and P0-T17 (Terraform dev/staging/prod configurations) are `IN PROGRESS` until `terraform validate` and `terraform plan` pass in CI (`E2`). Dev infrastructure application is gated on AWS credentials (`E1`).
+- **Files Modified:** `docs/progress/corrections.md`.
+
