@@ -253,3 +253,69 @@ export const DriverProblemReportResponseSchema = z
   .strict();
 
 export type DriverProblemReportResponseDto = z.infer<typeof DriverProblemReportResponseSchema>;
+
+export const DriverManualStopArrivalRequestSchema = z
+  .object({
+    shift_id: z.string().min(1),
+    stop_id: z.string().min(1),
+    timestamp: z.string().datetime().optional(),
+    note: z.string().max(200).optional(),
+  })
+  .strict();
+
+export type DriverManualStopArrivalRequestDto = z.infer<
+  typeof DriverManualStopArrivalRequestSchema
+>;
+
+export const DriverSkippedStopSchema = z
+  .object({
+    stop_id: z.string(),
+    stop_name: z.string(),
+    sequence_order: z.number().int(),
+  })
+  .strict();
+
+export type DriverSkippedStopDto = z.infer<typeof DriverSkippedStopSchema>;
+
+export const DriverManualStopArrivalResponseSchema = z
+  .object({
+    stop_id: z.string(),
+    status: z.literal('ARRIVED'),
+    method: z.literal('MANUAL'),
+    recorded_at: z.string().datetime(),
+    skipped_stops: z.array(DriverSkippedStopSchema),
+    message: z.string(),
+  })
+  .strict();
+
+export type DriverManualStopArrivalResponseDto = z.infer<
+  typeof DriverManualStopArrivalResponseSchema
+>;
+
+export const DriverRouteStopItemSchema = z
+  .object({
+    stop_id: z.string(),
+    stop_name: z.string(),
+    sequence_order: z.number().int(),
+    lat: z.number(),
+    lng: z.number(),
+    status: z.enum(['UPCOMING', 'ARRIVING', 'ARRIVED', 'DEPARTED', 'SKIPPED']),
+    arrival_method: z.enum(['AUTOMATIC', 'MANUAL']).nullable().optional(),
+    arrived_at: z.string().datetime().nullable().optional(),
+    eta_seconds: z.number().nullable().optional(),
+  })
+  .strict();
+
+export type DriverRouteStopItemDto = z.infer<typeof DriverRouteStopItemSchema>;
+
+export const DriverRouteStopsResponseSchema = z
+  .object({
+    route_id: z.string(),
+    shift_id: z.string(),
+    stops: z.array(DriverRouteStopItemSchema),
+    skipped_count: z.number().int(),
+    current_stop_id: z.string().nullable().optional(),
+  })
+  .strict();
+
+export type DriverRouteStopsResponseDto = z.infer<typeof DriverRouteStopsResponseSchema>;

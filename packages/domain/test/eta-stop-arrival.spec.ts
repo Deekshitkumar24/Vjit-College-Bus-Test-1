@@ -5,6 +5,7 @@ import {
   calculateEtaSeconds,
   evaluateStopStatus,
   buildPostgisRouteProgressQuery,
+  evaluateRouteStopsWithOverrides,
 } from '../src/eta-stop-arrival.js';
 import { LatLng } from '../src/gps-quality.js';
 
@@ -221,6 +222,129 @@ describe('ETA & Stop Arrival Engine (P1-T9, Part 9.9 & 9.11)', () => {
       expect(sql).toContain('ST_Length');
       expect(sql).toContain('ST_LineSubstring');
       expect(sql).toContain('route_geometries');
+    });
+  });
+
+  describe('Manual Stop Arrival Override & Skipped Stops (P3-T15, Part 9.9, T-SHF-03)', () => {
+    const mockStops = [
+      {
+        id: 'stop_1',
+        name: 'Main Gate',
+        sequenceOrder: 1,
+        location: { lat: 13.08, lng: 80.201 },
+        progressAlongRouteM: 100,
+      },
+      {
+        id: 'stop_2',
+        name: 'Hostel Junction',
+        sequenceOrder: 2,
+        location: { lat: 13.08, lng: 80.208 },
+        progressAlongRouteM: 800,
+      },
+      {
+        id: 'stop_3',
+        name: 'Science Block',
+        sequenceOrder: 3,
+        location: { lat: 13.08, lng: 80.215 },
+        progressAlongRouteM: 1500,
+      },
+      {
+        id: 'stop_4',
+        name: 'Library Square',
+        sequenceOrder: 4,
+        location: { lat: 13.08, lng: 80.22 },
+        progressAlongRouteM: 2000,
+      },
+    ];
+
+    it('manually marked stop overrides automatic detection for that stop only', () => {
+      const manualOverrides = new Map();
+      const arrivalTime = new Date('2026-10-22T08:15:00Z');
+      manualOverrides.set('stop_1', {
+        stopId: 'stop_1',
+        arrivedAt: arrivalTime,
+        markedBy: 'drv_101',
+        note: 'Marked arrived manually',
+      });
+
+      // Bus is still at 0m progress
+      const result = evaluateRouteStopsWithOverrides({
+        stops: mockStops,
+        busProgressAlongRouteM: 0,
+        busLocation: { lat: 13.08, lng: 80.2 },
+        busSpeedKmh: 20,
+        manualOverrides,
+      });
+
+      const s1 = result.stops.find((s) => s.stopId === 'stop_1')!;
+      expect(s1.status).toBe('ARRIVED');
+      expect(s1.arrivalMethod).toBe('MANUAL');
+      expect(s1.arrivedAt).toEqual(arrivalTime);
+
+      // Other stops remain upcoming
+      const s2 = result.stops.find((s) => s.stopId === 'stop_2')!;
+      expect(s2.status).toBe('UPCOMING');
+      expect(result.skippedStops).toHaveLength(0);
+    });
+
+    it('identifies SKIPPED stops when driver marks a later stop arrived', () => {
+      // Driver marks stop_3 arrived, skipping stop_1 and stop_2
+      const manualOverrides = new Map();
+      manualOverrides.set('stop_3', {
+        stopId: 'stop_3',
+        arrivedAt: new Date(),
+        markedBy: 'drv_101',
+      });
+
+      const result = evaluateRouteStopsWithOverrides({
+        stops: mockStops,
+        busProgressAlongRouteM: 1500,
+        busLocation: { lat: 13.08, lng: 80.215 },
+        busSpeedKmh: 0,
+        manualOverrides,
+      });
+
+      expect(result.skippedStops).toHaveLength(2);
+      expect(result.skippedStops.map((s) => s.stopId)).toEqual(['stop_1', 'stop_2']);
+
+      const s1 = result.stops.find((s) => s.stopId === 'stop_1')!;
+      expect(s1.status).toBe('SKIPPED');
+      expect(s1.etaLabel).toBe('Skipped');
+
+      const s2 = result.stops.find((s) => s.stopId === 'stop_2')!;
+      expect(s2.status).toBe('SKIPPED');
+
+      const s3 = result.stops.find((s) => s.stopId === 'stop_3')!;
+      expect(s3.status).toBe('ARRIVED');
+      expect(s3.arrivalMethod).toBe('MANUAL');
+
+      const s4 = result.stops.find((s) => s.stopId === 'stop_4')!;
+      expect(s4.status).toBe('UPCOMING');
+    });
+
+    it('does not mark earlier stops as skipped if they were already arrived', () => {
+      const automaticArrivals = new Map();
+      automaticArrivals.set('stop_1', { arrivedAt: new Date() });
+
+      const manualOverrides = new Map();
+      manualOverrides.set('stop_2', {
+        stopId: 'stop_2',
+        arrivedAt: new Date(),
+        markedBy: 'drv_101',
+      });
+
+      const result = evaluateRouteStopsWithOverrides({
+        stops: mockStops,
+        busProgressAlongRouteM: 800,
+        busLocation: { lat: 13.08, lng: 80.208 },
+        busSpeedKmh: 0,
+        manualOverrides,
+        automaticArrivals,
+      });
+
+      expect(result.skippedStops).toHaveLength(0);
+      expect(result.stops.find((s) => s.stopId === 'stop_1')!.status).not.toBe('SKIPPED');
+      expect(result.stops.find((s) => s.stopId === 'stop_2')!.status).toBe('ARRIVED');
     });
   });
 });

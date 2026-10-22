@@ -336,3 +336,195 @@ WHERE rg.route_id = $3 AND rg.is_active = true
 LIMIT 1;
 `.trim();
 }
+
+export interface RouteStop {
+  id: string;
+  name: string;
+  sequenceOrder: number;
+  location: LatLng;
+  progressAlongRouteM: number;
+}
+
+export interface ManualStopArrivalRecord {
+  stopId: string;
+  arrivedAt: Date;
+  markedBy: string; // driver_id
+  note?: string | null;
+}
+
+export interface EvaluatedRouteStop {
+  stopId: string;
+  stopName: string;
+  sequenceOrder: number;
+  location: LatLng;
+  status: StopStatus | 'SKIPPED';
+  arrivalMethod?: 'AUTOMATIC' | 'MANUAL' | undefined;
+  arrivedAt?: Date | null;
+  etaSeconds: number | null;
+  etaLabel: string | null;
+  isCurrent: boolean;
+}
+
+export interface RouteStopsEvaluationResult {
+  stops: EvaluatedRouteStop[];
+  skippedStops: Array<{ stopId: string; stopName: string; sequenceOrder: number }>;
+  currentStopId: string | null;
+}
+
+/**
+ * Evaluates route progress, stop arrival states, manual driver overrides,
+ * and skipped stops (Part 9.9, SW-MVP §17.4, T-SHF-03).
+ */
+export function evaluateRouteStopsWithOverrides(params: {
+  stops: RouteStop[];
+  busProgressAlongRouteM: number;
+  busLocation: LatLng;
+  busSpeedKmh: number | null;
+  manualOverrides?: Map<string, ManualStopArrivalRecord>;
+  automaticArrivals?: Map<string, { arrivedAt: Date }>;
+  smoothedSpeedKmh?: number;
+}): RouteStopsEvaluationResult {
+  const {
+    stops,
+    busProgressAlongRouteM,
+    busLocation,
+    busSpeedKmh,
+    manualOverrides = new Map(),
+    automaticArrivals = new Map(),
+    smoothedSpeedKmh = 20,
+  } = params;
+
+  // Sort stops by sequenceOrder
+  const sortedStops = [...stops].sort((a, b) => a.sequenceOrder - b.sequenceOrder);
+
+  // Find the highest sequenceOrder among stops that are arrived (manual or auto)
+  let maxArrivedSeq = -1;
+  for (const stop of sortedStops) {
+    if (manualOverrides.has(stop.id) || automaticArrivals.has(stop.id)) {
+      if (stop.sequenceOrder > maxArrivedSeq) {
+        maxArrivedSeq = stop.sequenceOrder;
+      }
+    }
+  }
+
+  const evaluatedStops: EvaluatedRouteStop[] = [];
+  const skippedStops: Array<{ stopId: string; stopName: string; sequenceOrder: number }> = [];
+  let currentStopId: string | null = null;
+
+  for (const stop of sortedStops) {
+    // 1. Check if manually marked arrived
+    const manualArrival = manualOverrides.get(stop.id);
+    if (manualArrival) {
+      evaluatedStops.push({
+        stopId: stop.id,
+        stopName: stop.name,
+        sequenceOrder: stop.sequenceOrder,
+        location: stop.location,
+        status: 'ARRIVED',
+        arrivalMethod: 'MANUAL',
+        arrivedAt: manualArrival.arrivedAt,
+        etaSeconds: 0,
+        etaLabel: 'At stop',
+        isCurrent: true,
+      });
+      currentStopId = stop.id;
+      continue;
+    }
+
+    // 2. Check if automatic arrival was previously recorded
+    const autoArrival = automaticArrivals.get(stop.id);
+    if (autoArrival) {
+      // Evaluate if departed
+      const autoEval = evaluateStopStatus({
+        busLocation,
+        busSpeedKmh,
+        busProgressAlongRouteM,
+        stopLocation: stop.location,
+        stopProgressAlongRouteM: stop.progressAlongRouteM,
+        dwellInsideSeconds: 30, // was arrived
+        smoothedSpeedKmh,
+      });
+      evaluatedStops.push({
+        stopId: stop.id,
+        stopName: stop.name,
+        sequenceOrder: stop.sequenceOrder,
+        location: stop.location,
+        status: autoEval.status,
+        arrivalMethod: 'AUTOMATIC',
+        arrivedAt: autoArrival.arrivedAt,
+        etaSeconds: autoEval.etaSeconds,
+        etaLabel: autoEval.etaLabel,
+        isCurrent: autoEval.status === 'ARRIVED' || autoEval.status === 'ARRIVING',
+      });
+      if (autoEval.status === 'ARRIVED') {
+        currentStopId = stop.id;
+      }
+      continue;
+    }
+
+    // 3. If this stop was NOT arrived, but a subsequent stop (greater sequence order) IS already arrived/passed:
+    if (maxArrivedSeq > stop.sequenceOrder) {
+      // This stop was skipped!
+      evaluatedStops.push({
+        stopId: stop.id,
+        stopName: stop.name,
+        sequenceOrder: stop.sequenceOrder,
+        location: stop.location,
+        status: 'SKIPPED',
+        arrivedAt: null,
+        etaSeconds: null,
+        etaLabel: 'Skipped',
+        isCurrent: false,
+      });
+      skippedStops.push({
+        stopId: stop.id,
+        stopName: stop.name,
+        sequenceOrder: stop.sequenceOrder,
+      });
+      continue;
+    }
+
+    // 4. Otherwise evaluate automatically based on GPS position
+    const evalResult = evaluateStopStatus({
+      busLocation,
+      busSpeedKmh,
+      busProgressAlongRouteM,
+      stopLocation: stop.location,
+      stopProgressAlongRouteM: stop.progressAlongRouteM,
+      smoothedSpeedKmh,
+    });
+
+    const isCurrent = evalResult.status === 'ARRIVING' || evalResult.status === 'ARRIVED';
+    if (isCurrent && !currentStopId) {
+      currentStopId = stop.id;
+    }
+
+    evaluatedStops.push({
+      stopId: stop.id,
+      stopName: stop.name,
+      sequenceOrder: stop.sequenceOrder,
+      location: stop.location,
+      status: evalResult.status,
+      arrivalMethod: evalResult.status === 'ARRIVED' ? 'AUTOMATIC' : undefined,
+      arrivedAt: evalResult.status === 'ARRIVED' ? new Date() : null,
+      etaSeconds: evalResult.etaSeconds,
+      etaLabel: evalResult.etaLabel,
+      isCurrent,
+    });
+  }
+
+  // If no stop is currently arriving/arrived, pick the first UPCOMING stop as current target
+  if (!currentStopId) {
+    const nextUpcoming = evaluatedStops.find((s) => s.status === 'UPCOMING');
+    if (nextUpcoming) {
+      nextUpcoming.isCurrent = true;
+      currentStopId = nextUpcoming.stopId;
+    }
+  }
+
+  return {
+    stops: evaluatedStops,
+    skippedStops,
+    currentStopId,
+  };
+}

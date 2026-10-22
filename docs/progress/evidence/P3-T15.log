@@ -1,0 +1,47 @@
+=== Evidence Log: P3-T15 ===
+Task: P3-T15: Manual stop arrival (Part 9.9). Skipped stops shown to driver.
+Date: 2026-10-22
+Governing References: SW-MVP-1.0 §17.4, Master Part 9.9, Part 16 (P3-T15), Test ID: T-SHF-03
+
+Command 1:
+pnpm --filter @collegebus/domain test:unit test/eta-stop-arrival.spec.ts
+
+Output:
+> @collegebus/domain@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> vitest run test/eta-stop-arrival.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/eta-stop-arrival.spec.ts (20 tests) 29ms
+   ✓ ETA & Stop Arrival Engine (P1-T9, Part 9.9 & 9.11)
+     ✓ Route Geometry Projection & Off-Route Detection (Part 9.9) (3 tests)
+     ✓ Speed Smoothing & Median Window Clamping (Part 9.11) (5 tests)
+     ✓ ETA Calculation & Arriving Threshold (Part 9.11) (4 tests)
+     ✓ Stop Arrival, Dwell, and Departure States (Part 9.9 & SW-MVP §17.4) (4 tests)
+     ✓ PostGIS Query Generation (Part 9.9) (1 test)
+     ✓ Manual Stop Arrival Override & Skipped Stops (P3-T15, Part 9.9, T-SHF-03)
+       ✓ manually marked stop overrides automatic detection for that stop only
+       ✓ identifies SKIPPED stops when driver marks a later stop arrived
+       ✓ does not mark earlier stops as skipped if they were already arrived
+
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+
+Command 2:
+pnpm --filter @collegebus/api test:unit test/driver-stops.spec.ts
+
+Output:
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/driver-stops.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/driver-stops.spec.ts (4 tests) 13ms
+   ✓ Driver Manual Stop Arrival & Skipped Stops Pipeline (P3-T15, Part 9.9, T-SHF-03)
+     ✓ marks stop as arrived manually and identifies skipped stops (T-SHF-03)
+     ✓ rejects manual stop arrival if shift is not active
+     ✓ rejects manual stop arrival if stop is not on route
+     ✓ rejects if shift belongs to a different driver
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

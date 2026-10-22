@@ -28,6 +28,9 @@ import {
   DriverManualCheckinResponseDto,
   DriverProblemReportRequestSchema,
   DriverProblemReportResponseDto,
+  DriverManualStopArrivalRequestSchema,
+  DriverManualStopArrivalResponseDto,
+  DriverRouteStopsResponseDto,
 } from '@collegebus/contracts';
 
 @Controller('driver')
@@ -304,5 +307,50 @@ export class DriverController {
     }
 
     return this.driverService.reportProblem(driverId, parseResult.data);
+  }
+
+  @Post('stops/arrival')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async manualStopArrival(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Body() body: unknown,
+  ): Promise<DriverManualStopArrivalResponseDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    const parseResult = DriverManualStopArrivalRequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      throw new BadRequestException({
+        code: 'INVALID_STOP_ARRIVAL_PAYLOAD',
+        message: 'Manual stop arrival payload validation failed',
+        details: parseResult.error.flatten(),
+      });
+    }
+
+    return this.driverService.recordManualStopArrival(driverId, parseResult.data);
+  }
+
+  @Get('stops/:shiftId')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async getRouteStops(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Param('shiftId') shiftId: string,
+  ): Promise<DriverRouteStopsResponseDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    return this.driverService.getRouteStops(driverId, shiftId);
   }
 }

@@ -5,7 +5,13 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { validateDriverPhoneSample, DriverPhoneSampleInput } from '@collegebus/domain';
+import {
+  validateDriverPhoneSample,
+  DriverPhoneSampleInput,
+  evaluateRouteStopsWithOverrides,
+  RouteStop,
+  ManualStopArrivalRecord,
+} from '@collegebus/domain';
 import {
   DriverLocationsBatchDto,
   DriverLocationsResponseDto,
@@ -25,6 +31,9 @@ import {
   DriverProblemReportRequestDto,
   DriverProblemReportResponseDto,
   DriverTicketPriority,
+  DriverManualStopArrivalRequestDto,
+  DriverManualStopArrivalResponseDto,
+  DriverRouteStopsResponseDto,
 } from '@collegebus/contracts';
 import { ShiftService } from '../shift/shift.service.js';
 import { SosService } from './sos.service.js';
@@ -160,6 +169,64 @@ export class DriverService {
     string,
     { bus_number: string; registration_number: string; route_id: string; route_name: string }
   >();
+  private manualStopArrivals = new Map<string, Map<string, ManualStopArrivalRecord>>();
+  private routesWithStops = new Map<
+    string,
+    {
+      route_id: string;
+      route_name: string;
+      stops: Array<{
+        stop_id: string;
+        stop_name: string;
+        sequence_order: number;
+        lat: number;
+        lng: number;
+        progress_along_route_m: number;
+      }>;
+    }
+  >([
+    [
+      'route_1',
+      {
+        route_id: 'route_1',
+        route_name: 'Campus Route 1',
+        stops: [
+          {
+            stop_id: 'stop_1',
+            stop_name: 'Main Gate',
+            sequence_order: 1,
+            lat: 13.0801,
+            lng: 80.2001,
+            progress_along_route_m: 100,
+          },
+          {
+            stop_id: 'stop_2',
+            stop_name: 'Hostel Junction',
+            sequence_order: 2,
+            lat: 13.0808,
+            lng: 80.208,
+            progress_along_route_m: 800,
+          },
+          {
+            stop_id: 'stop_3',
+            stop_name: 'Science Block',
+            sequence_order: 3,
+            lat: 13.0815,
+            lng: 80.215,
+            progress_along_route_m: 1500,
+          },
+          {
+            stop_id: 'stop_4',
+            stop_name: 'Library Square',
+            sequence_order: 4,
+            lat: 13.082,
+            lng: 80.22,
+            progress_along_route_m: 2000,
+          },
+        ],
+      },
+    ],
+  ]);
 
   registerBusMetadata(
     busId: string,
@@ -774,5 +841,157 @@ export class DriverService {
 
   getAllTickets(): StoredMaintenanceTicket[] {
     return Array.from(this.tickets.values());
+  }
+
+  /**
+   * Manual Stop Arrival Override (Part 9.9, SW-MVP §17.4, T-SHF-03)
+   */
+  recordManualStopArrival(
+    driverId: string,
+    dto: DriverManualStopArrivalRequestDto,
+    now: Date = new Date(),
+  ): DriverManualStopArrivalResponseDto {
+    const shift = this.shiftService.getShift(dto.shift_id);
+    if (!shift) {
+      throw new UnauthorizedException({
+        code: 'SHIFT_NOT_FOUND',
+        message: 'Shift claim does not exist',
+      });
+    }
+
+    if (shift.driver_id !== driverId) {
+      throw new ForbiddenException({
+        code: 'SHIFT_DRIVER_MISMATCH',
+        message: 'Shift does not belong to this driver',
+      });
+    }
+
+    if (shift.status !== 'ACTIVE') {
+      throw new ForbiddenException({
+        code: 'SHIFT_NOT_ACTIVE',
+        message: `Shift is no longer active (status is ${shift.status})`,
+      });
+    }
+
+    const routeId = shift.route_id || 'route_1';
+    let route = this.routesWithStops.get(routeId);
+    if (!route) {
+      route = this.routesWithStops.get('route_1')!;
+    }
+
+    const targetStop = route.stops.find((s) => s.stop_id === dto.stop_id);
+    if (!targetStop) {
+      throw new BadRequestException({
+        code: 'STOP_NOT_ON_ROUTE',
+        message: `Stop ${dto.stop_id} is not part of route ${routeId}`,
+      });
+    }
+
+    let shiftArrivals = this.manualStopArrivals.get(dto.shift_id);
+    if (!shiftArrivals) {
+      shiftArrivals = new Map<string, ManualStopArrivalRecord>();
+      this.manualStopArrivals.set(dto.shift_id, shiftArrivals);
+    }
+
+    const arrivalRecord: ManualStopArrivalRecord = {
+      stopId: dto.stop_id,
+      arrivedAt: now,
+      markedBy: driverId,
+      note: dto.note ?? null,
+    };
+    shiftArrivals.set(dto.stop_id, arrivalRecord);
+
+    const domainStops: RouteStop[] = route.stops.map((s) => ({
+      id: s.stop_id,
+      name: s.stop_name,
+      sequenceOrder: s.sequence_order,
+      location: { lat: s.lat, lng: s.lng },
+      progressAlongRouteM: s.progress_along_route_m,
+    }));
+
+    const evalResult = evaluateRouteStopsWithOverrides({
+      stops: domainStops,
+      busProgressAlongRouteM: targetStop.progress_along_route_m,
+      busLocation: { lat: targetStop.lat, lng: targetStop.lng },
+      busSpeedKmh: 0,
+      manualOverrides: shiftArrivals,
+    });
+
+    const skippedStops = evalResult.skippedStops.map((s) => ({
+      stop_id: s.stopId,
+      stop_name: s.stopName,
+      sequence_order: s.sequenceOrder,
+    }));
+
+    return {
+      stop_id: dto.stop_id,
+      status: 'ARRIVED',
+      method: 'MANUAL',
+      recorded_at: now.toISOString(),
+      skipped_stops: skippedStops,
+      message: `Stop ${targetStop.stop_name} marked arrived manually (${skippedStops.length} stops skipped)`,
+    };
+  }
+
+  /**
+   * Retrieves active route stops with current status, skipped stops, and ETAs (T-SHF-03)
+   */
+  getRouteStops(driverId: string, shiftId: string): DriverRouteStopsResponseDto {
+    const shift = this.shiftService.getShift(shiftId);
+    if (!shift) {
+      throw new UnauthorizedException({
+        code: 'SHIFT_NOT_FOUND',
+        message: 'Shift claim does not exist',
+      });
+    }
+
+    if (shift.driver_id !== driverId) {
+      throw new ForbiddenException({
+        code: 'SHIFT_DRIVER_MISMATCH',
+        message: 'Shift does not belong to this driver',
+      });
+    }
+
+    const routeId = shift.route_id || 'route_1';
+    let route = this.routesWithStops.get(routeId);
+    if (!route) {
+      route = this.routesWithStops.get('route_1')!;
+    }
+
+    const shiftArrivals = this.manualStopArrivals.get(shiftId) || new Map();
+
+    const domainStops: RouteStop[] = route.stops.map((s) => ({
+      id: s.stop_id,
+      name: s.stop_name,
+      sequenceOrder: s.sequence_order,
+      location: { lat: s.lat, lng: s.lng },
+      progressAlongRouteM: s.progress_along_route_m,
+    }));
+
+    const evalResult = evaluateRouteStopsWithOverrides({
+      stops: domainStops,
+      busProgressAlongRouteM: 0,
+      busLocation: { lat: 13.075, lng: 80.195 },
+      busSpeedKmh: 20,
+      manualOverrides: shiftArrivals,
+    });
+
+    return {
+      route_id: routeId,
+      shift_id: shiftId,
+      stops: evalResult.stops.map((s) => ({
+        stop_id: s.stopId,
+        stop_name: s.stopName,
+        sequence_order: s.sequenceOrder,
+        lat: s.location.lat,
+        lng: s.location.lng,
+        status: s.status,
+        arrival_method: s.arrivalMethod ?? undefined,
+        arrived_at: s.arrivedAt ? s.arrivedAt.toISOString() : undefined,
+        eta_seconds: s.etaSeconds ?? undefined,
+      })),
+      skipped_count: evalResult.skippedStops.length,
+      current_stop_id: evalResult.currentStopId ?? undefined,
+    };
   }
 }
