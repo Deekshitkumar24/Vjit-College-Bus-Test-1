@@ -26,10 +26,10 @@ Phase P0 has implemented and verified the foundational monorepo, strict typing, 
 | :--------- | :------------------------------------------------------------ | :-------------: | :--------: | :---------------------------------------------------------------- |
 | **P0-T1**  | Monorepo scaffolding, ESLint, Prettier, Turbo                 |    **DONE**     | `b598b27`  | `docs/progress/evidence/P0-T1.log`                                |
 | **P0-T2**  | Configuration package, Zod schema, startup refusal            |    **DONE**     | `e015693`  | `docs/progress/evidence/P0-T2.log`                                |
-| **P0-T3**  | Database foundation, 57 tables, partition manager             |    **DONE**     | `980eedd`  | `docs/progress/evidence/P0-T3.log`                                |
+| **P0-T3**  | Database foundation, 57 tables, partition manager             | **IN PROGRESS** | `0965908`  | `docs/progress/evidence/P0-T3.log` (Prisma migration ready; db:migrate unverified due to offline Docker) |
 | **P0-T4**  | Test harness, synthetic factories, non-prod guard             |    **DONE**     | `777d078`  | `docs/progress/evidence/P0-T4.log`                                |
 | **P0-T5**  | Migration policy check (expand-only enforcement)              |    **DONE**     | `37fc4d2`  | `docs/progress/evidence/P0-T5.log`                                |
-| **P0-T6**  | Auth core (SSO PKCE, Driver OTP lockout, token rotation)      | **IN PROGRESS** | `8bfe777`  | `docs/progress/evidence/P0-T6.log` (OV-9 dual OIDC config pending) |
+| **P0-T6**  | Auth core (SSO PKCE, Driver OTP lockout, token rotation)      |    **DONE**     | `8bfe777`  | `docs/progress/evidence/P0-T6.log`                                |
 | **P0-T7**  | Access control guard (Default-deny, 8 roles, route audit)     |    **DONE**     | `92a1224`  | `docs/progress/evidence/P0-T7.log`                                |
 | **P0-T8**  | HTTP hardening, Helmet, strict CSP, standardized error        |    **DONE**     | `6fa0273`  | `docs/progress/evidence/P0-T8.log`                                |
 | **P0-T9**  | Rate limiter (429 + Retry-After), Idempotency (409)           |    **DONE**     | `e4d29c7`  | `docs/progress/evidence/P0-T9.log`                                |

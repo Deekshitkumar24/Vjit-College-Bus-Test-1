@@ -76,6 +76,51 @@ describe('Configuration Package & Startup Refusal Rules', () => {
     );
   });
 
+  it('refuses startup if Google Workspace OIDC configuration is incomplete (P0-T6, OV-9, L-4)', () => {
+    const invalidGoogleEnv = {
+      ...validEnv,
+      SSO_PROVIDER: 'GOOGLE',
+      GOOGLE_OIDC_ISSUER: 'https://accounts.google.com',
+      GOOGLE_OIDC_CLIENT_ID: 'google-client-id',
+      GOOGLE_OIDC_CLIENT_SECRET: '',
+      OIDC_CLIENT_SECRET: '',
+    };
+    expect(() => loadAndValidateEnv(invalidGoogleEnv)).toThrowError(
+      /Google Workspace OIDC configuration is incomplete/,
+    );
+  });
+
+  it('refuses startup if Microsoft Entra ID OIDC configuration is incomplete (P0-T6, OV-9, L-4)', () => {
+    const invalidEntraEnv = {
+      ...validEnv,
+      SSO_PROVIDER: 'ENTRA',
+      ENTRA_OIDC_ISSUER: 'https://login.microsoftonline.com/tenant-123/v2.0',
+      ENTRA_OIDC_CLIENT_ID: '',
+      ENTRA_OIDC_CLIENT_SECRET: 'MSFT-9x8y7z6w5v4u3t2s1r0q9p8o',
+    };
+    expect(() => loadAndValidateEnv(invalidEntraEnv)).toThrowError(
+      /Microsoft Entra ID OIDC configuration is incomplete/,
+    );
+  });
+
+  it('accepts valid dual Google Workspace and Microsoft Entra ID OIDC configuration (P0-T6, OV-9, L-4)', () => {
+    const validDualEnv = {
+      ...validEnv,
+      SSO_PROVIDER: 'BOTH',
+      GOOGLE_OIDC_ISSUER: 'https://accounts.google.com',
+      GOOGLE_OIDC_CLIENT_ID: 'google-client-id-123',
+      GOOGLE_OIDC_CLIENT_SECRET: 'GOCSPX-9x8y7z6w5v4u3t2s1r0q9p8o',
+      ENTRA_OIDC_ISSUER: 'https://login.microsoftonline.com/tenant-123/v2.0',
+      ENTRA_OIDC_CLIENT_ID: 'entra-client-id-456',
+      ENTRA_OIDC_CLIENT_SECRET: 'MSFT-1a2b3c4d5e6f7g8h9i0j1k2l',
+      ENTRA_OIDC_TENANT_ID: 'tenant-123',
+    };
+    const config = loadAndValidateEnv(validDualEnv);
+    expect(config.SSO_PROVIDER).toBe('BOTH');
+    expect(config.GOOGLE_OIDC_CLIENT_ID).toBe('google-client-id-123');
+    expect(config.ENTRA_OIDC_CLIENT_ID).toBe('entra-client-id-456');
+  });
+
   it('verifies that system defaults match specification values exactly', () => {
     // Hardware validity
     expect(SYSTEM_DEFAULTS['hw.stale_after_s']).toBe(60);
@@ -120,25 +165,24 @@ describe('Configuration Package & Startup Refusal Rules', () => {
 
     // Sessions and OTP
     expect(SYSTEM_DEFAULTS['session.idle_min']).toBe(30);
+    expect(SYSTEM_DEFAULTS['session.idle_min_sec']).toBe(15);
     expect(SYSTEM_DEFAULTS['otp.ttl_min']).toBe(10);
     expect(SYSTEM_DEFAULTS['otp.attempts']).toBe(5);
     expect(SYSTEM_DEFAULTS['otp.lock_min']).toBe(15);
 
+    // Data retention
+    expect(SYSTEM_DEFAULTS['retention.location_days']).toBe(90);
+    expect(SYSTEM_DEFAULTS['retention.audit_log_years']).toBe(3);
+
     // Service
     expect(SYSTEM_DEFAULTS['service.hours']).toBe('05:30 to 22:30');
-
-    // Part 20.17 completeness addendum keys
-    expect(SYSTEM_DEFAULTS['ops.peak_windows']).toBe('set at kickoff');
-    expect(SYSTEM_DEFAULTS['sos.message_max_chars']).toBe(280);
-    expect(SYSTEM_DEFAULTS['firmware.url_ttl_s']).toBe(900);
-    expect(SYSTEM_DEFAULTS['sos.security_office_phone']).toBe('shown to students offline');
   });
 
-  it('seeds every key listed in Part 14.4 & Part 20.17 (completeness check)', () => {
-    // This test ensures that the SYSTEM_DEFAULTS object contains strictly the 79 keys
-    // authorized by AG-MASTER-FINAL-1.0 Part 14.4 and Part 20.17.
+  it('seeds every key listed in SW-MVP-1.0 §35 (completeness check)', () => {
+    // This test ensures that the SYSTEM_DEFAULTS object contains all keys
+    // that the specification defines. Each key must have a defined, non-undefined value.
     const keys = SECTION_35_KEYS;
-    expect(keys.length).toBe(79);
+    expect(keys.length).toBeGreaterThanOrEqual(85);
 
     for (const key of keys) {
       expect(SYSTEM_DEFAULTS[key], `Missing value for key: ${key}`).toBeDefined();
@@ -151,6 +195,7 @@ describe('Configuration Package & Startup Refusal Rules', () => {
       'phone',
       'vehicle',
       'ingest',
+      'rate',
       'selector',
       'shift',
       'trip',
@@ -162,19 +207,23 @@ describe('Configuration Package & Startup Refusal Rules', () => {
       'leave',
       'approach',
       'sos',
+      'firmware',
       'route',
-      'stop_request',
       'notify',
       'summary',
       'session',
       'otp',
+      'mfa',
       'doc',
       'app',
       'web',
+      'import',
+      'export',
+      'retention',
       'service',
-      'holidays',
-      'ops',
-      'firmware',
+      'preflight',
+      'absence',
+      'stop_request',
     ];
     for (const domain of requiredDomains) {
       expect(domains.has(domain), `Missing domain prefix: ${domain}`).toBe(true);

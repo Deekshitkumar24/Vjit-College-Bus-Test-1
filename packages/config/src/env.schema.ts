@@ -48,10 +48,27 @@ export const EnvSchema = z
     ),
     OTP_HMAC_KEY: z.string().min(32, 'OTP_HMAC_KEY must be at least 32 characters'),
 
-    // SSO / OIDC Configuration
-    OIDC_ISSUER: z.string().url(),
-    OIDC_CLIENT_ID: z.string().min(1),
-    OIDC_CLIENT_SECRET: z.string().min(1),
+    // SSO / Dual OIDC Configuration (Part 3.3, L-4, OV-9)
+    SSO_PROVIDER: z
+      .enum(['GOOGLE', 'ENTRA', 'BOTH', 'google', 'entra', 'both'])
+      .default('GOOGLE')
+      .transform((val) => val.toUpperCase() as 'GOOGLE' | 'ENTRA' | 'BOTH'),
+
+    // Google Workspace OIDC Settings
+    GOOGLE_OIDC_ISSUER: z.string().url().optional(),
+    GOOGLE_OIDC_CLIENT_ID: z.string().min(1).optional(),
+    GOOGLE_OIDC_CLIENT_SECRET: z.string().min(1).optional(),
+
+    // Microsoft Entra ID OIDC Settings
+    ENTRA_OIDC_ISSUER: z.string().url().optional(),
+    ENTRA_OIDC_CLIENT_ID: z.string().min(1).optional(),
+    ENTRA_OIDC_CLIENT_SECRET: z.string().min(1).optional(),
+    ENTRA_OIDC_TENANT_ID: z.string().min(1).optional(),
+
+    // Legacy OIDC fallbacks
+    OIDC_ISSUER: z.string().url().optional(),
+    OIDC_CLIENT_ID: z.string().min(1).optional(),
+    OIDC_CLIENT_SECRET: z.string().min(1).optional(),
     COLLEGE_EMAIL_DOMAINS: z.string().min(1), // comma-separated e.g. "college.edu,staff.college.edu"
     SSO_ALLOWED_RETURN_URLS: z.string().min(1), // comma-separated URLs
 
@@ -96,6 +113,34 @@ export const EnvSchema = z
       });
     }
 
+    // Refusal Rule: Google Workspace OIDC incomplete when provider is GOOGLE or BOTH (L-4, OV-9)
+    if (data.SSO_PROVIDER === 'GOOGLE' || data.SSO_PROVIDER === 'BOTH') {
+      const googleIssuer = data.GOOGLE_OIDC_ISSUER || data.OIDC_ISSUER;
+      const googleClientId = data.GOOGLE_OIDC_CLIENT_ID || data.OIDC_CLIENT_ID;
+      const googleClientSecret = data.GOOGLE_OIDC_CLIENT_SECRET || data.OIDC_CLIENT_SECRET;
+
+      if (!googleIssuer || !googleClientId || !googleClientSecret) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['GOOGLE_OIDC_CLIENT_ID'],
+          message:
+            'Google Workspace OIDC configuration is incomplete: GOOGLE_OIDC_ISSUER, GOOGLE_OIDC_CLIENT_ID, and GOOGLE_OIDC_CLIENT_SECRET are required',
+        });
+      }
+    }
+
+    // Refusal Rule: Microsoft Entra ID OIDC incomplete when provider is ENTRA or BOTH (L-4, OV-9)
+    if (data.SSO_PROVIDER === 'ENTRA' || data.SSO_PROVIDER === 'BOTH') {
+      if (!data.ENTRA_OIDC_ISSUER || !data.ENTRA_OIDC_CLIENT_ID || !data.ENTRA_OIDC_CLIENT_SECRET) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['ENTRA_OIDC_CLIENT_ID'],
+          message:
+            'Microsoft Entra ID OIDC configuration is incomplete: ENTRA_OIDC_ISSUER, ENTRA_OIDC_CLIENT_ID, and ENTRA_OIDC_CLIENT_SECRET are required',
+        });
+      }
+    }
+
     // Refusal Rule 2: Secret matching prohibited credential pattern
     const secretFields: Array<keyof typeof data> = [
       'DATABASE_URL',
@@ -106,6 +151,8 @@ export const EnvSchema = z
       'QR_HMAC_KEYS',
       'OTP_HMAC_KEY',
       'OIDC_CLIENT_SECRET',
+      'GOOGLE_OIDC_CLIENT_SECRET',
+      'ENTRA_OIDC_CLIENT_SECRET',
       'FCM_SERVICE_ACCOUNT_JSON',
       'SMS_PROVIDER_KEY',
       'SMS_CALLBACK_SECRET',

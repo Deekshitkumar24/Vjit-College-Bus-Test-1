@@ -1,0 +1,25 @@
+=== P0-T6 Authentication Core Verification ===
+Date: 2026-10-22T15:08:14+05:30
+Command: pnpm --filter @collegebus/config test:unit
+Commit SHA: (P0-T6 correction)
+
+> @collegebus/config@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\config
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/config
+
+ ✓ test/config.spec.ts (9 tests) 48ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  15:08:12
+   Duration  1.99s (transform 287ms, setup 0ms, collect 443ms, tests 48ms, environment 0ms, prepare 552ms)
+
+Result: PASS
+Dual OIDC (Google Workspace & Microsoft Entra ID, L-4, OV-9):
+- Config schema supports SSO_PROVIDER ('GOOGLE', 'ENTRA', 'BOTH')
+- Google Workspace discrete config: GOOGLE_OIDC_ISSUER, GOOGLE_OIDC_CLIENT_ID, GOOGLE_OIDC_CLIENT_SECRET
+- Microsoft Entra ID discrete config: ENTRA_OIDC_ISSUER, ENTRA_OIDC_CLIENT_ID, ENTRA_OIDC_CLIENT_SECRET, ENTRA_OIDC_TENANT_ID
+- Startup refusal verified when either Google or Entra set is incomplete while enabled
+- Prohibited credential patterns checked on all OIDC secrets
+Note: Live College Identity Tenant integration check tracked as Exit Criterion 1 (NOT VERIFIED until run against live tenant).
