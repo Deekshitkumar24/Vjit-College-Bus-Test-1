@@ -32,9 +32,9 @@ Note: An SOS trigger in the student app is not a P2 task in Part 16 (handled und
 | **P2-T1** | Expo shell extension (OV-4): router, SecureStore, role switcher, guards | **DONE** | `docs/progress/evidence/P2-T1.log` | Shell extension, route guards, token storage (Commit `da561c0`) |
 | **P2-T2** | Home map: MapLibre, 10-second foreground polling, source badges, clustering, route line, stale styling | **DONE** | `docs/progress/evidence/P2-T2.log` | Map markers, source badges, 10s poll (Commit `37e23ef`) |
 | **P2-T3** | Bus detail: ETA to my stop, remaining stops, progress, data age, Not running and Trip completed | **DONE** | `docs/progress/evidence/P2-T3.log` | ETA countdown, progress badges, data age (Commit `4538661`) |
-| **P2-T4** | Notification centre and preferences; push token into push_tokens; SAFETY channel on Android | **IN PROGRESS** | `docs/progress/evidence/P2-T4.log` | Preferences & notification center |
+| **P2-T4** | Notification centre and preferences; push token into push_tokens; SAFETY channel on Android | **DONE** | `docs/progress/evidence/P2-T4.log` | Preferences, notification center, push token, Android SAFETY channel |
 | **P2-T5** | Faculty views: my buses with picker, bus detail with driver contact, today's attendance | **DONE** | `docs/progress/evidence/P2-T5.log` | Faculty manifest and driver contact (Commit `a3dde2b`) |
-| **P2-T6** | Approaching-alert setting, 2 to 15 minutes | **IN PROGRESS** | `docs/progress/evidence/P2-T6.log` | Approaching alert preference slider |
+| **P2-T6** | Approaching-alert setting, 2 to 15 minutes | **DONE** | `docs/progress/evidence/P2-T6.log` | Approaching alert preference slider clamped 2-15 min |
 | **P2-T7** | Offline states, cached-data banners, no-connection messages | **DONE** | `docs/progress/evidence/P2-T7.log` | Offline caching & banners (Commit `602db65`) |
 | **P2-T8** | Accessibility and externalised strings | **IN PROGRESS** | `docs/progress/evidence/P2-T8.log` | Screen reader labels & i18n |
 | **P2-T9** | Boarding QR scanner (expo-camera), POST /attendance/scan, specific failure messages. Nothing queued offline | **DONE** | `docs/progress/evidence/P2-T9.log` | QR scanner, camera view, scan endpoint (Commit `60ad047`) |

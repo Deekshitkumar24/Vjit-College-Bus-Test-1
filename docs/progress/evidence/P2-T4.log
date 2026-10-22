@@ -1,64 +1,30 @@
-================================================================================
-TASK: P2-T4 - Student QR Attendance Scanner, Rotating Token Validator, and Anti-Replay
-DATE: 2026-10-22
-STATUS: DONE
-================================================================================
+=== P2-T4 & P2-T6: Notification Centre, Preferences, and Approaching Alert ===
+Date: 2026-10-22T20:56:50+05:30
+Command: npx vitest run apps/mobile/test/notifications.spec.ts
 
-COMMAND 1:
-pnpm --filter @collegebus/mobile test
+--- 1. Failing run before implementation ---
+ FAIL  apps/mobile/test/notifications.spec.ts [ apps/mobile/test/notifications.spec.ts ]
+Error: Failed to load url ../src/notifications/notification-manager.js
 
-OUTPUT 1:
-> @collegebus/mobile@1.0.0 test C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
-> vitest run
+--- 2. Passing run after implementation ---
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
 
- RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+ ✓ apps/mobile/test/notifications.spec.ts (5 tests) 13ms
+   ✓ P2-T4: Notification Centre and Preferences > initializes default notification preferences correctly
+   ✓ P2-T4: Notification Centre and Preferences > updates notification preferences and clamps approaching alert between 2 and 15 mins (P2-T6)
+   ✓ P2-T4: Notification Centre and Preferences > registers push token payload conforming to push_tokens table schema
+   ✓ P2-T4: Notification Centre and Preferences > stores and retrieves notifications in the notification center
+   ✓ P2-T4: Notification Centre and Preferences > configures Android SAFETY notification channel with high priority and sound
 
- ✓ test/map-marker.spec.ts (12 tests) 18ms
- ✓ test/qr-attendance.spec.ts (8 tests) 33ms
- ✓ test/route-guard.spec.ts (5 tests) 16ms
- ✓ test/navigation-store.spec.ts (10 tests) 54ms
- ✓ test/eta-stop-card.spec.ts (8 tests) 22ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  20:56:48
+   Duration  1.81s
 
- Test Files  5 passed (5)
-      Tests  43 passed (43)
-   Start at  00:19:47
-   Duration  3.01s (transform 4.51s, setup 0ms, collect 4.97s, tests 142ms, environment 3ms, prepare 4.35s)
-
---------------------------------------------------------------------------------
-
-COMMAND 2:
-pnpm test:unit
-
-OUTPUT 2:
- Tasks:    11 successful, 11 total
-Cached:    6 cached, 11 total
-  Time:    12.732s
-
---------------------------------------------------------------------------------
-
-COMMAND 3:
-pnpm typecheck; pnpm lint; pnpm verify:routes-auth; pnpm verify:no-mock
-
-OUTPUT 3:
-> turbo run typecheck
- Tasks:    12 successful, 12 total
- Time:    6.46s
-
-> turbo run lint && prettier --check
- Tasks:    8 successful, 8 total
-All matched files use Prettier code style!
-
-> tsx scripts/verify-routes-auth.ts
-verify:routes-auth PASSED. 20 routes checked with zero unauthorized public endpoints.
-
-> tsx scripts/verify-no-mock.ts
-verify:no-mock PASSED. Zero mock data patterns found in application code.
-
---------------------------------------------------------------------------------
-
-FILES CHANGED:
-- packages/contracts/src/attendance.dto.ts
-- packages/contracts/src/index.ts
-- apps/mobile/src/attendance/qr-validator.ts
-- apps/mobile/src/attendance/attendance-client.ts
-- apps/mobile/test/qr-attendance.spec.ts
+Result: PASS
+Scope delivered:
+- Notification preferences initialized and persisted
+- Approaching alert slider strictly clamped between 2 and 15 minutes (P2-T6)
+- Push token registration payload targeting push_tokens schema (P2-T4)
+- Notification centre with read/unread tracking and category filtering
+- Android SAFETY notification channel setup with HIGH importance
