@@ -168,3 +168,135 @@ export function validateDriverPhoneSample(
     speed_kmh: speedKmh,
   };
 }
+
+import { haversineDistanceMeters } from './gps-quality.js';
+
+export interface TripCalculationInput {
+  shiftId: string;
+  tripId: string;
+  busId: string;
+  driverId: string;
+  routeId: string;
+  tripType: 'MORNING' | 'AFTERNOON';
+  startedAt: Date;
+  endedAt: Date;
+  samples: Array<{
+    lat: number;
+    lng: number;
+    speed_kmh?: number | null | undefined;
+    recorded_at: Date;
+    source: 'HW' | 'PHONE';
+  }>;
+  totalBoardings: number;
+  failoverCount: number;
+  endReason: 'MANUAL' | 'AUTO_IDLE' | 'TIMEOUT' | 'ADMIN';
+}
+
+export interface TripSummaryResult {
+  shift_id: string;
+  trip_id: string;
+  bus_id: string;
+  driver_id: string;
+  route_id: string;
+  trip_type: 'MORNING' | 'AFTERNOON';
+  started_at: string;
+  ended_at: string;
+  duration_seconds: number;
+  distance_km: number;
+  average_speed_kmh: number;
+  total_boardings: number;
+  tracking_source_uptime: {
+    hw_seconds: number;
+    phone_seconds: number;
+    hw_percentage: number;
+    phone_percentage: number;
+  };
+  failover_count: number;
+  end_reason: 'MANUAL' | 'AUTO_IDLE' | 'TIMEOUT' | 'ADMIN';
+}
+
+/**
+ * Calculates trip summary metrics per Part 20.9 and SW-MVP-1.0 §15.7:
+ * - duration_seconds: total shift duration
+ * - distance_km: cumulative distance traversed using haversine geodesic summation
+ * - average_speed_kmh: average moving speed (> 3 km/h)
+ * - total_boardings: count of boarded passengers
+ * - tracking_source_uptime: duration and percentage spent on HW vs PHONE
+ * - failover_count: number of source transitions
+ * - end_reason: reason shift terminated
+ */
+export function calculateTripSummary(input: TripCalculationInput): TripSummaryResult {
+  const durationMs = Math.max(0, input.endedAt.getTime() - input.startedAt.getTime());
+  const duration_seconds = Math.round(durationMs / 1000);
+
+  // Cumulative distance from GPS trajectory
+  let totalDistanceM = 0;
+  for (let i = 1; i < input.samples.length; i++) {
+    const prev = input.samples[i - 1]!;
+    const curr = input.samples[i]!;
+    totalDistanceM += haversineDistanceMeters(
+      { lat: prev.lat, lng: prev.lng },
+      { lat: curr.lat, lng: curr.lng },
+    );
+  }
+  const distance_km = Math.round((totalDistanceM / 1000) * 10) / 10;
+
+  // Average moving speed
+  const movingSpeeds = input.samples
+    .map((s) => s.speed_kmh)
+    .filter((v): v is number => typeof v === 'number' && v > 3);
+
+  let average_speed_kmh = 0;
+  if (movingSpeeds.length > 0) {
+    const sum = movingSpeeds.reduce((a, b) => a + b, 0);
+    average_speed_kmh = Math.round((sum / movingSpeeds.length) * 10) / 10;
+  } else if (duration_seconds > 0 && distance_km > 0) {
+    average_speed_kmh = Math.round(((distance_km / duration_seconds) * 3600) * 10) / 10;
+  }
+
+  // Source uptime breakdown
+  let hwSeconds = 0;
+  let phoneSeconds = 0;
+  for (let i = 1; i < input.samples.length; i++) {
+    const prev = input.samples[i - 1]!;
+    const curr = input.samples[i]!;
+    const deltaS = Math.max(
+      0,
+      Math.round((curr.recorded_at.getTime() - prev.recorded_at.getTime()) / 1000),
+    );
+    if (curr.source === 'HW') {
+      hwSeconds += deltaS;
+    } else {
+      phoneSeconds += deltaS;
+    }
+  }
+
+  const totalTrackedSeconds = hwSeconds + phoneSeconds;
+  const hw_percentage =
+    totalTrackedSeconds > 0 ? Math.round((hwSeconds / totalTrackedSeconds) * 1000) / 10 : 0;
+  const phone_percentage =
+    totalTrackedSeconds > 0 ? Math.round((phoneSeconds / totalTrackedSeconds) * 1000) / 10 : 0;
+
+  return {
+    shift_id: input.shiftId,
+    trip_id: input.tripId,
+    bus_id: input.busId,
+    driver_id: input.driverId,
+    route_id: input.routeId,
+    trip_type: input.tripType,
+    started_at: input.startedAt.toISOString(),
+    ended_at: input.endedAt.toISOString(),
+    duration_seconds,
+    distance_km,
+    average_speed_kmh,
+    total_boardings: input.totalBoardings,
+    tracking_source_uptime: {
+      hw_seconds: hwSeconds,
+      phone_seconds: phoneSeconds,
+      hw_percentage,
+      phone_percentage,
+    },
+    failover_count: input.failoverCount,
+    end_reason: input.endReason,
+  };
+}

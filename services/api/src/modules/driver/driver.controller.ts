@@ -31,6 +31,7 @@ import {
   DriverManualStopArrivalRequestSchema,
   DriverManualStopArrivalResponseDto,
   DriverRouteStopsResponseDto,
+  DriverTripSummaryDto,
 } from '@collegebus/contracts';
 
 @Controller('driver')
@@ -352,5 +353,23 @@ export class DriverController {
     }
 
     return this.driverService.getRouteStops(driverId, shiftId);
+  }
+
+  @Get('trip-summary/:shiftId')
+  @Roles('DRV')
+  @HttpCode(HttpStatus.OK)
+  async getTripSummary(
+    @Headers('x-driver-id') driverIdHeader: string | undefined,
+    @Param('shiftId') shiftId: string,
+  ): Promise<DriverTripSummaryDto> {
+    const driverId = driverIdHeader || 'drv_default';
+    if (!driverId) {
+      throw new UnauthorizedException({
+        code: 'MISSING_DRIVER_CONTEXT',
+        message: 'Driver context missing',
+      });
+    }
+
+    return this.driverService.getTripSummary(driverId, shiftId);
   }
 }

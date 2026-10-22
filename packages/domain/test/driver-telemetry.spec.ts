@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   validateShiftStart,
   validateDriverPhoneSample,
+  calculateTripSummary,
   DriverRosterEntry,
   ShiftRecord,
   DriverPhoneSampleInput,
@@ -204,6 +205,78 @@ describe('Driver Telemetry & Shift Start Preconditions (Part 5.3 & 6.7)', () => 
       const result = validateDriverPhoneSample(sample, baseTime);
       expect(result.accepted).toBe(false);
       expect(result.reason).toBe('STALE_TIMESTAMP');
+    });
+  });
+
+  describe('Driver Trip Summary Calculations (P3-T17, Part 20.9 fields)', () => {
+    it('calculates duration, distance, avg speed, uptime breakdown, and failovers', () => {
+      const startTime = new Date('2026-10-22T08:00:00Z');
+      const endTime = new Date('2026-10-22T09:00:00Z'); // 3600s = 1 hour
+
+      // 3 samples spanning 1 hour:
+      // sample 1: 08:00:00, (13.0800, 80.2000), speed 30, HW
+      // sample 2: 08:30:00, (13.0800, 80.2500) (~5.4 km), speed 40, HW
+      // sample 3: 09:00:00, (13.0800, 80.3000) (~5.4 km), speed 35, PHONE
+      const samples = [
+        {
+          lat: 13.08,
+          lng: 80.2,
+          speed_kmh: 30,
+          recorded_at: startTime,
+          source: 'HW' as const,
+        },
+        {
+          lat: 13.08,
+          lng: 80.25,
+          speed_kmh: 40,
+          recorded_at: new Date('2026-10-22T08:30:00Z'),
+          source: 'HW' as const,
+        },
+        {
+          lat: 13.08,
+          lng: 80.3,
+          speed_kmh: 35,
+          recorded_at: endTime,
+          source: 'PHONE' as const,
+        },
+      ];
+
+      const summary = calculateTripSummary({
+        shiftId: 'shift_99',
+        tripId: 'trip_99',
+        busId: 'bus_07',
+        driverId: 'drv_101',
+        routeId: 'route_1',
+        tripType: 'MORNING',
+        startedAt: startTime,
+        endedAt: endTime,
+        samples,
+        totalBoardings: 32,
+        failoverCount: 1,
+        endReason: 'MANUAL',
+      });
+
+      // Part 20.9 fields
+      expect(summary.shift_id).toBe('shift_99');
+      expect(summary.trip_id).toBe('trip_99');
+      expect(summary.bus_id).toBe('bus_07');
+      expect(summary.driver_id).toBe('drv_101');
+      expect(summary.route_id).toBe('route_1');
+      expect(summary.trip_type).toBe('MORNING');
+      expect(summary.started_at).toBe(startTime.toISOString());
+      expect(summary.ended_at).toBe(endTime.toISOString());
+      expect(summary.duration_seconds).toBe(3600);
+      expect(summary.distance_km).toBeGreaterThan(10); // ~10.8 km
+      expect(summary.average_speed_kmh).toBe(35); // (30 + 40 + 35) / 3 = 35
+      expect(summary.total_boardings).toBe(32);
+      expect(summary.failover_count).toBe(1);
+      expect(summary.end_reason).toBe('MANUAL');
+
+      // Uptime breakdown: 1800s HW (50%), 1800s PHONE (50%)
+      expect(summary.tracking_source_uptime.hw_seconds).toBe(1800);
+      expect(summary.tracking_source_uptime.phone_seconds).toBe(1800);
+      expect(summary.tracking_source_uptime.hw_percentage).toBe(50);
+      expect(summary.tracking_source_uptime.phone_percentage).toBe(50);
     });
   });
 });

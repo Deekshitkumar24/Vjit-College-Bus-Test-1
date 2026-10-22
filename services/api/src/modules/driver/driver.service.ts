@@ -11,6 +11,7 @@ import {
   evaluateRouteStopsWithOverrides,
   RouteStop,
   ManualStopArrivalRecord,
+  calculateTripSummary,
 } from '@collegebus/domain';
 import {
   DriverLocationsBatchDto,
@@ -34,6 +35,7 @@ import {
   DriverManualStopArrivalRequestDto,
   DriverManualStopArrivalResponseDto,
   DriverRouteStopsResponseDto,
+  DriverTripSummaryDto,
 } from '@collegebus/contracts';
 import { ShiftService } from '../shift/shift.service.js';
 import { SosService } from './sos.service.js';
@@ -993,5 +995,55 @@ export class DriverService {
       skipped_count: evalResult.skippedStops.length,
       current_stop_id: evalResult.currentStopId ?? undefined,
     };
+  }
+
+  /**
+   * Generates driver trip summary after shift end (Part 20.9 fields, SW-MVP §15.7)
+   */
+  getTripSummary(driverId: string, shiftId: string, now: Date = new Date()): DriverTripSummaryDto {
+    const shift = this.shiftService.getShift(shiftId);
+    if (!shift) {
+      throw new NotFoundException({
+        code: 'SHIFT_NOT_FOUND',
+        message: 'Shift does not exist',
+      });
+    }
+
+    if (shift.driver_id !== driverId) {
+      throw new ForbiddenException({
+        code: 'SHIFT_DRIVER_MISMATCH',
+        message: 'Shift does not belong to this driver',
+      });
+    }
+
+    const shiftSamples = Array.from(this.sampleRegistry.values())
+      .filter((s) => s.shift_id === shiftId && !s.is_mock)
+      .sort((a, b) => a.recorded_at.getTime() - b.recorded_at.getTime());
+
+    const totalBoardings = (this.manualCheckins.get(shift.trip_id) || []).length;
+    const endedAt = shift.ended_at || now;
+
+    const summary = calculateTripSummary({
+      shiftId: shift.id,
+      tripId: shift.trip_id,
+      busId: shift.bus_id,
+      driverId: shift.driver_id,
+      routeId: shift.route_id,
+      tripType: 'MORNING',
+      startedAt: shift.started_at,
+      endedAt,
+      samples: shiftSamples.map((s) => ({
+        lat: s.lat,
+        lng: s.lng,
+        speed_kmh: s.speed_kmh,
+        recorded_at: s.recorded_at,
+        source: 'PHONE',
+      })),
+      totalBoardings,
+      failoverCount: 0,
+      endReason: 'MANUAL',
+    });
+
+    return summary;
   }
 }

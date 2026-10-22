@@ -319,3 +319,36 @@ export const DriverRouteStopsResponseSchema = z
   .strict();
 
 export type DriverRouteStopsResponseDto = z.infer<typeof DriverRouteStopsResponseSchema>;
+
+export const TrackingSourceUptimeSchema = z
+  .object({
+    hw_seconds: z.number().nonnegative(),
+    phone_seconds: z.number().nonnegative(),
+    hw_percentage: z.number().min(0).max(100),
+    phone_percentage: z.number().min(0).max(100),
+  })
+  .strict();
+
+export type TrackingSourceUptimeDto = z.infer<typeof TrackingSourceUptimeSchema>;
+
+export const DriverTripSummarySchema = z
+  .object({
+    shift_id: z.string(),
+    trip_id: z.string(),
+    bus_id: z.string(),
+    driver_id: z.string(),
+    route_id: z.string(),
+    trip_type: z.enum(['MORNING', 'AFTERNOON']),
+    started_at: z.string().datetime(),
+    ended_at: z.string().datetime(),
+    duration_seconds: z.number().nonnegative(),
+    distance_km: z.number().nonnegative(),
+    average_speed_kmh: z.number().nonnegative(),
+    total_boardings: z.number().int().nonnegative(),
+    tracking_source_uptime: TrackingSourceUptimeSchema,
+    failover_count: z.number().int().nonnegative(),
+    end_reason: z.enum(['MANUAL', 'AUTO_IDLE', 'TIMEOUT', 'ADMIN']),
+  })
+  .strict();
+
+export type DriverTripSummaryDto = z.infer<typeof DriverTripSummarySchema>;

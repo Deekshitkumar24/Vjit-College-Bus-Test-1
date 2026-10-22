@@ -8,3 +8,4 @@ export * from './driver-sos-manager.js';
 export * from './driver-qr-generator.js';
 export * from './driver-checkin-manager.js';
 export * from './driver-ticket-manager.js';
+export * from './trip-summary-manager.js';

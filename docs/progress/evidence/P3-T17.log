@@ -1,0 +1,57 @@
+=== Evidence Log: P3-T17 ===
+Task: P3-T17: Driver trip summary after shift end (Part 20.9 fields)
+Date: 2026-10-22
+Governing References: SW-MVP-1.0 §15.7, Master Part 20.9, Part 16 (P3-T17)
+
+Command 1:
+pnpm --filter @collegebus/domain test:unit test/driver-telemetry.spec.ts
+
+Output:
+> @collegebus/domain@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> vitest run test/driver-telemetry.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/driver-telemetry.spec.ts (13 tests) 22ms
+   ✓ Driver Telemetry & Shift Start Preconditions (Part 5.3 & 6.7)
+     ✓ validateShiftStart (5 tests)
+     ✓ validateDriverPhoneSample (7 tests)
+     ✓ Driver Trip Summary Calculations (P3-T17, Part 20.9 fields)
+       ✓ calculates duration, distance, avg speed, uptime breakdown, and failovers
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+
+Command 2:
+pnpm --filter @collegebus/api test:unit test/driver-trip-summary.spec.ts
+
+Output:
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/driver-trip-summary.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/driver-trip-summary.spec.ts (2 tests) 16ms
+   ✓ Driver Trip Summary Pipeline (P3-T17, Part 20.9 fields)
+     ✓ generates trip summary with all Part 20.9 fields after shift ends
+     ✓ rejects trip summary retrieval if shift belongs to a different driver
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+
+Command 3:
+pnpm --filter @collegebus/mobile test:unit test/driver-trip-summary.spec.ts
+
+Output:
+> @collegebus/mobile@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\mobile
+> vitest run test/driver-trip-summary.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/driver-trip-summary.spec.ts (2 tests) 15ms
+   ✓ Driver Mobile Trip Summary Manager (P3-T17, Part 20.9 fields)
+     ✓ fetches and caches driver trip summary after shift end
+     ✓ handles fetch failure and preserves null cached summary
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
