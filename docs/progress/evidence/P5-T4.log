@@ -1,0 +1,20 @@
+=== P5-T4 EVIDENCE LOG ===
+Task: P5-T4 Boarding-Cutoff Job & Absence Evaluator (Part 11.3, T-ATT-03)
+Date: 2026-10-22
+Command: npx vitest run services/api/test/absence-evaluator.spec.ts
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ services/api/test/absence-evaluator.spec.ts (3 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  22:10:25
+   Duration  2.25s (transform 183ms, setup 0ms, collect 1.00s, tests 14ms, environment 1ms, prepare 524ms)
+
+Verification:
+- BoardingCutoffJob: Evaluates trips where scheduled_departure + 15m has passed; updates remaining EXPECTED records to ABSENT.
+- T-ATT-03: Student with morning boarded status (BOARDED, LATE_BOARDED, BOARDED_LATE) and afternoon status ABSENT triggers an alert in absence_alerts within 5m of cutoff. Dispatches high-priority safety notification to primary faculty, assigned faculty, and coordinators.
+- Morning absent or ON_LEAVE students are not candidates. ON_LEAVE students in afternoon are never alerted.
+- Idempotency & Conflict: Repeated runs of the absence evaluator generate 0 duplicate rows due to unique constraint on (student_id, service_date).
