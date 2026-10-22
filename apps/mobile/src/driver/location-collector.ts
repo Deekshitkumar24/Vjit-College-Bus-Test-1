@@ -23,6 +23,11 @@ export interface LocationStatusBannerState {
   message: string | null;
 }
 
+export interface MockWarningBannerState {
+  visible: boolean;
+  message: string | null;
+}
+
 export interface LocationInputData {
   lat: number;
   lng: number;
@@ -47,6 +52,7 @@ export interface PhoneLocationCollectorConfig {
   batchPacingMs?: number; // default 2000ms (1 batch every 2 seconds per §11.8)
   buffer?: PhoneLocationBuffer;
   http?: LocationCollectorHttpHandler;
+  onMockDetected?: (sample: DriverLocationSampleDto) => void;
 }
 
 export class PhoneLocationCollector {
@@ -72,11 +78,16 @@ export class PhoneLocationCollector {
   private readonly batchPacingMs: number;
   private readonly buffer: PhoneLocationBuffer;
   private readonly http: LocationCollectorHttpHandler;
+  private readonly onMockDetected?: ((sample: DriverLocationSampleDto) => void) | undefined;
 
   private foregroundNotification: ForegroundNotificationState | null = null;
   private bannerState: LocationStatusBannerState = {
     visible: false,
     pointCount: 0,
+    message: null,
+  };
+  private mockBannerState: MockWarningBannerState = {
+    visible: false,
     message: null,
   };
 
@@ -93,6 +104,7 @@ export class PhoneLocationCollector {
     this.batchPacingMs = config.batchPacingMs ?? 2000;
     this.buffer = config.buffer ?? new PhoneLocationBuffer();
     this.http = config.http ?? { fetch: globalThis.fetch };
+    this.onMockDetected = config.onMockDetected;
   }
 
   isTracking(): boolean {
@@ -117,6 +129,10 @@ export class PhoneLocationCollector {
 
   getStatusBanner(): LocationStatusBannerState {
     return { ...this.bannerState };
+  }
+
+  getMockBanner(): MockWarningBannerState {
+    return { ...this.mockBannerState };
   }
 
   getBuffer(): PhoneLocationBuffer {
@@ -180,6 +196,10 @@ export class PhoneLocationCollector {
       pointCount: 0,
       message: null,
     };
+    this.mockBannerState = {
+      visible: false,
+      message: null,
+    };
   }
 
   /**
@@ -213,6 +233,20 @@ export class PhoneLocationCollector {
       provider: input.provider ?? 'GPS',
       is_mock: Boolean(input.is_mock),
     };
+
+    // Mock Location Detection & Warning Banner (Part 5.3 & §11.7)
+    if (input.is_mock) {
+      this.mockBannerState = {
+        visible: true,
+        message: 'Mock location detected. Live tracking disabled until real GPS restored.',
+      };
+      this.onMockDetected?.(sample);
+    } else {
+      this.mockBannerState = {
+        visible: false,
+        message: null,
+      };
+    }
 
     // Enqueue to SQLite buffer
     await this.buffer.enqueueSample(this.currentShiftId, sample);
