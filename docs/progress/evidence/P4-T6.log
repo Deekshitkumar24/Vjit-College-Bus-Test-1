@@ -1,0 +1,25 @@
+=== P4-T6 Evidence Log ===
+Date: 2026-10-22
+Command: pnpm --filter @collegebus/admin-web test:unit test/fleet-map-tracks.spec.ts
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run "test/fleet-map-tracks.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/fleet-map-tracks.spec.ts (3 tests) 63ms
+   ✓ Live Fleet Map Overview
+     ✓ aggregates live bus states, calculates sample age, and indicates active tracking source
+   ✓ Source-Switch Log
+     ✓ records source switch events and allows filtering by bus ID
+   ✓ Dual-Track Comparison (Last 10 minutes)
+     ✓ calculates divergence between primary hardware track and phone track and flags discrepancies > 200m
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+
+Full admin-web suite:
+ Test Files  7 passed (7)
+      Tests  35 passed (35)
+Status: DONE

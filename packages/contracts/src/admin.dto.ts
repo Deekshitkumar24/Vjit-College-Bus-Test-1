@@ -334,3 +334,75 @@ export const UserDeactivationSchema = z.object({
 });
 export type UserDeactivationDto = z.infer<typeof UserDeactivationSchema>;
 
+// ==========================================
+// 9. Live Fleet Map, Source Switch Log & Dual Track (P4-T6, Part 16, Part 21)
+// ==========================================
+export const FleetBusStatusSchema = z.object({
+  bus_id: z.string(),
+  plate_number: z.string(),
+  route_id: z.string().nullable().optional(),
+  route_name: z.string().nullable().optional(),
+  driver_name: z.string().nullable().optional(),
+  active_source: z.enum(['PRIMARY_TRACKER', 'DRIVER_PHONE', 'NONE']),
+  status: z.enum(['RUNNING', 'IDLE', 'NOT_RUNNING', 'OFF_ROUTE', 'EMERGENCY']),
+  lat: z.number().nullable().optional(),
+  lng: z.number().nullable().optional(),
+  speed_kph: z.number().nullable().optional(),
+  heading: z.number().nullable().optional(),
+  battery_v: z.number().nullable().optional(),
+  last_sample_at: z.string().nullable().optional(),
+  age_seconds: z.number().int().nullable().optional(),
+});
+export type FleetBusStatusDto = z.infer<typeof FleetBusStatusSchema>;
+
+export const SourceSwitchReasonEnum = z.enum([
+  'DEVICE_TIMEOUT',
+  'LOW_ACCURACY',
+  'DRIVER_TAKEOVER',
+  'DISAGREEMENT',
+  'MANUAL_OVERRIDE',
+  'PRIMARY_RECOVERED',
+]);
+export type SourceSwitchReason = z.infer<typeof SourceSwitchReasonEnum>;
+
+export const SourceSwitchLogItemSchema = z.object({
+  id: z.string(),
+  bus_id: z.string(),
+  switched_at: z.string().datetime(),
+  previous_source: z.enum(['PRIMARY_TRACKER', 'DRIVER_PHONE', 'NONE']),
+  new_source: z.enum(['PRIMARY_TRACKER', 'DRIVER_PHONE', 'NONE']),
+  reason: SourceSwitchReasonEnum,
+  confidence: z.number().min(0).max(1),
+  details: z.record(z.unknown()).optional(),
+});
+export type SourceSwitchLogItemDto = z.infer<typeof SourceSwitchLogItemSchema>;
+
+export const GpsPointSchema = z.object({
+  lat: z.number(),
+  lng: z.number(),
+  recorded_at: z.string(),
+  speed_kph: z.number().optional(),
+  accuracy_m: z.number().optional(),
+});
+export type GpsPointDto = z.infer<typeof GpsPointSchema>;
+
+export const DualTrackComparisonSchema = z.object({
+  bus_id: z.string(),
+  window_start: z.string().datetime(),
+  window_end: z.string().datetime(),
+  primary_track: z.array(GpsPointSchema),
+  phone_track: z.array(GpsPointSchema),
+  max_divergence_m: z.number(),
+  average_divergence_m: z.number(),
+  disagreement_intervals: z.array(
+    z.object({
+      start: z.string(),
+      end: z.string(),
+      divergence_m: z.number(),
+      reason: z.string(),
+    }),
+  ),
+});
+export type DualTrackComparisonDto = z.infer<typeof DualTrackComparisonSchema>;
+
+
