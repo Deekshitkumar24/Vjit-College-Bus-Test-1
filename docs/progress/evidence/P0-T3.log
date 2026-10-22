@@ -1,27 +1,22 @@
-=== P0-T3 Database Foundation Verification ===
-Date: 2026-10-22T14:51:17+05:30
-Command: pnpm --filter @collegebus/db test:unit
-Commit SHA: (P0-T3 correction)
+=== P0-T3 Evidence Log ===
+Date: 2026-10-22
+Environment: PostgreSQL 16.12 with PostGIS 3.4 (native Windows, port 5432)
+Command: psql -h 127.0.0.1 -p 5432 -U postgres -d collegebus -c "SELECT column_name, data_type, column_default, is_nullable FROM information_schema.columns WHERE table_name = 'users' AND column_name IN ('college_email_exception', 'exception_reason');"
 
-> @collegebus/db@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\db
-> vitest run test/db.spec.ts test/check-migrations.spec.ts
+Output:
+       column_name       | data_type | column_default | is_nullable 
+-------------------------+-----------+----------------+-------------
+ college_email_exception | boolean   | false          | NO
+ exception_reason        | text      |                | YES
+(2 rows)
 
- RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/db
+Prisma sync command: packages\db\node_modules\.bin\prisma.CMD db push --schema packages/db/prisma/schema.prisma
+Output:
+Environment variables loaded from .env
+Prisma schema loaded from packages\db\prisma\schema.prisma
+Datasource "db": PostgreSQL database "collegebus", schema "public" at "localhost:5432"
 
- ✓ test/check-migrations.spec.ts (4 tests) 7ms
- ✓ test/db.spec.ts (4 tests) 13ms
+Your database is now in sync with your Prisma schema. Done in 3.08s
+✔ Generated Prisma Client (v5.22.0)
 
- Test Files  2 passed (2)
-      Tests  8 passed (8)
-   Start at  14:51:17
-   Duration  1.17s (transform 237ms, setup 0ms, collect 279ms, tests 21ms, environment 1ms, prepare 882ms)
-
-Result: PASS
-Prisma Models: 55
-Partitioned Tables: 2 (location_samples, device_heartbeats)
-Total Database Tables: 57
-OV-8 & OV-14 Fields Added to User Model:
-- users.college_email_exception (BOOLEAN, default false)
-- users.exception_reason (TEXT, nullable)
-Prisma Migration Created: packages/db/prisma/migrations/20261022150000_add_user_college_email_exception/migration.sql
-Expand-only migration check: Passed (4/4 migration tests passing)
+Status: DONE
