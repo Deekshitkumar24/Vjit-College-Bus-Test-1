@@ -1,0 +1,30 @@
+=== P4-T8 Evidence Log ===
+Date: 2026-10-22
+Command: pnpm --filter @collegebus/admin-web test:unit test/settings-audit-security.spec.ts
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run "test/settings-audit-security.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/settings-audit-security.spec.ts (7 tests) 29ms
+   ✓ Super Admin Settings Management with Mandatory Reason
+     ✓ updates setting when valid reason is provided by SAD and logs audit entry
+     ✓ rejects setting update if role is not SUPER_ADMIN
+     ✓ rejects setting update if reason is under 10 characters
+   ✓ Feature Flags Management
+     ✓ updates feature flag percentage and logs reason
+   ✓ Admin Audit Viewer
+     ✓ provides append-only filtered audit query
+   ✓ T-SEC-05: Admin Endpoint Route Security & 404 Hiding
+     ✓ returns 404 and leaks no data for non-admin roles and unauthenticated requests (T-SEC-05)
+     ✓ allows access only to authorized admin roles (COORDINATOR, TECHNICIAN, SUPER_ADMIN, MANAGEMENT)
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+
+Full admin-web suite:
+ Test Files  9 passed (9)
+      Tests  46 passed (46)
+Status: DONE

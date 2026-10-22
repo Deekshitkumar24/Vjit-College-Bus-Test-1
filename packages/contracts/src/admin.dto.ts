@@ -488,5 +488,49 @@ export const StagedRolloutConfigSchema = z.object({
 });
 export type StagedRolloutConfigDto = z.infer<typeof StagedRolloutConfigSchema>;
 
+// ==========================================
+// 11. Settings, Feature Flags & Audit Logs (P4-T8, Part 16, Part 13.9, Part 20.1)
+// ==========================================
+export const SystemSettingUpdateSchema = z.object({
+  key: z.string().min(1),
+  value: z.unknown(),
+  change_reason: z.string().min(10, 'Change reason must be at least 10 characters'),
+  updated_by_user_id: z.string().min(1),
+});
+export type SystemSettingUpdateDto = z.infer<typeof SystemSettingUpdateSchema>;
+
+export const FeatureFlagSchema = z.object({
+  key: z.string().min(1),
+  enabled: z.boolean(),
+  rollout_percentage: z.number().int().min(0).max(100).default(100),
+  description: z.string().optional(),
+  last_updated_at: z.string().datetime(),
+  last_updated_by: z.string().min(1),
+});
+export type FeatureFlagDto = z.infer<typeof FeatureFlagSchema>;
+
+export const UpdateFeatureFlagSchema = z.object({
+  key: z.string().min(1),
+  enabled: z.boolean(),
+  rollout_percentage: z.number().int().min(0).max(100).optional(),
+  change_reason: z.string().min(10, 'Change reason must be at least 10 characters'),
+  updated_by_user_id: z.string().min(1),
+});
+export type UpdateFeatureFlagDto = z.infer<typeof UpdateFeatureFlagSchema>;
+
+export const AdminAuditLogEntrySchema = z.object({
+  id: z.string(),
+  action: z.string(),
+  entity_type: z.string(),
+  entity_id: z.string().nullable().optional(),
+  user_id: z.string(),
+  change_reason: z.string(),
+  before_state: z.record(z.unknown()).nullable().optional(),
+  after_state: z.record(z.unknown()).nullable().optional(),
+  recorded_at: z.string().datetime(),
+});
+export type AdminAuditLogEntryDto = z.infer<typeof AdminAuditLogEntrySchema>;
+
+
 
 
