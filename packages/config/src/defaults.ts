@@ -129,13 +129,14 @@ export const SYSTEM_DEFAULTS: Record<string, number | string | number[] | string
   'notify.push_per_hour': 6,
   'notify.group_window_s': 120,
   'notify.retry_min': [1, 5, 30, 120],
-  'notify.sms_retry_max': 3,
-  'notify.email_retry_max': 3,
+  'notify.sms_retry_max': 6, // Part 11.4: 6 attempts
+  'notify.email_retry_max': 6, // Part 11.4: 6 attempts
   'summary.send_time': '08:00',
 
-  // ── Sessions and OTP (§8, F-AUTH-02, §35) ──
+  // ── Sessions and OTP (§8, F-AUTH-02, §35, Part 13.20) ──
   'session.access_token_min': 15,
   'session.refresh_token_days': 30,
+  'session.driver_refresh_token_hours': 12, // Part 13.20: 12 hours for drivers
   'session.idle_min': 30,
   'session.idle_min_sec': 15,
   'session.max_per_user': 5,
