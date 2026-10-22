@@ -5,25 +5,23 @@ with open('AG-MASTER-FINAL-1.0.md', 'r', encoding='utf-8') as f:
     contract_text = f.read()
 
 # 1. Parse Part 14.4 (Configuration defaults)
-idx14 = contract_text.find('14.4 Configuration defaults')
-idx15 = contract_text.find('14.5 Observability', idx14)
-# Note that Part 14.4 table continues across pages 78, 79, 80 before 14.6
-idx16 = contract_text.find('14.6 Non-functional requirements', idx15)
-p14_text = contract_text[idx14:idx15] + "\n" + contract_text[idx15:idx16]
+s14 = contract_text.find('### 14.4 Configuration defaults')
+e14 = contract_text.find('### 14.5 Observability', s14)
+t14 = contract_text[s14:e14].replace(r'\_', '_')
 
-# Extract keys with pattern: <key_name>: <value>
-# E.g. hw.stale_after_s: 60
-p14_raw = re.findall(r'([a-z0-9_]+\.[a-z0-9_]+(?:\.[a-z0-9_]+)*)\s*:', p14_text)
+p14_raw = re.findall(r'([a-z0-9_]+\.[a-z0-9_]+(?:\.[a-z0-9_]+)*)\s*:', t14)
 p14_keys = set(p14_raw)
-if 'holidays:' in p14_text:
+if 'holidays:' in t14 or 'holidays' in t14:
     p14_keys.add('holidays')
 
 # 2. Parse Part 20.17 (Configuration keys added)
-idx20 = contract_text.find('20.17 Configuration keys added')
-idx21 = contract_text.find('Part 21. Amendments', idx20)
-p20_text = contract_text[idx20:idx21]
+s20 = contract_text.find('20.17 Configuration keys added')
+e20 = contract_text.find('20.18', s20)
+if e20 == -1:
+    e20 = contract_text.find('Part 21', s20)
+t20 = contract_text[s20:e20].replace(r'\_', '_')
 
-p20_raw = re.findall(r'([a-z0-9_]+\.[a-z0-9_]+(?:\.[a-z0-9_]+)*)\s*:', p20_text)
+p20_raw = re.findall(r'([a-z0-9_]+\.[a-z0-9_]+(?:\.[a-z0-9_]+)*)\s*:', t20)
 p20_keys = set(p20_raw)
 
 contract_keys = p14_keys.union(p20_keys)
@@ -40,13 +38,13 @@ print(f"Part 14.4 contract keys count: {len(p14_keys)}")
 print(f"Part 20.17 contract keys count: {len(p20_keys)}")
 print(f"Total unique contract keys (14.4 + 20.17): {len(contract_keys)}")
 print(f"Total keys seeded in packages/config/src/defaults.ts: {len(code_keys)}")
-print(f"Extra keys in code not in Part 14.4 or 20.17 ({len(diff_extra)}):")
-for k in diff_extra:
-    print(f"  - {k}")
+print(f"Extra keys in defaults.ts beyond contract: {len(diff_extra)}")
+print(f"Missing contract keys in defaults.ts: {len(diff_missing)}")
 
-if diff_missing:
-    print(f"\nMissing contract keys in defaults.ts ({len(diff_missing)}):")
-    for k in diff_missing:
-        print(f"  - {k}")
+if not diff_extra and not diff_missing:
+    print("\nPERFECT CONFORMANCE (OV-12 PASS): defaults.ts contains exactly the 79 contract keys (0 extra, 0 missing)!")
 else:
-    print("\nAll contract keys are present in defaults.ts (0 missing).")
+    if diff_extra:
+        print(f"Extra keys ({len(diff_extra)}):", diff_extra)
+    if diff_missing:
+        print(f"Missing keys ({len(diff_missing)}):", diff_missing)

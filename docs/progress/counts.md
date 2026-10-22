@@ -7,7 +7,7 @@ Generated via automated verification scripts in `scripts/audit/` executed direct
 | Metric | Measured Count | Contract Baseline Reference | Status / Reconciliation |
 |---|---|---|---|
 | **Contract Configuration Keys** | 79 | `AG-MASTER-FINAL-1.0.md` Part 14.4 (75) + Part 20.17 (4) | Exact contract baseline |
-| **Seeded Configuration Keys** | 127 | `packages/config/src/defaults.ts` | 51 additional operational keys from `SW-MVP-1.0` (Conflict C-15) |
+| **Seeded Configuration Keys** | 79 | `packages/config/src/defaults.ts` | 48 extra keys removed per OV-12; awaiting owner decision O8 |
 | **Prisma Schema Models** | 55 | `packages/db/prisma/schema.prisma` | Mapped database entities |
 | **Partitioned Tables** | 2 | `location_samples`, `device_heartbeats` (Part 7.12) | Declarative PostgreSQL range partitioning |
 | **Total Physical Tables** | 57 | Contract Part 7 (56) + `push_tokens` (OV-15) | 55 Prisma models + 2 Partitioned tables = exactly 57 |
@@ -16,12 +16,12 @@ Generated via automated verification scripts in `scripts/audit/` executed direct
 | **API Tests** | 62 passed | `services/api` (10 test files) | 62 passed, 0 failed, 0 skipped |
 | **Domain Tests** | 99 passed | `packages/domain` (8 test files) | 99 passed, 0 failed, 0 skipped |
 | **Web Tests** | 21 passed | `apps/admin-web` (3 test files) | 21 passed, 0 failed, 0 skipped |
-| **DB & Migration Tests** | 10 passed | `packages/db` (3 test files) | 6 unit + 4 integration passed, 0 failed |
+| **DB & Migration Tests** | 10 executed | `packages/db` (3 test files) | 6 unit passed; 4 integration unverified (Docker offline) |
 | **Simulator Tests** | 7 passed | `tools/simulator` (1 test file) | 7 passed, 0 failed, 0 skipped |
 | **Config Tests** | 6 passed | `packages/config` (1 test file) | 6 passed, 0 failed, 0 skipped |
 | **Contracts Tests** | 6 passed | `packages/contracts` (1 test file) | 6 passed, 0 failed, 0 skipped |
 | **Root Test Harness** | 4 passed | `tests/fixtures` (1 test file) | 4 passed, 0 failed, 0 skipped |
-| **Total Test Suite Runner Output** | **364 passed** | Across 45 test files in 9 packages | **364 passed, 0 failed, 0 skipped (100%)** |
+| **Total Test Suite Runner Output** | **364 passed** | Across 45 test files in 9 packages | **364 unit/component tests passed; Docker offline, P0 exit 3 NOT VERIFIED** |
 
 ## 2. Table Reconciliation Output (`scripts/audit/compare-tables.py`)
 

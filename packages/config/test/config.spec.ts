@@ -100,11 +100,9 @@ describe('Configuration Package & Startup Refusal Rules', () => {
     expect(SYSTEM_DEFAULTS['stop.arrival_speed_kmh']).toBe(5);
     expect(SYSTEM_DEFAULTS['stop.arrival_dwell_s']).toBe(15);
     expect(SYSTEM_DEFAULTS['eta.speed_default_kmh']).toBe(20);
-    expect(SYSTEM_DEFAULTS['eta.arriving_threshold_s']).toBe(60);
 
     // Attendance
     expect(SYSTEM_DEFAULTS['qr.rotation_s']).toBe(30);
-    expect(SYSTEM_DEFAULTS['qr.grace_slots']).toBe(1);
     expect(SYSTEM_DEFAULTS['boarding.window_before_min']).toBe(10);
     expect(SYSTEM_DEFAULTS['boarding.window_after_min']).toBe(15);
     expect(SYSTEM_DEFAULTS['leave.cutoff_before_trip_min']).toBe(30);
@@ -113,8 +111,6 @@ describe('Configuration Package & Startup Refusal Rules', () => {
     expect(SYSTEM_DEFAULTS['sos.dedupe_s']).toBe(60);
     expect(SYSTEM_DEFAULTS['sos.cancel_window_s']).toBe(30);
     expect(SYSTEM_DEFAULTS['sos.escalation_min']).toEqual([0, 2, 5, 10]);
-    expect(SYSTEM_DEFAULTS['sos.escalation_repeat_min']).toBe(5);
-    expect(SYSTEM_DEFAULTS['sos.escalation_check_s']).toBe(15);
 
     // Notifications
     expect(SYSTEM_DEFAULTS['notify.quiet_start']).toBe('22:00');
@@ -124,24 +120,25 @@ describe('Configuration Package & Startup Refusal Rules', () => {
 
     // Sessions and OTP
     expect(SYSTEM_DEFAULTS['session.idle_min']).toBe(30);
-    expect(SYSTEM_DEFAULTS['session.idle_min_sec']).toBe(15);
     expect(SYSTEM_DEFAULTS['otp.ttl_min']).toBe(10);
     expect(SYSTEM_DEFAULTS['otp.attempts']).toBe(5);
     expect(SYSTEM_DEFAULTS['otp.lock_min']).toBe(15);
 
-    // Data retention
-    expect(SYSTEM_DEFAULTS['retention.location_days']).toBe(90);
-    expect(SYSTEM_DEFAULTS['retention.audit_log_years']).toBe(3);
-
     // Service
     expect(SYSTEM_DEFAULTS['service.hours']).toBe('05:30 to 22:30');
+
+    // Part 20.17 completeness addendum keys
+    expect(SYSTEM_DEFAULTS['ops.peak_windows']).toBe('set at kickoff');
+    expect(SYSTEM_DEFAULTS['sos.message_max_chars']).toBe(280);
+    expect(SYSTEM_DEFAULTS['firmware.url_ttl_s']).toBe(900);
+    expect(SYSTEM_DEFAULTS['sos.security_office_phone']).toBe('shown to students offline');
   });
 
-  it('seeds every key listed in SW-MVP-1.0 §35 (completeness check)', () => {
-    // This test ensures that the SYSTEM_DEFAULTS object contains all keys
-    // that the specification defines. Each key must have a defined, non-undefined value.
+  it('seeds every key listed in Part 14.4 & Part 20.17 (completeness check)', () => {
+    // This test ensures that the SYSTEM_DEFAULTS object contains strictly the 79 keys
+    // authorized by AG-MASTER-FINAL-1.0 Part 14.4 and Part 20.17.
     const keys = SECTION_35_KEYS;
-    expect(keys.length).toBeGreaterThanOrEqual(85);
+    expect(keys.length).toBe(79);
 
     for (const key of keys) {
       expect(SYSTEM_DEFAULTS[key], `Missing value for key: ${key}`).toBeDefined();
@@ -154,7 +151,6 @@ describe('Configuration Package & Startup Refusal Rules', () => {
       'phone',
       'vehicle',
       'ingest',
-      'rate',
       'selector',
       'shift',
       'trip',
@@ -166,26 +162,23 @@ describe('Configuration Package & Startup Refusal Rules', () => {
       'leave',
       'approach',
       'sos',
-      'firmware',
       'route',
+      'stop_request',
       'notify',
       'summary',
       'session',
       'otp',
-      'mfa',
       'doc',
       'app',
       'web',
-      'import',
-      'export',
-      'retention',
       'service',
-      'preflight',
-      'absence',
-      'stop_request',
+      'holidays',
+      'ops',
+      'firmware',
     ];
     for (const domain of requiredDomains) {
       expect(domains.has(domain), `Missing domain prefix: ${domain}`).toBe(true);
     }
   });
 });
+

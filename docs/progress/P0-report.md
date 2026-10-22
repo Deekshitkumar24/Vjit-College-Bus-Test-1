@@ -26,10 +26,10 @@ Phase P0 has implemented and verified the foundational monorepo, strict typing, 
 | :--------- | :------------------------------------------------------------ | :-------------: | :--------: | :---------------------------------------------------------------- |
 | **P0-T1**  | Monorepo scaffolding, ESLint, Prettier, Turbo                 |    **DONE**     | `b598b27`  | `docs/progress/evidence/P0-T1.log`                                |
 | **P0-T2**  | Configuration package, Zod schema, startup refusal            |    **DONE**     | `e015693`  | `docs/progress/evidence/P0-T2.log`                                |
-| **P0-T3**  | Database foundation, 57 tables, partition manager             |    **DONE**     | `980eedd`  | `docs/progress/evidence/P0-T3.log`                                |
+| **P0-T3**  | Database foundation, 57 tables, partition manager             | **IN PROGRESS** | `980eedd`  | `docs/progress/evidence/P0-T3.log` (OV-8/14 schema migration pending) |
 | **P0-T4**  | Test harness, synthetic factories, non-prod guard             |    **DONE**     | `777d078`  | `docs/progress/evidence/P0-T4.log`                                |
 | **P0-T5**  | Migration policy check (expand-only enforcement)              |    **DONE**     | `37fc4d2`  | `docs/progress/evidence/P0-T5.log`                                |
-| **P0-T6**  | Auth core (SSO PKCE, Driver OTP lockout, token rotation)      |    **DONE**     | `8bfe777`  | `docs/progress/evidence/P0-T6.log`                                |
+| **P0-T6**  | Auth core (SSO PKCE, Driver OTP lockout, token rotation)      | **IN PROGRESS** | `8bfe777`  | `docs/progress/evidence/P0-T6.log` (OV-9 dual OIDC config pending) |
 | **P0-T7**  | Access control guard (Default-deny, 8 roles, route audit)     |    **DONE**     | `92a1224`  | `docs/progress/evidence/P0-T7.log`                                |
 | **P0-T8**  | HTTP hardening, Helmet, strict CSP, standardized error        |    **DONE**     | `6fa0273`  | `docs/progress/evidence/P0-T8.log`                                |
 | **P0-T9**  | Rate limiter (429 + Retry-After), Idempotency (409)           |    **DONE**     | `e4d29c7`  | `docs/progress/evidence/P0-T9.log`                                |
@@ -51,8 +51,8 @@ Phase P0 has implemented and verified the foundational monorepo, strict typing, 
 Per Master Part 16 & Rule A-6, external environment assertions remain strictly `NOT VERIFIED` until run in the target environment:
 
 1. **SSO Dev Sign-in against College Test Tenant:** `NOT VERIFIED` (Requires external input E3: College IT test tenant credentials).
-2. **`verify:routes-auth` Output:** `VERIFIED` (Pasted output: 30 API endpoints audited with explicit access decisions, 0 unprotected routes).
-3. **RLS Integration Tests on Testcontainers PostGIS:** `NOT VERIFIED` (Requires Docker runner in CI, external input E2).
+2. **`verify:routes-auth` Output:** `VERIFIED` (Pasted output: 30 API endpoints audited with explicit access decisions, matching codebase controller discovery; initial P0 core had 12 before later route additions).
+3. **RLS Integration Tests on Testcontainers PostGIS:** `NOT VERIFIED` (Requires Docker runner in CI, external input E2; local Docker daemon is offline).
 4. **CI Green on GitHub Actions:** `NOT VERIFIED` (Requires external input E2: GitHub repository remote Actions run link).
 5. **Security Headers on Live Ingress:** `NOT VERIFIED` (Requires external input E1: live AWS ALB deployment).
 

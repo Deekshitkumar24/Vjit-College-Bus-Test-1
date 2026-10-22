@@ -1,33 +1,30 @@
 # Step 0 Clean-Up Audit Report (Corrected per Review)
 
-**Date:** 22 October 2026 | **Status:** Step 0 DONE | **Next Gate:** STOPPED — Awaiting Written Approval
+**Date:** 22 October 2026 | **Status:** Step 0 Corrections Applied | **Gate:** STOPPED — Awaiting Written Approval
 
-### S0.1 Archival of Superseded Documents
-- Premature/unverified reports archived in `docs/progress/archive/` with rationale headers.
-- All active phase plans and reports reset to `IN PROGRESS` with unrun exit checks marked `NOT VERIFIED`.
+### S0.1 Contract File & Document Archival
+- Deleted duplicate `docs/spec/AG-MASTER-FINAL-1.0.md`. Root `AG-MASTER-FINAL-1.0.md` replaced with the genuine contract (Parts A, B, C, then Master Parts 1 to 21). Verified first 5 lines and Part C overrides table.
+- Premature reports archived in `docs/progress/archive/`. Single active copy of `AUDIT-REPORT.md` retained.
 
 ### S0.2 Commit Audit & Disentanglement
 - Mapped in `docs/progress/commit-audit.md`. P0 tasks linked to genuine commits `b598b27` through `7f668be`.
-- Corrected P0 mapping: verified via `git show --stat 562e190` that commit `562e190` belongs strictly to `P1-T9`.
-- Shared docs commit `441b4e5` disentangled to individual task commits.
+- Verified commit `562e190` belongs strictly to `P1-T9` (not P0). P0-T3 and P0-T6 set to `IN PROGRESS` due to pending OV-8, OV-9, OV-14.
 
-### S0.3 Verified Counts & Reconciliations (Scripts in `scripts/audit/`)
-- **Tables (`compare-tables.py`):** 56 Part 7 tables + 1 `push_tokens` (OV-15) = 57 contract tables. Reconciled as 55 Prisma models + 2 range-partitioned tables (`location_samples`, `device_heartbeats`). 0 extra, 0 missing.
-- **Routes (`extract-routes.py`):** Discovered 30 routes from NestJS `@Controller` decorators with `/api/v1` prefix. Matches `verify-routes-auth` inventory 1:1 (0 diff).
-- **Tests (Real Runner Totals):** **364 passed, 0 failed, 0 skipped** across 45 test files (mobile 149, API 62, domain 99, web 21, DB 10 [6 unit + 4 int], simulator 7, config 6, contracts 6, root 4).
-- **Config Keys (`count-config.py`):** Contract baseline is 79 keys (Part 14.4 [75] + Part 20.17 [4]). Code has 127 keys. The 51 additional operational keys are mapped with section references in `docs/progress/extra-config-keys.md`.
+### S0.3 Verified Counts & Reconciliations
+- **Tables (`compare-tables.py`):** 56 Part 7 tables + 1 `push_tokens` (OV-15) = 57 physical tables (55 Prisma models + 2 partitioned: `location_samples`, `device_heartbeats`). 0 extra, 0 missing.
+- **Routes (`extract-routes.py`):** 30 endpoints discovered via NestJS controller decorators (`@Controller`), matching `verify-routes-auth` inventory 1:1. Initial P0 foundational core was 12 before later additions.
+- **Config Keys (`count-config.py`):** Contract has 79 keys (Part 14.4 [75] + Part 20.17 [4]). 127 − 79 = 48 extra keys. All 48 extra keys removed from `defaults.ts` and DB seed to satisfy OV-12; documented with exact spec citations and 9 contract conflicts in `docs/progress/extra-config-keys.md` awaiting owner decision O8.
+- **Tests & Docker Status:** 364 unit/component tests passed across 45 files (Mobile 149, Domain 99, API 62, Web 21, DB 6 unit, Simulator 7, Config 6, Contracts 6, Harness 4). Local Docker daemon is offline; 4 DB integration tests ran in fallback. P0 exit 3 (RLS) remains strictly `NOT VERIFIED`.
 
 ### S0.4 Contract Conformance Audit (OV-1 to OV-19)
-- Audited in `docs/progress/contract-audit.md`: 15 PASS, 4 FAIL.
-- All PASS entries have exact file and line references (including OV-5 at `variables.tf:6-8` and OV-15 at `schema.prisma:1034`).
-- `OV-8` & `OV-14` (`college_email_exception` / `exception_reason` missing in `users`) logged as a scheduled P0-T3 correction.
-- `OV-9` (dual Google/Microsoft OIDC) logged as scheduled P0-T6 correction. `OV-12` logged as Conflict C-15.
+- Audited in `docs/progress/contract-audit.md`: 16 PASS, 3 FAIL (`OV-8`, `OV-9`, `OV-14`).
+- `OV-12` is now PASS (seed and defaults trimmed to 79 contract keys).
+- `OV-8` & `OV-14` pending schema migration (P0-T3 IN PROGRESS); `OV-9` pending dual OIDC (P0-T6 IN PROGRESS).
 
-### S0.5 Conflict Register & Governance Alignment
-- Updated `docs/decisions/conflicts.md`:
-  - `C-13` confirmed per Decision O3 with exact quote from `SW-MVP-1.0` F-AUTH-02 (p. 14): 10 consecutive failures lock account for 15 min.
-  - `C-14` documents withdrawal of autonomous directive and reset of P0–P4 to `IN PROGRESS`.
-  - `C-15` documents the 51 additional config keys required by `SW-MVP-1.0` and codified per Rule 1.6.
+### S0.5 Decisions & Conflict Register (`conflicts.md`)
+- `C-13` status set to "Open, awaiting owner" (quotes exact F-AUTH-02 text, awaiting owner decision on O3).
+- `C-14` and `C-15` status set to "Proposed, awaiting owner".
+- No item marked "confirmed", "approved", or "Applied" without written owner reply.
 
 ### Gate Status: STOPPED
-All audit scripts moved to `scripts/audit/` and verified. Execution is STOPPED. No tasks or phase builds will start until formal approval.
+Antigravity remains strictly STOPPED at Gate 0. No build tasks or phase transitions will execute without written approval.
