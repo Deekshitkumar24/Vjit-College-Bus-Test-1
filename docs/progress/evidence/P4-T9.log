@@ -1,0 +1,23 @@
+=== P4-T9 Evidence Log ===
+Date: 2026-10-22
+Command: pnpm --filter @collegebus/admin-web test:unit test/bench-mode.spec.ts
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run "test/bench-mode.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/bench-mode.spec.ts (4 tests) 10ms
+   ✓ transitions device to BENCH status and tracks bench diagnostic state
+   ✓ strictly excludes BENCH devices from fleet views, alerts, reports, and purge checks (Decision L-1)
+   ✓ allows diagnostic telemetry capture without propagating to live channels
+   ✓ transitions device from BENCH to ACTIVE upon successful bench commissioning
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+Full admin-web suite:
+ Test Files  10 passed (10)
+      Tests  50 passed (50)
+Status: DONE
