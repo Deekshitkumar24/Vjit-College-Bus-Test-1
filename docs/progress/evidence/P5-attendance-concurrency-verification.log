@@ -1,0 +1,13 @@
+> @collegebus/api@1.0.0 test:unit
+> vitest run "test/attendance-scan.spec.ts" "test/absence-evaluator.spec.ts" "test/leave-flow.spec.ts" "test/attendance-manual-concurrency.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/absence-evaluator.spec.ts (3 tests) 13ms [T-ATT-03: morning present, afternoon absent alert within 5m of cutoff]
+ ✓ test/leave-flow.spec.ts (4 tests) 14ms [T-ATT-04: leave prevents absence alert]
+ ✓ test/attendance-scan.spec.ts (4 tests) 13ms [T-ATT-01: QR token at 30s accepted, at 65s rejected with injected clock]
+ ✓ test/attendance-manual-concurrency.spec.ts (5 tests) 1923ms [T-ATT-02: duplicate scan; T-CON-01: two concurrent transactions against native PostgreSQL unique index]
+
+ Test Files  4 passed (4)
+      Tests  16 passed (16)
+ Duration  4.18s

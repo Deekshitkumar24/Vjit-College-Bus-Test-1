@@ -57,6 +57,11 @@ Date: 22 October 2026
   - `AC-TEC-01`: Recorded as BLOCKED-EXTERNAL on `E11` (bench tracker hardware).
 - **Files Modified:** `services/api/test/p4-coordinator-technician.integration.spec.ts`, `packages/db/src/index.ts`, `docs/progress/evidence/P4-integration-verification.log`, `docs/progress/corrections.md`.
 
+## Item 10: P5 T-CON-01 Native PostgreSQL Concurrency and Injected Clock Verification
+- **Change:** Rewrote `T-CON-01` in `services/api/test/attendance-manual-concurrency.spec.ts` to execute two concurrent transactions against native PostgreSQL 16 with the unique index `@@unique([trip_id, student_id])` on `attendance_records`. Verified that exactly one transaction commits and the second fails with unique constraint violation (`23505`) resulting in `DUPLICATE_BOARDING`. Verified `T-ATT-01` (QR token 30s accepted, 65s rejected with injected clock), `T-ATT-02` (duplicate scan in database), `T-ATT-03` (morning present, afternoon absent alert within 5m of cutoff), and `T-ATT-04` (leave prevents alert) across 16 passing tests. Recorded evidence in `docs/progress/evidence/P5-attendance-concurrency-verification.log`.
+- **Files Modified:** `services/api/test/attendance-manual-concurrency.spec.ts`, `docs/progress/evidence/P5-attendance-concurrency-verification.log`, `docs/progress/corrections.md`.
+
+
 
 
 
