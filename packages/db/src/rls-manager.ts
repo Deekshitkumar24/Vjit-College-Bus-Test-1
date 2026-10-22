@@ -64,12 +64,24 @@ export function getRlsAndAuditSql(): string {
     'export_jobs',
   ];
 
-  const enableRlsSql = rlsTables
-    .map(
-      (t) =>
-        `ALTER TABLE ${t} ENABLE ROW LEVEL SECURITY;\nALTER TABLE ${t} FORCE ROW LEVEL SECURITY;`,
-    )
-    .join('\n');
+  const enableRlsSql = `
+    DO $$
+    DECLARE
+      t text;
+      tables text[] := ARRAY[
+        'users', 'sessions', 'mfa_factors', 'recovery_codes', 'student_profiles',
+        'attendance_records', 'leave_records', 'student_routes', 'absence_alerts',
+        'sos_incidents', 'sos_events', 'notifications', 'notification_deliveries',
+        'notification_preferences', 'consents', 'data_requests', 'location_samples', 'export_jobs'
+      ];
+    BEGIN
+      FOREACH t IN ARRAY tables LOOP
+        IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = t) THEN
+          EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY; ALTER TABLE %I FORCE ROW LEVEL SECURITY;', t, t);
+        END IF;
+      END LOOP;
+    END $$;
+  `;
 
   const auditTriggerSql = `
     -- Audit append-only trigger (AG-MASTER-1.0 §7.10, §13.12, R-09)

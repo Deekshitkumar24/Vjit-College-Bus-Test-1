@@ -1,0 +1,24 @@
+=== P0-T4 Evidence Log ===
+Date: 2026-10-22
+Environment: Native PostgreSQL 16.12 with PostGIS 3.4 (Section 1A, OV-20)
+Command: pnpm --filter @collegebus/db test:int
+
+Output:
+> @collegebus/db@1.0.0 test:int C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\db
+> vitest run test/integration.spec.ts
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/db
+
+ ✓ test/integration.spec.ts (4 tests) 2177ms
+   ✓ proves that a transient test database with PostGIS 3.4 and tables creates cleanly (P0-T4, Section 1A)
+   ✓ proves the audit table strictly rejects UPDATE and DELETE operations (P0-T14, R-09)
+   ✓ proves partial unique indexes prevent duplicate active assignments
+   ✓ proves app_runtime cannot read another user rows under RLS isolation (P0 Exit 3, Master Part 13.1)
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+Harness tests: pnpm vitest run tests/fixtures
+ ✓ tests/fixtures/test-harness.spec.ts (4 tests) 8ms
+
+Status: DONE

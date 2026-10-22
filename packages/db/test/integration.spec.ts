@@ -1,229 +1,161 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Pool } from 'pg';
-import { getRlsAndAuditSql, withRlsTransaction } from '../src/rls-manager.js';
+import {
+  createTransientTestDatabase,
+  TestDatabaseHandle,
+} from '../src/native-test-db.js';
+import { withRlsTransaction } from '../src/rls-manager.js';
 
-describe('Real-Database Integration Tests (P0-T3 / P0-T4 / test:int)', () => {
-  let container: any = null;
-  let pool: Pool | null = null;
-  let connectionString: string | null = process.env['DATABASE_URL'] || null;
+describe('Real-Database Integration Tests (Section 1A, OV-20, P0 Exit 3, P0-T4/T14)', () => {
+  let dbHandle: TestDatabaseHandle | null = null;
 
   beforeAll(async () => {
-    if (!connectionString) {
-      const fs = await import('fs');
-      const isDockerRunning =
-        process.platform === 'win32'
-          ? fs.existsSync('\\\\.\\pipe\\dockerDesktopLinuxEngine') ||
-            fs.existsSync('\\\\.\\pipe\\docker_engine')
-          : fs.existsSync('/var/run/docker.sock');
-
-      if (isDockerRunning) {
-        try {
-          const { PostgreSqlContainer } = await import('@testcontainers/postgresql');
-          container = await new PostgreSqlContainer('postgis/postgis:16-3.4')
-            .withDatabase('collegebus_test')
-            .withUsername('postgres')
-            .withPassword('postgres')
-            .start();
-          connectionString = container.getConnectionUri();
-        } catch (err: any) {
-          console.warn(`[test:int] Testcontainers start failed: ${err.message}`);
-        }
-      } else {
-        console.warn(
-          '[test:int] Docker daemon is offline. Local integration tests marked UNVERIFIED.',
-        );
-        console.warn(
-          '[test:int] Real-database tests run against PostgreSQL PostGIS service container in GitHub Actions CI.',
-        );
-      }
-    }
-
-    if (connectionString) {
-      pool = new Pool({ connectionString });
-    }
-  }, 10000);
+    dbHandle = await createTransientTestDatabase();
+  }, 30000);
 
   afterAll(async () => {
-    if (pool) {
-      await pool.end();
-    }
-    if (container) {
-      await container.stop();
+    if (dbHandle) {
+      await dbHandle.destroy();
     }
   });
 
-  it('proves that the expand-only migration applies cleanly to a fresh database', async () => {
-    if (!pool) {
-      console.log('Skipping: no active database connection. Marked UNVERIFIED on local machine.');
-      return;
-    }
+  it('proves that a transient test database with PostGIS 3.4 and tables creates cleanly (P0-T4, Section 1A)', async () => {
+    expect(dbHandle).toBeDefined();
+    const suPool = dbHandle!.superuserPool;
 
-    const client = await pool.connect();
-    try {
-      await client.query('CREATE EXTENSION IF NOT EXISTS postgis;');
-      await client.query('CREATE EXTENSION IF NOT EXISTS citext;');
-      await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    const postgisCheck = await suPool.query('SELECT PostGIS_Version();');
+    expect(postgisCheck.rows.length).toBe(1);
+    expect(postgisCheck.rows[0].postgis_version).toContain('3.4');
 
-      await client.query(`
-        CREATE TABLE IF NOT EXISTS users (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          email CITEXT UNIQUE NOT NULL,
-          full_name VARCHAR(100) NOT NULL,
-          status VARCHAR(20) DEFAULT 'ACTIVE',
-          is_synthetic BOOLEAN DEFAULT false,
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          updated_at TIMESTAMPTZ DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS user_roles (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-          role VARCHAR(20) NOT NULL,
-          granted_at TIMESTAMPTZ DEFAULT NOW(),
-          revoked_at TIMESTAMPTZ,
-          is_synthetic BOOLEAN DEFAULT false
-        );
-
-        CREATE TABLE IF NOT EXISTS audit_logs (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          user_id UUID,
-          action VARCHAR(50) NOT NULL,
-          entity VARCHAR(50) NOT NULL,
-          entity_id UUID,
-          details JSONB,
-          created_at TIMESTAMPTZ DEFAULT NOW()
-        );
-      `);
-
-      const rlsSql = getRlsAndAuditSql();
-      await client.query(rlsSql);
-
-      const tableCheck = await client.query(`
-        SELECT table_name FROM information_schema.tables 
-        WHERE table_schema = 'public' AND table_name IN ('users', 'user_roles', 'audit_logs');
-      `);
-      expect(tableCheck.rows.length).toBe(3);
-    } finally {
-      client.release();
-    }
+    const tableCheck = await suPool.query(`
+      SELECT table_name FROM information_schema.tables 
+      WHERE table_schema = 'public' AND table_name IN ('users', 'user_roles', 'audit_logs');
+    `);
+    expect(tableCheck.rows.length).toBe(3);
   });
 
-  it('proves the audit table strictly rejects UPDATE and DELETE operations (R-09)', async () => {
-    if (!pool) return;
+  it('proves the audit table strictly rejects UPDATE and DELETE operations (P0-T14, R-09)', async () => {
+    const suPool = dbHandle!.superuserPool;
 
-    const client = await pool.connect();
-    try {
-      const insertRes = await client.query(`
-        INSERT INTO audit_logs (action, entity) 
-        VALUES ('USER_LOGIN', 'users') 
-        RETURNING id;
-      `);
-      const logId = insertRes.rows[0].id;
+    const insertRes = await suPool.query(`
+      INSERT INTO audit_logs (id, action, entity_type) 
+      VALUES (gen_random_uuid(), 'USER_LOGIN', 'users') 
+      RETURNING id;
+    `);
+    const logId = insertRes.rows[0].id;
 
-      await expect(
-        client.query(`UPDATE audit_logs SET action = 'TAMPERED' WHERE id = $1;`, [logId]),
-      ).rejects.toThrowError(/audit_logs rows are append-only/);
+    await expect(
+      suPool.query(`UPDATE audit_logs SET action = 'TAMPERED' WHERE id = $1;`, [logId]),
+    ).rejects.toThrowError(/audit_logs rows are append-only/);
 
-      await expect(
-        client.query(`DELETE FROM audit_logs WHERE id = $1;`, [logId]),
-      ).rejects.toThrowError(/audit_logs rows are append-only/);
-    } finally {
-      client.release();
-    }
+    await expect(
+      suPool.query(`DELETE FROM audit_logs WHERE id = $1;`, [logId]),
+    ).rejects.toThrowError(/audit_logs rows are append-only/);
   });
 
-  it('proves partial unique indexes exist and prevent duplicate active assignments', async () => {
-    if (!pool) return;
+  it('proves partial unique indexes prevent duplicate active assignments', async () => {
+    const suPool = dbHandle!.superuserPool;
 
-    const client = await pool.connect();
-    try {
-      await client.query(`
-        CREATE UNIQUE INDEX IF NOT EXISTS uq_user_roles_active 
-        ON user_roles(user_id, role) 
-        WHERE revoked_at IS NULL;
-      `);
+    await suPool.query(`
+      CREATE UNIQUE INDEX IF NOT EXISTS uq_user_roles_active 
+      ON user_roles(user_id, role) 
+      WHERE revoked_at IS NULL;
+    `);
 
-      const userRes = await client.query(`
-        INSERT INTO users (email, full_name) 
-        VALUES ('test.role@college.edu', 'Role Test') 
-        RETURNING id;
-      `);
-      const userId = userRes.rows[0].id;
+    const collegeId = '11111111-1111-1111-1111-111111111111';
+    await suPool.query(`
+      INSERT INTO colleges (id, name, email_domains, updated_at) 
+      VALUES ($1, 'Test College', ARRAY['college.edu'], NOW())
+      ON CONFLICT (id) DO NOTHING;
+    `, [collegeId]);
 
-      await client.query(
-        `
-        INSERT INTO user_roles (user_id, role, revoked_at) 
-        VALUES ($1, 'COR', NULL);
-      `,
+    const userRes = await suPool.query(`
+      INSERT INTO users (id, email, full_name, college_id, updated_at) 
+      VALUES (gen_random_uuid(), 'test.role@college.edu', 'Role Test', $1, NOW()) 
+      RETURNING id;
+    `, [collegeId]);
+    const userId = userRes.rows[0].id;
+
+    await suPool.query(
+      `INSERT INTO user_roles (id, user_id, role, revoked_at, updated_at) VALUES (gen_random_uuid(), $1, 'COR', NULL, NOW());`,
+      [userId],
+    );
+
+    await expect(
+      suPool.query(
+        `INSERT INTO user_roles (id, user_id, role, revoked_at, updated_at) VALUES (gen_random_uuid(), $1, 'COR', NULL, NOW());`,
         [userId],
-      );
+      ),
+    ).rejects.toThrowError(/duplicate key value/);
 
-      await expect(
-        client.query(
-          `
-          INSERT INTO user_roles (user_id, role, revoked_at) 
-          VALUES ($1, 'COR', NULL);
-        `,
-          [userId],
-        ),
-      ).rejects.toThrowError(/duplicate key value/);
+    await suPool.query(
+      `UPDATE user_roles SET revoked_at = NOW() WHERE user_id = $1 AND role = 'COR';`,
+      [userId],
+    );
 
-      await client.query(
-        `
-        UPDATE user_roles SET revoked_at = NOW() WHERE user_id = $1 AND role = 'COR';
-      `,
-        [userId],
-      );
-
-      const secondRes = await client.query(
-        `
-        INSERT INTO user_roles (user_id, role, revoked_at) 
-        VALUES ($1, 'COR', NULL) 
-        RETURNING id;
-      `,
-        [userId],
-      );
-      expect(secondRes.rows.length).toBe(1);
-    } finally {
-      client.release();
-    }
+    const secondRes = await suPool.query(
+      `INSERT INTO user_roles (id, user_id, role, revoked_at, updated_at) VALUES (gen_random_uuid(), $1, 'COR', NULL, NOW()) RETURNING id;`,
+      [userId],
+    );
+    expect(secondRes.rows.length).toBe(1);
   });
 
-  it('proves app_runtime cannot read another user rows under RLS isolation', async () => {
-    if (!pool) return;
+  it('proves app_runtime cannot read another user rows under RLS isolation (P0 Exit 3, Master Part 13.1)', async () => {
+    const suPool = dbHandle!.superuserPool;
+    const rtPool = dbHandle!.runtimePool;
 
-    const client = await pool.connect();
-    try {
-      await client.query(`
-        DROP POLICY IF EXISTS p_users_isolation ON users;
-        CREATE POLICY p_users_isolation ON users
-          FOR SELECT
-          USING (id = NULLIF(current_setting('app.user_id', true), '')::uuid);
-      `);
+    // Verify app_runtime is not superuser and has NOBYPASSRLS
+    const roleCheck = await suPool.query(`
+      SELECT rolname, rolsuper, rolbypassrls 
+      FROM pg_roles 
+      WHERE rolname = 'app_runtime';
+    `);
+    expect(roleCheck.rows[0].rolsuper).toBe(false);
+    expect(roleCheck.rows[0].rolbypassrls).toBe(false);
 
-      const u1Res = await client.query(
-        `INSERT INTO users (email, full_name) VALUES ('u1@college.edu', 'User 1') RETURNING id;`,
-      );
-      const u2Res = await client.query(
-        `INSERT INTO users (email, full_name) VALUES ('u2@college.edu', 'User 2') RETURNING id;`,
-      );
-      const u1Id = u1Res.rows[0].id;
-      const u2Id = u2Res.rows[0].id;
+    // Setup RLS policy on users
+    await suPool.query(`
+      DROP POLICY IF EXISTS p_users_isolation ON users;
+      CREATE POLICY p_users_isolation ON users
+        FOR SELECT
+        TO app_runtime
+        USING (id = NULLIF(current_setting('app.user_id', true), '')::uuid);
+    `);
 
-      const u1Rows = await withRlsTransaction(
-        pool,
-        { userId: u1Id, roles: ['STU'], busIds: [], routeIds: [] },
-        async (tx) => {
-          const res = await tx.query('SELECT id, email FROM users;');
-          return res.rows;
-        },
-      );
+    const collegeId = '11111111-1111-1111-1111-111111111111';
+    await suPool.query(`
+      INSERT INTO colleges (id, name, email_domains, updated_at) 
+      VALUES ($1, 'Test College', ARRAY['college.edu'], NOW())
+      ON CONFLICT (id) DO NOTHING;
+    `, [collegeId]);
 
-      expect(u1Rows.length).toBe(1);
-      expect(u1Rows[0].id).toBe(u1Id);
-      expect(u1Rows.find((r: any) => r.id === u2Id)).toBeUndefined();
-    } finally {
-      client.release();
-    }
+    // Insert 2 users
+    const u1Res = await suPool.query(
+      `INSERT INTO users (id, email, full_name, college_id, updated_at) VALUES (gen_random_uuid(), 'u1@college.edu', 'User 1', $1, NOW()) RETURNING id;`,
+      [collegeId],
+    );
+    const u2Res = await suPool.query(
+      `INSERT INTO users (id, email, full_name, college_id, updated_at) VALUES (gen_random_uuid(), 'u2@college.edu', 'User 2', $1, NOW()) RETURNING id;`,
+      [collegeId],
+    );
+    const u1Id = u1Res.rows[0].id;
+    const u2Id = u2Res.rows[0].id;
+
+    // 1. As app_runtime with no session set: must return 0 rows (fail closed per 13.1)
+    const noSessionRows = await rtPool.query('SELECT id, email FROM users;');
+    expect(noSessionRows.rows.length).toBe(0);
+
+    // 2. As app_runtime with User 1 context: can only see User 1, cannot see User 2
+    const u1Rows = await withRlsTransaction(
+      rtPool,
+      { userId: u1Id, roles: ['STU'], busIds: [], routeIds: [] },
+      async (tx) => {
+        const res = await tx.query('SELECT id, email FROM users;');
+        return res.rows;
+      },
+    );
+
+    expect(u1Rows.length).toBe(1);
+    expect(u1Rows[0].id).toBe(u1Id);
+    expect(u1Rows.find((r: any) => r.id === u2Id)).toBeUndefined();
   });
 });
