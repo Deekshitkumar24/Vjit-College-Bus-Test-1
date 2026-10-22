@@ -1,0 +1,25 @@
+=== P4-T5 Evidence Log ===
+Date: 2026-10-22
+Command: pnpm --filter @collegebus/admin-web test:unit test/user-management.spec.ts
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run "test/user-management.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/user-management.spec.ts (4 tests) 65ms
+   ✓ AC-COR-02: CSV Import Dry Run & Commit Gate
+     ✓ blocks commit when bad rows exist and lists exact row numbers and errors (AC-COR-02)
+     ✓ approves clean CSV and commits in chunks up to 500 rows
+   ✓ AC-COR-03: User Deactivation and Session Invalidation
+     ✓ deactivates user with reason and makes user immediately disappear from live views (within 60s)
+     ✓ rejects deactivation without a valid reason
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+Full admin-web suite:
+ Test Files  6 passed (6)
+      Tests  32 passed (32)
+Status: DONE

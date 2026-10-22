@@ -292,3 +292,45 @@ export const CreateStudentRouteAssignmentSchema = z.object({
   afternoon_stop_id: z.string().min(1),
 });
 export type CreateStudentRouteAssignmentDto = z.infer<typeof CreateStudentRouteAssignmentSchema>;
+
+// ==========================================
+// 8. User Management, CSV Import & Deactivation (P4-T5, Part 11.8, AC-COR-02, AC-COR-03)
+// ==========================================
+export const UserImportRowSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().regex(/^\+?[1-9]\d{7,14}$/, 'Invalid phone number format'),
+  role: z.enum(['STUDENT', 'FACULTY', 'DRIVER', 'COORDINATOR', 'TECHNICIAN', 'SECURITY', 'MANAGEMENT']),
+  college_id: z.string().min(1, 'College ID is required'),
+  route_id: z.string().optional(),
+  morning_stop_id: z.string().optional(),
+  afternoon_stop_id: z.string().optional(),
+});
+export type UserImportRowDto = z.infer<typeof UserImportRowSchema>;
+
+export const UserImportRowErrorSchema = z.object({
+  rowNumber: z.number().int().positive(),
+  column: z.string(),
+  message: z.string(),
+  rawValue: z.string().optional(),
+});
+export type UserImportRowErrorDto = z.infer<typeof UserImportRowErrorSchema>;
+
+export const UserImportDryRunResultSchema = z.object({
+  totalRows: z.number().int().min(0),
+  validRows: z.number().int().min(0),
+  invalidRows: z.number().int().min(0),
+  canCommit: z.boolean(),
+  errors: z.array(UserImportRowErrorSchema),
+  validRecords: z.array(UserImportRowSchema).optional(),
+});
+export type UserImportDryRunResultDto = z.infer<typeof UserImportDryRunResultSchema>;
+
+export const UserDeactivationSchema = z.object({
+  userId: z.string().min(1),
+  deactivatedAt: z.string().datetime(),
+  reason: z.string().min(5, 'Reason must be at least 5 characters'),
+  revokeActiveSessions: z.boolean().default(true),
+});
+export type UserDeactivationDto = z.infer<typeof UserDeactivationSchema>;
+
