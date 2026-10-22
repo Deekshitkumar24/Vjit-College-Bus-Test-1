@@ -28,11 +28,11 @@ Generated via automated verification scripts in `scripts/audit/` executed direct
 ```text
 Contract Part 7 tables: 56
 OV-15 authorized additions: 1 ('push_tokens')
-Total contract expected physical tables: 57
+Total contract expected physical tables: 57 (57)
 Prisma schema mapped tables: 55
 Partitioned tables (Part 7.12): 2 (location_samples, device_heartbeats)
-Missing in schema.prisma: ['device_heartbeats', 'location_samples'] (Created via raw SQL migration as partitioned tables)
-Extra in schema.prisma: 0
+Missing in schema.prisma (2): ['device_heartbeats', 'location_samples']
+Extra in schema.prisma (0): []
 Reconciliation: 55 Prisma mapped models + 2 Partitioned tables = exactly 57 physical tables.
 ```
 
