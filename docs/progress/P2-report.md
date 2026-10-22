@@ -1,16 +1,16 @@
 # Phase Report: P2 Student & Faculty Mobile Applications
 
 **Phase ID:** P2  
-**Goal:** Complete, production-grade mobile client experience for Students (STU) and Faculty (FAC), including live bus tracking, authoritative source badges, real-time ETA progression, QR attendance scanning, leave/stop requests, faculty safety manifests, and emergency SOS incident dispatch.  
+**Goal:** Done, production-grade mobile client experience for Students (STU) and Faculty (FAC), including live bus tracking, authoritative source badges, real-time ETA progression, QR attendance scanning, leave/stop requests, faculty safety manifests, and emergency SOS incident dispatch.  
 **Prompt Contract:** `AG-MASTER-FINAL-1.0` (Version 1.0, 21 October 2026)  
 **Date:** 22 October 2026  
-**Status:** COMPLETE (Autonomous Execution Mode)
+**Status:** IN PROGRESS (On-device exit criteria NOT VERIFIED; awaiting physical device verification and owner written approval)
 
 ---
 
 ## 1. Executive Summary
 
-Phase P2 has fully built, tested, and empirically verified the entire mobile user experience for Students and Faculty across 8 tasks:
+Phase P2 has implemented the mobile client experience for Students and Faculty across 8 tasks:
 
 - **Mobile Navigation & Offline Cache Store (P2-T1):** Integrated Expo Router tab-based navigation trees tailored for Student and Faculty roles (`/(student)` and `/(faculty)`), local encrypted SQLite cache (`MobileCacheStore`), and snapshot polling client with weak ETag support (handling HTTP 304 Not Modified).
 - **Live Map & Authoritative Marker Model (P2-T2):** Interactive MapLibre / OpenStreetMap (Default D-11) map interface with animated bus heading rotation, dynamic camera viewport bounds, and color-coded authoritative source badges (`Live · bus tracker` [GREEN], `Live · driver's phone` [BLUE], `Delayed` [AMBER], and `Offline` [GRAY]).
@@ -38,30 +38,20 @@ Phase P2 has fully built, tested, and empirically verified the entire mobile use
 
 ---
 
-## 3. Mandatory Phase P2 Exit Criteria Verification
+## 3. Mandatory Phase P2 Exit Criteria Verification (Master Part 16 & Rule A-6)
 
-1. **Student can view assigned bus on map with correct authoritative source badge and real-time ETA:**
-   - **Result:** `PASS`.
-   - **Evidence:** `apps/mobile/test/map-marker.spec.ts` and `apps/mobile/test/eta-stop-card.spec.ts`. Verified live rendering of bus position, heading rotation, bounding box fit, and badge states (`Live · bus tracker` in emerald green, `Live · driver's phone` in sky blue, `Delayed` in amber, `Offline` in zinc gray). Monotonic countdown verified with drift correction and 300m corridor breach banner.
+Per Master Part 16: *"Exit: AC-STU-01 to 05 and AC-FAC-01 to 03 pass on device."*
+Per Rule A-6: Component and unit tests in Vitest do not count as on-device verification.
 
-2. **QR attendance scanner validates rotating driver code and records student boarding:**
-   - **Result:** `PASS`.
-   - **Evidence:** `apps/mobile/test/qr-attendance.spec.ts`. Validated HMAC-SHA256 signature checking against 15-second epoch windows, rejected expired tokens (> 30s drift), rejected replayed nonces, and verified offline queueing when network unavailable.
-
-3. **Faculty live manifest correctly displays boarded students and flags morning-present/afternoon-absent discrepancies:**
-   - **Result:** `PASS`.
-   - **Evidence:** `apps/mobile/test/faculty-manifest.spec.ts`. Verified student list rendering, manual check-in toggle with student/faculty metadata, stop filtering, and automated calculation of D-12 safety alerts flagging morning riders missing on return trips.
-
-4. **Emergency SOS can be triggered with 3-second hold and broadcasts incident with captured coordinates:**
-   - **Result:** `PASS`.
-   - **Evidence:** `apps/mobile/test/emergency-sos.spec.ts`. Verified 3000ms press gesture controller, premature release cancellation (< 3000ms), GPS coordinate capture, Locked Decision L-2 category routing (`EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`), dispatch payload generation, security hotline fallback, and active alert state.
-
-5. **All mobile unit and integration tests pass cleanly with zero mock data:**
-   - **Result:** `PASS`.
-   - **Evidence:** 77/77 tests passing across 9 test files in `@collegebus/mobile`. Zero mock data detected by `scripts/verify-no-mock.ts`. Zero lint errors. Monorepo typecheck clean across all 12 packages.
+1. **AC-STU-01 to AC-STU-05 pass on device:**  
+   - **Status:** **NOT VERIFIED** (Unit/component tests pass in Vitest, but physical iOS/Android on-device execution requires external inputs E3 and E6).
+2. **AC-FAC-01 to AC-FAC-03 pass on device:**  
+   - **Status:** **NOT VERIFIED** (Unit/component tests pass in Vitest, but physical iOS/Android on-device execution requires external inputs E3 and E6).
 
 ---
 
-## 4. Phase P2 Sign-Off & Progression Gate
+## 4. Phase P2 Sign-Off & Status
 
-Phase P2 is formally **COMPLETE**. In accordance with the Autonomous Project Execution Directive, the agent advances immediately to **Phase P3: Driver Application & Dispatch Console**.
+Phase P2 is **IN PROGRESS**. Awaiting owner written approval and physical mobile device verification before Phase P3 can be approved.
+
+Owner approval:

@@ -3,14 +3,14 @@
 **Phase ID:** P1  
 **Goal:** Devices and driver phones send data, the server stores it correctly, picks one source per bus, and serves a snapshot.  
 **Prompt Contract:** `AG-MASTER-FINAL-1.0` (Version 1.0, 21 October 2026)  
-**Date:** 21 October 2026  
-**Status:** COMPLETE (Autonomous Execution Mode)
+**Date:** 21 October 2026 (Revised 22 October 2026)  
+**Status:** IN PROGRESS (Exit criterion T-LOAD-01 in staging NOT VERIFIED; awaiting owner written approval)
 
 ---
 
 ## 1. Executive Summary
 
-Phase P1 has fully built, tested, and empirically verified the core telemetry ingestion pipeline, heartbeat/event handling, dual-source selection engine, snapshot API, ETA/progress calculations, contract test harness, and 50-bus fleet simulator:
+Phase P1 has built the core telemetry ingestion pipeline, heartbeat/event handling, dual-source selection engine, snapshot API, ETA/progress calculations, contract test harness, and 50-bus fleet simulator:
 
 - **Device Token Lifecycle (P1-T1):** Secure token generation (`dvt_<64hex>`), HMAC-SHA256 hashing across keyed rotation rings, C-01 first-use activation (transitioning `PROVISIONED` -> `ACTIVE` on first authenticated sample), 24-hour overlap grace window, and instant revocation.
 - **Device-Bus Linking (P1-T2):** Strict mutual exclusion enforcing 1-to-1 active device-bus mapping with historical sample attribution.
@@ -44,23 +44,21 @@ Phase P1 has fully built, tested, and empirically verified the core telemetry in
 
 ---
 
-## 3. Mandatory Phase P1 Exit Criteria Verification
+## 3. Mandatory Phase P1 Exit Criteria Verification (Master Part 16 & Rule A-6)
 
-1. **Simulator drives the states correctly across 50 buses without errors:**
-   - **Result:** `PASS`.
-   - **Evidence:** Executed `pnpm --filter @collegebus/simulator run simulate` and `vitest run`. 50 buses initialized across all 6 scenarios (25 Normal Dual, 10 Tracker Failed/Phone Fallback, 5 Driver Only, 5 Both Lost, 3 Flapping, 2 Critical Events). Total 201 telemetry batches, 271 driver samples, 125 heartbeats, 24 events generated with 0 errors.
+Per Master Part 16: *"Exit: the simulator drives the states correctly. The contract harness passes. Load test T-LOAD-01 passes in staging."*
 
-2. **Contract harness passes against all recorded hardware sample streams:**
-   - **Result:** `PASS`.
-   - **Evidence:** Executed `test/contract-harness.spec.ts`. All 6 recorded hardware streams replayed and verified against domain and API pipelines.
-
-3. **Unit and integration tests for source selection, anti-flapping, and duplicate sample conflict pass cleanly:**
-   - **Result:** `PASS`.
-   - **Evidence:** Total 168 unit tests passing across all workspace packages (`@collegebus/domain`: 99, `@collegebus/api`: 56, `@collegebus/simulator`: 7, `@collegebus/contracts`: 6, `@collegebus/config`: 6, `@collegebus/db`: 6).
-   - Zero linter errors, typecheck clean across 12 packages, Prettier 100% formatted, `verify:routes-auth` passed, `verify:no-mock` passed.
+1. **Simulator drives the states correctly:**  
+   - **Status:** **VERIFIED** in unit suite (`test/simulator.spec.ts`). End-to-end continuous runner in staging is **NOT VERIFIED** (requires staging environment E7).
+2. **Contract test harness passes:**  
+   - **Status:** **VERIFIED** (`services/api/test/contract-harness.spec.ts` passes 6/6 tests against recorded firmware message fixtures).
+3. **Load test T-LOAD-01 passes in staging:**  
+   - **Status:** **NOT VERIFIED** (Requires deployed staging environment E7).
 
 ---
 
-## 4. Autonomous Handoff & Next Phase
+## 4. Phase P1 Sign-Off & Status
 
-Phase P1 is complete. Per the autonomous project execution directive, execution automatically proceeds to **Phase P2: Student and Faculty Mobile Applications**.
+Phase P1 is **IN PROGRESS**. Awaiting owner written approval and staging load test verification before Phase P2 can be approved.
+
+Owner approval:
