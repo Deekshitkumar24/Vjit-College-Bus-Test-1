@@ -1,0 +1,18 @@
+=== P5-T1 EVIDENCE LOG ===
+Task: P5-T1 Trip Generator & Expected-Passenger Builder
+Date: 2026-10-22
+Command: npx vitest run packages/domain/test/trip-generator.spec.ts
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ packages/domain/test/trip-generator.spec.ts (4 tests) 10ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  21:50:22
+   Duration  1.27s (transform 155ms, setup 0ms, collect 163ms, tests 10ms, environment 0ms, prepare 370ms)
+
+Verification:
+- TripGenerator: Daily 00:30 IST job logic generates trips 7 days ahead, applies weekday_mask, skips holiday dates (2026-10-23 Diwali skipped), binds active route-bus assignments, and is idempotent.
+- ExpectedPassengerBuilder: Generates EXPECTED attendance records for assigned route students on trip start, checks for uncancelled leave records and sets status to ON_LEAVE accordingly.
