@@ -26,3 +26,7 @@ Date: 22 October 2026
   - `P0-T12`: `90b42c2`
   - `P0-T13`: `90b42c2`
 - **Files Modified:** `docs/progress/P0-plan.md`, `docs/progress/corrections.md`.
+
+## Item 4: P0-T3 Migration and Users Columns Empirical Verification
+- **Change:** Executed `db:migrate` (prisma migrate deploy) against native PostgreSQL 16 with PostGIS 3.4.2 on Windows. Verified `college_email_exception` and `exception_reason` columns on `users` table. Saved raw output to `docs/progress/evidence/P0-T3.log`.
+- **Files Modified:** `docs/progress/evidence/P0-T3.log`, `scripts/verify-p0-t3-db.ts`, `docs/progress/corrections.md`.
