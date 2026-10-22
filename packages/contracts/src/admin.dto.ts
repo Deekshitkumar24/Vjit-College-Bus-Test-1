@@ -405,4 +405,88 @@ export const DualTrackComparisonSchema = z.object({
 });
 export type DualTrackComparisonDto = z.infer<typeof DualTrackComparisonSchema>;
 
+// ==========================================
+// 10. Maintenance Tickets & Firmware Rollout (P4-T7, Part 20.6, C-05)
+// ==========================================
+export const TicketPriorityEnum = z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']);
+export type TicketPriority = z.infer<typeof TicketPriorityEnum>;
+
+export const TicketCategoryEnum = z.enum([
+  'HARDWARE_FAULT',
+  'TAMPER',
+  'POWER_SUPPLY',
+  'GNSS_DEGRADED',
+  'FIRMWARE_CRASH',
+  'OTHER',
+]);
+export type TicketCategory = z.infer<typeof TicketCategoryEnum>;
+
+export const TicketStatusEnum = z.enum(['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']);
+export type TicketStatus = z.infer<typeof TicketStatusEnum>;
+
+export const MaintenanceTicketSchema = z.object({
+  id: z.string(),
+  device_id: z.string().nullable().optional(),
+  bus_id: z.string().nullable().optional(),
+  title: z.string().min(3),
+  description: z.string().min(5),
+  priority: TicketPriorityEnum,
+  category: TicketCategoryEnum,
+  status: TicketStatusEnum,
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+  is_escalated: z.boolean().default(false),
+  escalated_at: z.string().datetime().nullable().optional(),
+  resolution_notes: z.string().nullable().optional(),
+  resolved_at: z.string().datetime().nullable().optional(),
+});
+export type MaintenanceTicketDto = z.infer<typeof MaintenanceTicketSchema>;
+
+export const CreateTicketSchema = z.object({
+  device_id: z.string().optional(),
+  bus_id: z.string().optional(),
+  title: z.string().min(3),
+  description: z.string().min(5),
+  priority: TicketPriorityEnum,
+  category: TicketCategoryEnum,
+});
+export type CreateTicketDto = z.infer<typeof CreateTicketSchema>;
+
+export const ResolveTicketSchema = z.object({
+  resolution_notes: z.string().min(5, 'Resolution notes are required (min 5 chars)'),
+});
+export type ResolveTicketDto = z.infer<typeof ResolveTicketSchema>;
+
+export const FirmwareReleaseSchema = z.object({
+  id: z.string(),
+  firmware_version: z.string().min(1),
+  firmware_sha256: z.string().regex(/^[a-fA-F0-9]{64}$/, 'SHA-256 must be 64 hex characters'),
+  firmware_size_bytes: z.number().int().positive(),
+  firmware_signature: z.string().min(1),
+  firmware_url: z.string().url(),
+  min_hardware_version: z.string().min(1),
+  status: z.enum(['DRAFT', 'ACTIVE', 'PAUSED', 'REVOKED']),
+  created_at: z.string().datetime(),
+});
+export type FirmwareReleaseDto = z.infer<typeof FirmwareReleaseSchema>;
+
+export const RegisterFirmwareReleaseSchema = z.object({
+  firmware_version: z.string().min(1),
+  firmware_sha256: z.string().regex(/^[a-fA-F0-9]{64}$/, 'SHA-256 must be 64 hex characters'),
+  firmware_size_bytes: z.number().int().positive(),
+  firmware_signature: z.string().min(1),
+  firmware_url: z.string().url(),
+  min_hardware_version: z.string().min(1),
+});
+export type RegisterFirmwareReleaseDto = z.infer<typeof RegisterFirmwareReleaseSchema>;
+
+export const StagedRolloutConfigSchema = z.object({
+  release_id: z.string(),
+  target_stage_percent: z.number().int().min(1).max(100),
+  canary_failure_threshold_percent: z.number().min(1).max(50).default(5),
+  max_crash_count_24h: z.number().int().min(1).default(3),
+});
+export type StagedRolloutConfigDto = z.infer<typeof StagedRolloutConfigSchema>;
+
+
 

@@ -1,0 +1,25 @@
+=== P4-T7 Evidence Log ===
+Date: 2026-10-22
+Command: pnpm --filter @collegebus/admin-web test:unit test/tickets-firmware.spec.ts
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run "test/tickets-firmware.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/tickets-firmware.spec.ts (4 tests) 20ms
+   ✓ Maintenance Ticket Lifecycle & 48h Escalation
+     ✓ creates ticket, auto-escalates after 48h for HIGH/CRITICAL, and resolves with notes
+     ✓ rejects resolving a ticket without notes
+   ✓ Firmware Release Registration & Staged Canary Rollout
+     ✓ registers a firmware release with SHA-256 and presigned URL (C-05)
+     ✓ automatically pauses staged rollout if error rate exceeds 5% or 3 crash events occur
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+Full admin-web suite:
+ Test Files  8 passed (8)
+      Tests  39 passed (39)
+Status: DONE
