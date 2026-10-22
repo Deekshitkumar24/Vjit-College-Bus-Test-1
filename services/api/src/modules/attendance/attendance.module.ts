@@ -3,10 +3,23 @@ import { AttendanceController } from './attendance.controller.js';
 import { AttendanceService } from './attendance.service.js';
 import { BoardingCutoffJob, AbsenceEvaluatorService } from './absence-evaluator.service.js';
 import { LeaveService } from './leave.service.js';
+import { AbsenceAlertsService } from './absence-alerts.service.js';
 
 @Module({
   controllers: [AttendanceController],
-  providers: [AttendanceService, BoardingCutoffJob, AbsenceEvaluatorService, LeaveService],
-  exports: [AttendanceService, BoardingCutoffJob, AbsenceEvaluatorService, LeaveService],
+  providers: [
+    AttendanceService,
+    BoardingCutoffJob,
+    AbsenceEvaluatorService,
+    LeaveService,
+    AbsenceAlertsService,
+  ],
+  exports: [
+    AttendanceService,
+    BoardingCutoffJob,
+    AbsenceEvaluatorService,
+    LeaveService,
+    AbsenceAlertsService,
+  ],
 })
 export class AttendanceModule {}

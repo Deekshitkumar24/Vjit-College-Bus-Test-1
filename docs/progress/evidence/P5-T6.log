@@ -1,0 +1,19 @@
+=== P5-T6 EVIDENCE LOG ===
+Task: P5-T6 Absence Alerts Management for Faculty & Coordinators (Part 11.3)
+Date: 2026-10-22
+Command: npx vitest run services/api/test/absence-alerts-management.spec.ts
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ services/api/test/absence-alerts-management.spec.ts (3 tests) 16ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  22:38:04
+   Duration  2.25s (transform 176ms, setup 0ms, collect 1.17s, tests 16ms, environment 1ms, prepare 396ms)
+
+Verification:
+- Alert Acknowledgement: Faculty or coordinator acknowledges OPEN alert; updates status to ACKNOWLEDGED with acknowledged_by user ID.
+- Investigation Notes: Attaches notes up to 500 characters; rejects entries over 500 characters with descriptive error.
+- Late Boarding Reconciliation: Detects late boarding (QR scan or manual check-in) for a student with an OPEN absence alert on an afternoon trip; transitions alert status to BOARDED_LATE and dispatches reconciliation notification to faculty.
