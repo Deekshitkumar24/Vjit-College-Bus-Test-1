@@ -1,0 +1,13 @@
+=== P0-T14 Evidence Log ===
+Date: 2026-10-22
+Environment: Native PostgreSQL 16.12 with PostGIS 3.4
+Command: pnpm --filter @collegebus/db test:int -t "audit table strictly rejects UPDATE and DELETE"
+
+Output:
+✓ proves the audit table strictly rejects UPDATE and DELETE operations (P0-T14, R-09)
+Trigger: trg_audit_logs_append_only
+Function: prevent_audit_log_modification()
+Error on UPDATE: "audit_logs rows are append-only. UPDATE and DELETE operations are strictly prohibited (R-09)."
+Error on DELETE: "audit_logs rows are append-only. UPDATE and DELETE operations are strictly prohibited (R-09)."
+
+Status: DONE
