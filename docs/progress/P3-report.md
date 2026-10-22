@@ -21,20 +21,20 @@
 
 ## 2. Task Execution Inventory
 
-| Task ID | Scope | Status | Commit SHA | Evidence Log |
-|---|---|---|---|---|
-| P3-T1 | Driver OTP sign-in, roster, device registration | DONE | `f795f5a` | `docs/progress/evidence/P3-T1.log` |
-| P3-T2 | Permissions and pre-trip check diagnostics | DONE | `da2af0e` | `docs/progress/evidence/P3-T2.log` |
-| P3-T3 | Shift start, restart resume, idle detection, 14h timeout | DONE | `9a0d173` | `docs/progress/evidence/P3-T3.log` |
-| P3-T4 | Background location: foreground service, 24h SQLite buffer | DONE | `bae7796` | `docs/progress/evidence/P3-T4.log` |
-| P3-T5 | Mode switch with confirmation; SOS with 2s hold | DONE | `e925c63` | `docs/progress/evidence/P3-T5.log` |
-| P3-T6 | Boarding QR with 30s countdown; manual check-in | DONE | `6de3ed6` | `docs/progress/evidence/P3-T6.log` |
-| P3-T7 | Report a problem, creating maintenance ticket | DONE | `8a5f84b` | `docs/progress/evidence/P3-T7.log` |
-| P3-T8 | Mock location: flagged storage, never live | DONE | `8bc6bf0` | `docs/progress/evidence/P3-T8.log` |
-| P3-T15 | Manual stop arrival override, skipped stops (Part 9.9) | DONE | `f14abbb` | `docs/progress/evidence/P3-T15.log` |
-| P3-T16 | SOS create-or-join service, outbox, tier-0 push core | DONE | `72ead2d` | `docs/progress/evidence/P3-T16.log` |
-| P3-T17 | Driver trip summary after shift end (Part 20.9 fields) | DONE | `b46b70e` | `docs/progress/evidence/P3-T17.log` |
-| P3-T18 | Shift auto-end job: 20m idle, 10m warning, 14h timeout | DONE | `fc17ced` | `docs/progress/evidence/P3-T18.log` |
+| Task ID | Scope | Status | Commit SHA | Evidence Log / Stat Summary |
+|---|---|:---:|---|---|
+| P3-T1 | Driver OTP sign-in, roster, device registration | DONE | `f795f5a` | `P3-T1.log` (10 files changed, 721 ins, 8 del) |
+| P3-T2 | Permissions and pre-trip check diagnostics | DONE | `da2af0e` | `P3-T2.log` (6 files changed, 690 ins, 9 del) |
+| P3-T3 | Shift start, restart resume, idle detection, 14h timeout | DONE | `9a0d173` | `P3-T3.log` (8 files changed, 720 ins, 19 del) |
+| P3-T4 | Background location: foreground service, 24h SQLite buffer | DONE | `bae7796` | `P3-T4.log` (4 files changed, 1121 ins) |
+| P3-T5 | Mode switch with confirmation; SOS with 2s hold | DONE | `e925c63` | `P3-T5.log` (10 files changed, 1057 ins, 10 del) |
+| P3-T6 | Boarding QR with 30s countdown; manual check-in | DONE | `6de3ed6` | `P3-T6.log` (8 files changed, 979 ins, 1 del) |
+| P3-T7 | Report a problem, creating maintenance ticket | DONE | `8a5f84b` | `P3-T7.log` (8 files changed, 631 ins) |
+| P3-T8 | Mock location: flagged storage, never live | DONE | `8bc6bf0` | `P3-T8.log` (2 files changed, 357 ins) |
+| P3-T15 | Manual stop arrival override, skipped stops (Part 9.9) | NOT STARTED | - | Not started per Section 5A Correction 4 |
+| P3-T16 | SOS create-or-join service, outbox, tier-0 push core | NOT STARTED | - | Not started per Section 5A Correction 4 |
+| P3-T17 | Driver trip summary after shift end (Part 20.9 fields) | NOT STARTED | - | Not started per Section 5A Correction 4 |
+| P3-T18 | Shift auto-end job: 20m idle, 10m warning, 14h timeout | NOT STARTED | - | Not started per Section 5A Correction 4 |
 
 ---
 
