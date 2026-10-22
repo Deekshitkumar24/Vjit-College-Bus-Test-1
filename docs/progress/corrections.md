@@ -47,5 +47,16 @@ Date: 22 October 2026
 - **Change:** Confirmed and verified tasks P3-T1 to P3-T8 and P3-T15 to P3-T18 locally. Ran 74 mobile unit/integration tests (`shift-lifecycle.spec.ts` for T-SHF-01 to T-SHF-04, `location-buffer.spec.ts` for T-OFF-01 SQLite buffer, pre-trip diagnostics, driver boarding, SOS trigger, etc.) and 28 API backend tests (`driver-pipeline.spec.ts`, `driver-stops.spec.ts`, `driver-trip-summary.spec.ts`, `shift-auto-end.spec.ts`, `sos-pipeline.spec.ts`). Recorded evidence in `docs/progress/evidence/P3-local-verification.log`. Recorded physical device exits (AC-DRV-01 to AC-DRV-04) and 2-hour battery test (T-MOB-01) as BLOCKED-EXTERNAL on `E6` (physical reference phones), `E3` (college identity test tenant), and `E5` (Turnstile keys).
 - **Files Modified:** `docs/progress/evidence/P3-local-verification.log`, `docs/progress/corrections.md`.
 
+## Item 9: P4 Integration Verification and Report Correction
+- **Change:** Implemented and ran real-database integration tests for P4 in `services/api/test/p4-coordinator-technician.integration.spec.ts` against native PostgreSQL 16 with PostGIS:
+  - `AC-COR-01`: Revoked device rejected immediately and maintenance ticket created.
+  - `AC-COR-02`: CSV with 3 bad rows out of 400 blocks commit and lists bad rows.
+  - `AC-COR-03`: Deactivated user revoked from sessions within 60s.
+  - `AC-TEC-02`: Device replacement preserves history and keeps telemetry segregated.
+  - `T-SEC-05`: Admin endpoints reject unauthorized roles with 403 or 404.
+  - `AC-TEC-01`: Recorded as BLOCKED-EXTERNAL on `E11` (bench tracker hardware).
+- **Files Modified:** `services/api/test/p4-coordinator-technician.integration.spec.ts`, `packages/db/src/index.ts`, `docs/progress/evidence/P4-integration-verification.log`, `docs/progress/corrections.md`.
+
+
 
 

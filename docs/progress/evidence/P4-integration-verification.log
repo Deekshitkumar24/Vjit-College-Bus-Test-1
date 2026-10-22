@@ -1,0 +1,16 @@
+> @collegebus/api@1.0.0 test:unit
+> vitest run "test/p4-coordinator-technician.integration.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/p4-coordinator-technician.integration.spec.ts (6 tests) 1697ms
+   ✓ Phase P4 Coordinator & Technician Integration (Real DB & API) > AC-COR-01: revoked device is rejected immediately and ticket is created
+   ✓ Phase P4 Coordinator & Technician Integration (Real DB & API) > AC-COR-02: CSV with 3 bad rows out of 400 blocks commit and lists bad rows
+   ✓ Phase P4 Coordinator & Technician Integration (Real DB & API) > AC-COR-03: deactivated user is revoked from sessions within 60s
+   ✓ Phase P4 Coordinator & Technician Integration (Real DB & API) > AC-TEC-02: device replacement preserves history and keeps telemetry segregated
+   ✓ Phase P4 Coordinator & Technician Integration (Real DB & API) > T-SEC-05: admin endpoints reject unauthorized roles with 403 or 404
+   ✓ Phase P4 Coordinator & Technician Integration (Real DB & API) > AC-TEC-01: bench hardware live heartbeat check is recorded as BLOCKED-EXTERNAL (E11)
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+ Duration  2.95s
