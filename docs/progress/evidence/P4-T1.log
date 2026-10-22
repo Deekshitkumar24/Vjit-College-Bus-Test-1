@@ -1,0 +1,37 @@
+================================================================================
+Task ID: P4-T1 Web Shell, Role Routing & MFA Enrolment
+Timestamp: 2026-10-22T10:41:20+05:30
+Author: Antigravity Autonomous Agent
+Prompt Contract: AG-MASTER-FINAL-1.0 (Phase P4)
+================================================================================
+
+Command Executed:
+pnpm --filter @collegebus/admin-web test:unit
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/guards.spec.ts (4 tests) 9ms
+ ✓ test/web-shell.spec.ts (11 tests) 20ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  10:41:09
+   Duration  1.18s
+
+Security & Quality Verification:
+- pnpm --filter @collegebus/admin-web lint: PASSED (0 warnings, 0 errors)
+- pnpm --filter @collegebus/admin-web typecheck: PASSED (0 errors)
+- pnpm verify:no-mock: PASSED (Zero mock data patterns)
+- Monorepo test:unit: 12/12 successful packages
+
+Features Delivered:
+1. Extended admin-web shell with role-based route guard for COR, TEC, MGT, SAD, and SEC (Locked Decision L-3).
+2. Enforced strict Technician isolation (TEC blocked from student routes, rosters, and user data per §16.5).
+3. Built SessionIdleTracker monitoring user activity with warning notification window and session expiry.
+4. Built MfaEnrolmentManager enforcing multi-step TOTP setup, recovery code verification, and confirmation.
+5. Built security headers auditor enforcing CSP frame-ancestors 'none', XFO DENY, and nosniff.
+================================================================================
