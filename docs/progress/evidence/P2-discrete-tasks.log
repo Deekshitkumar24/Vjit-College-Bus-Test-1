@@ -1,0 +1,16 @@
+> @collegebus/mobile@1.0.0 test:unit
+> vitest run "test/route-guard.spec.ts" "test/map-marker.spec.ts" "test/eta-stop-card.spec.ts" "test/faculty-manifest.spec.ts" "test/navigation-store.spec.ts" "test/qr-attendance.spec.ts" "test/student-requests.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/mobile
+
+ ✓ test/route-guard.spec.ts (5 tests) 16ms [P2-T1: Expo shell extension, route guard, auth context]
+ ✓ test/map-marker.spec.ts (12 tests) 22ms [P2-T2: MapLibre, source badges, clustering, route line]
+ ✓ test/eta-stop-card.spec.ts (8 tests) 22ms [P2-T3: Bus detail, ETA to my stop, progress, data age]
+ ✓ test/faculty-manifest.spec.ts (11 tests) 92ms [P2-T5: Faculty views, bus picker, driver contact, attendance]
+ ✓ test/navigation-store.spec.ts (10 tests) 65ms [P2-T7: Offline states, cached-data banners, no-connection messages]
+ ✓ test/qr-attendance.spec.ts (8 tests) 39ms [P2-T9: Boarding QR scanner, validator, specific failure messages]
+ ✓ test/student-requests.spec.ts (11 tests) 43ms [P2-T10: Stop request screens; P2-T11: Leave screen]
+
+ Test Files  7 passed (7)
+      Tests  65 passed (65)
+ Duration  2.07s

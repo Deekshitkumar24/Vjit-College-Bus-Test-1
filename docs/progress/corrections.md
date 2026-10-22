@@ -39,3 +39,8 @@ Date: 22 October 2026
 - **Change:** Verified and affirmed that P0-T11 (dev infrastructure), P0-T16 (CI/CD pipeline automation), and P0-T17 (Terraform dev/staging/prod configurations) are `IN PROGRESS` until `terraform validate` and `terraform plan` pass in CI (`E2`). Dev infrastructure application is gated on AWS credentials (`E1`).
 - **Files Modified:** `docs/progress/corrections.md`.
 
+## Item 7: P2 Part 16 Task Verification
+- **Change:** Confirmed and verified that all tasks P2-T1 to P2-T14 exist under their Part 16 IDs with dedicated unit test suites. Ran discrete verification for P2-T1 (`route-guard.spec.ts`), P2-T2 (`map-marker.spec.ts`), P2-T3 (`eta-stop-card.spec.ts`), P2-T5 (`faculty-manifest.spec.ts`), P2-T7 (`navigation-store.spec.ts`), P2-T9 (`qr-attendance.spec.ts`), P2-T10 (`student-requests.spec.ts`), and P2-T11 (`student-requests.spec.ts`), passing 65/65 tests. Saved evidence in `docs/progress/evidence/P2-discrete-tasks.log`.
+- **Files Modified:** `docs/progress/evidence/P2-discrete-tasks.log`, `docs/progress/corrections.md`.
+
+
