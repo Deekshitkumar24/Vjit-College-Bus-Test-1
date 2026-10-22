@@ -1,0 +1,36 @@
+=== P5-T2 EVIDENCE LOG ===
+Task: P5-T2 QR Token Generation & Scan Validation (Part 11.2, T-ATT-01)
+Date: 2026-10-22
+Commands:
+1. npx vitest run packages/domain/test/qr-attendance.spec.ts
+2. npx vitest run services/api/test/attendance-scan.spec.ts
+
+Output 1:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ packages/domain/test/qr-attendance.spec.ts (9 tests) 16ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  21:54:32
+   Duration  1.20s (transform 143ms, setup 0ms, collect 154ms, tests 16ms, environment 1ms, prepare 337ms)
+
+Output 2:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ services/api/test/attendance-scan.spec.ts (4 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  22:03:07
+   Duration  1.99s (transform 158ms, setup 0ms, collect 906ms, tests 14ms, environment 0ms, prepare 322ms)
+
+Verification:
+- Token Format: v1.<key_version>.<base64url payload>.<base64url signature> generated using HMAC-SHA256 with monthly keys.
+- T-ATT-01: QR token generated 30 seconds ago is accepted (current or previous slot). Token generated 65 seconds ago (2 slots ago) is rejected with QR_EXPIRED.
+- Tampered tokens and unknown key versions rejected with QR_INVALID.
+- Inactive trips and bus mismatch rejected with TRIP_NOT_ACTIVE.
+- Students not assigned to route or on leave rejected with NOT_ON_ROUTE.
+- Duplicate scan rejected with DUPLICATE_BOARDING.
+- Boarding window (-10m to +15m of scheduled departure) strictly enforced (BOARDING_WINDOW_CLOSED).
+- User rate limit enforced at 10 scans per minute.

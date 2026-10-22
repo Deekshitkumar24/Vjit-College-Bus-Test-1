@@ -9,3 +9,4 @@ export * from './eta-stop-arrival.js';
 export * from './pre-trip-diagnostics.js';
 export * from './sos-engine.js';
 export * from './trip-generator.js';
+export * from './qr-attendance.js';

@@ -43,7 +43,7 @@
 | Task ID | Scope | Status | Evidence Log | Test ID / Deliverable |
 | :--- | :--- | :---: | :---: | :--- |
 | **P5-T1** | **Trip Generator & Expected-Passenger Builder:** Daily trip generator (00:30 IST, next 7 days, skipping holidays), and on-trip-start expected passenger builder (`EXPECTED` records in `attendance_records` per student on route). | DONE | `docs/progress/evidence/P5-T1.log` | `services/api/test/trip-generator.spec.ts`, `packages/domain/test/trip-generator.spec.ts` (4 tests passing) |
-| **P5-T2** | **QR Token Generation & Scan Validation (Part 11.2):** Token format `v1.<key_version>.<payload>.<signature>`, 30s slots, HMAC-SHA256, validation pipeline steps 1-8, rate limit (10/min/user). | NOT STARTED | `docs/progress/evidence/P5-T2.log` | `T-ATT-01` (`packages/domain/test/qr-attendance.spec.ts`, `services/api/test/attendance-scan.spec.ts`) |
+| **P5-T2** | **QR Token Generation & Scan Validation (Part 11.2):** Token format `v1.<key_version>.<payload>.<signature>`, 30s slots, HMAC-SHA256, validation pipeline steps 1-8, rate limit (10/min/user). | DONE | `docs/progress/evidence/P5-T2.log` | `T-ATT-01` (`packages/domain/test/qr-attendance.spec.ts`, `services/api/test/attendance-scan.spec.ts` - 13 tests passing) |
 | **P5-T3** | **Manual Check-In, FLAGGED_GUEST, LATE_BOARDED & Corrections:** Driver manual check-in, guest boarding, late check-in, coordinator corrections with reasons, duplicate guard, and concurrency locking. | NOT STARTED | `docs/progress/evidence/P5-T3.log` | `T-ATT-02`, `T-CON-01` (`services/api/test/attendance-manual-concurrency.spec.ts`) |
 | **P5-T4** | **Boarding-Cutoff Job & Absence Evaluator (Part 11.3):** Background boarding-cutoff job (+15m departure -> `ABSENT`), absence evaluator (morning present + afternoon absent -> `absence_alerts` row). | NOT STARTED | `docs/progress/evidence/P5-T4.log` | `T-ATT-03` (`services/api/test/absence-evaluator.spec.ts`) |
 | **P5-T5** | **Leave Flows for Students & Faculty (Part 11.9):** Student leave submission (up to 30m before departure), faculty bus leave, cancellation rules, sets status `ON_LEAVE`. | NOT STARTED | `docs/progress/evidence/P5-T5.log` | `T-ATT-04` (`services/api/test/leave-flow.spec.ts`) |
@@ -56,7 +56,7 @@
 
 | Criterion | Target | Verification Method | Status |
 | :--- | :--- | :--- | :---: |
-| **T-ATT-01** | QR acceptance & expiry (Part 11.2) | QR from 30s ago accepted; QR from 65s ago returns `QR_EXPIRED` | NOT STARTED |
+| **T-ATT-01** | QR acceptance & expiry (Part 11.2) | QR from 30s ago accepted; QR from 65s ago returns `QR_EXPIRED` | **VERIFIED** |
 | **T-ATT-02** | Duplicate boarding prevention | Second scan returns `DUPLICATE_BOARDING` | NOT STARTED |
 | **T-ATT-03** | Absence alert creation | Morning boarded + afternoon absent triggers `absence_alerts` within 5m of cutoff | NOT STARTED |
 | **T-ATT-04** | Leave immunity | Approved leave prevents absence alert creation | NOT STARTED |
