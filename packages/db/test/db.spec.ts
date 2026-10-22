@@ -38,4 +38,30 @@ describe('Database Package, RLS & Schema Controls (P0-T3)', () => {
     expect(sql).toContain('trg_audit_logs_append_only');
     expect(sql).toContain('BEFORE UPDATE OR DELETE ON audit_logs');
   });
+
+  it('enforces OV-8 and OV-14: users model includes college_email_exception and exception_reason', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const schemaPath = path.resolve(__dirname, '../prisma/schema.prisma');
+    const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
+
+    expect(schemaContent).toMatch(/college_email_exception\s+Boolean\s+@default\(false\)/);
+    expect(schemaContent).toMatch(/exception_reason\s+String\?\s+@db\.Text/);
+  });
+
+  it('provides expand-only migration for users.college_email_exception and users.exception_reason', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const migrationsDir = path.resolve(__dirname, '../prisma/migrations');
+    expect(fs.existsSync(migrationsDir)).toBe(true);
+
+    const migrationDirs = fs.readdirSync(migrationsDir);
+    const emailMigration = migrationDirs.find((d: string) => d.includes('college_email_exception'));
+    expect(emailMigration).toBeDefined();
+
+    const sqlPath = path.join(migrationsDir, emailMigration!, 'migration.sql');
+    const sqlContent = fs.readFileSync(sqlPath, 'utf-8');
+    expect(sqlContent).toContain('college_email_exception');
+    expect(sqlContent).toContain('exception_reason');
+  });
 });

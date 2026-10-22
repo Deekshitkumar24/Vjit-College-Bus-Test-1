@@ -13,23 +13,23 @@
 | **OV-5** | AWS region is `ap-south-1` (L-5); CloudFront ACM certificate and WAF web ACL in `us-east-1`. | `infra/terraform/variables.tf:6-8`<br>`docs/decisions/aws-region.md:1-25` | Region variable defaults to `ap-south-1`. Global edge resources mapped to `us-east-1`. | **PASS** |
 | **OV-6** | RS-19 global constraints recorded as constraints, not missing services. | `docs/decisions/aws-region.md:14-25` | RS-19 confirms all services present in `ap-south-1` with global constraints noted. | **PASS** |
 | **OV-7** | RS-06 SMS research remains INCOMPLETE until SMS provider confirmed. | `docs/decisions/sms.md:8-15` | SMS research marked INCOMPLETE awaiting provider confirmation (D-07). | **PASS** |
-| **OV-8** | Add `college_email_exception` (boolean, default false) and `exception_reason` (text) to `users` table. | `packages/db/prisma/schema.prisma:26-38` | Fields missing in Prisma schema. Logged as P0-T3 correction, scheduled but not yet done. | **FAIL** |
+| **OV-8** | Add `college_email_exception` (boolean, default false) and `exception_reason` (text) to `users` table. | `packages/db/prisma/schema.prisma:36-37`<br>`packages/db/prisma/migrations/20261022150000_add_user_college_email_exception/migration.sql:1-4` | Added `college_email_exception` (Boolean, default false) and `exception_reason` (Text, nullable) to User model with expand-only migration and unit test. | **PASS** |
 | **OV-9** | Dual OIDC: discrete Google Workspace and Microsoft Entra ID configs, chosen at runtime. | `packages/config/src/env.schema.ts:51-54` | Config schema defines generic `OIDC_*` set. Logged as P0-T6 correction, scheduled but not yet done. | **FAIL** |
 | **OV-10** | Allowed coverage statuses: "built and passing", "missing", "BLOCKED with owner". "deferred" prohibited. | `docs/progress/P0-plan.md:18-36` | Zero occurrences of "deferred" across plans and reports. | **PASS** |
 | **OV-11** | Definition of Done superseded by Part A (Rules A-5 to A-7). | `AGENTS.md:162, 221`<br>`docs/progress/commit-audit.md:1-100` | Evidence standards enforced. | **PASS** |
 | **OV-12** | Settings keys are exactly Part 14.4 + Part 20.17 (79 keys). Code contains no other keys without recorded decision. | `packages/config/src/defaults.ts:1-118`<br>`scripts/audit/count-config.py:1-45` | Code contains exactly 79 contract keys (75 from Part 14.4 + 4 from Part 20.17). 48 extra keys removed from `defaults.ts` and database seed, documented in `extra-config-keys.md` under C-15 awaiting owner decision O8. | **PASS** |
 | **OV-13** | Part 21.2 conflict register replaced by Part B.2 (C-01 to C-15). | `docs/decisions/conflicts.md:1-25` | Centralized conflict register maintained. | **PASS** |
-| **OV-14** | Storage additions must include `users.college_email_exception` and `users.exception_reason`. | `packages/db/prisma/schema.prisma:26-38` | Storage addition pending. Logged as P0-T3 correction, task marked IN PROGRESS. | **FAIL** |
-| **OV-15** | Only added table is `push_tokens`. `recovery_codes` and `outbox` are Part 7 tables. | `packages/db/prisma/schema.prisma:1034`<br>`scripts/audit/compare-tables.py:1-35` | 56 contract tables + 1 `push_tokens` = 57 physical tables reconciled. | **PASS** |
+| **OV-14** | Storage additions must include `users.college_email_exception` and `users.exception_reason`. | `packages/db/prisma/schema.prisma:36-37`<br>`packages/db/prisma/migrations/20261022150000_add_user_college_email_exception/migration.sql:1-4` | Storage columns `college_email_exception` and `exception_reason` added to users table via expand-only migration. | **PASS** |
+| **OV-15** | Only added table is `push_tokens`. `recovery_codes` and `outbox` are Part 7 tables. | `packages/db/prisma/schema.prisma:1036`<br>`scripts/audit/compare-tables.py:1-35` | 56 contract tables + 1 `push_tokens` = 57 physical tables reconciled. | **PASS** |
 | **OV-16** | P0 exit criteria: checks listed as NOT VERIFIED are not DONE. | `docs/progress/P0-report.md:42-49` | Exits 1, 3, 4, 5 correctly marked NOT VERIFIED. | **PASS** |
 | **OV-17** | Phase reports must give commit SHAs, command outputs for DONE claims, NOT VERIFIED list, key/table counts, research dates. | `docs/progress/P0-report.md:1-85` | Required sections fully structured. | **PASS** |
 | **OV-18** | Dev Terraform applied in P0-T11, Staging in P7, Production in P9-T6. | `docs/progress/P0-plan.md:31`<br>`infra/terraform/environments/` | Environments structured; apply lifecycle scheduled per contract. | **PASS** |
 | **OV-19** | P0-T18 and P0-T19 are minimal shells; full screens built in P2 and P4. | `apps/mobile/app/`<br>`apps/admin-web/src/` | Minimal route guards and shell structures implemented. | **PASS** |
 
 ### Summary
-- **Passing Overrides:** 16 / 19 (84.2%)
-- **Failing Overrides:** 3 / 19 (OV-8, OV-9, OV-14)
+- **Passing Overrides:** 18 / 19 (94.7%)
+- **Failing Overrides:** 1 / 19 (OV-9)
 - **Action Plan:**
-  - `OV-8` & `OV-14`: P0-T3 is marked IN PROGRESS (Prisma migration to add `college_email_exception` and `exception_reason`).
+  - `OV-8` & `OV-14`: PASS. Added `college_email_exception` and `exception_reason` to `users` with expand-only migration and unit test.
   - `OV-9`: P0-T6 is marked IN PROGRESS (add `GOOGLE_OIDC_*` and `AZURE_OIDC_*` dual config to `env.schema.ts`).
   - `OV-12`: PASS. The 48 extra keys removed from `defaults.ts` and seed; documented in `docs/progress/extra-config-keys.md` awaiting owner decision O8.

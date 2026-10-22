@@ -33,6 +33,8 @@ model User {
   full_name               String                  @db.VarChar(100)
   phone_e164              String?                 @db.VarChar(20)
   status                  String                  @default("ACTIVE") @db.VarChar(20) // ACTIVE, SUSPENDED, DEACTIVATED
+  college_email_exception Boolean                 @default(false)
+  exception_reason        String?                 @db.Text
   deactivated_at          DateTime?               @db.Timestamptz
   last_seen_at            DateTime?               @db.Timestamptz
 

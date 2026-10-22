@@ -26,7 +26,7 @@ Phase P0 has implemented and verified the foundational monorepo, strict typing, 
 | :--------- | :------------------------------------------------------------ | :-------------: | :--------: | :---------------------------------------------------------------- |
 | **P0-T1**  | Monorepo scaffolding, ESLint, Prettier, Turbo                 |    **DONE**     | `b598b27`  | `docs/progress/evidence/P0-T1.log`                                |
 | **P0-T2**  | Configuration package, Zod schema, startup refusal            |    **DONE**     | `e015693`  | `docs/progress/evidence/P0-T2.log`                                |
-| **P0-T3**  | Database foundation, 57 tables, partition manager             | **IN PROGRESS** | `980eedd`  | `docs/progress/evidence/P0-T3.log` (OV-8/14 schema migration pending) |
+| **P0-T3**  | Database foundation, 57 tables, partition manager             |    **DONE**     | `980eedd`  | `docs/progress/evidence/P0-T3.log`                                |
 | **P0-T4**  | Test harness, synthetic factories, non-prod guard             |    **DONE**     | `777d078`  | `docs/progress/evidence/P0-T4.log`                                |
 | **P0-T5**  | Migration policy check (expand-only enforcement)              |    **DONE**     | `37fc4d2`  | `docs/progress/evidence/P0-T5.log`                                |
 | **P0-T6**  | Auth core (SSO PKCE, Driver OTP lockout, token rotation)      | **IN PROGRESS** | `8bfe777`  | `docs/progress/evidence/P0-T6.log` (OV-9 dual OIDC config pending) |

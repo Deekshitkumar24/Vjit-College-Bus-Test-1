@@ -28,6 +28,7 @@ coverage/
 
 # Logs
 *.log
+!docs/progress/evidence/*.log
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
