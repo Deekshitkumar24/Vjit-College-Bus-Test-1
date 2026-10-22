@@ -1,0 +1,25 @@
+=== P2-T14: Trip Completed View with 30-Minute TTL (Part 6.10) ===
+Date: 2026-10-22T21:06:19+05:30
+Command: npx vitest run apps/mobile/test/trip-completed-view.spec.ts
+
+--- 1. Failing run before implementation ---
+ FAIL  apps/mobile/test/trip-completed-view.spec.ts [ apps/mobile/test/trip-completed-view.spec.ts ]
+Error: Failed to load url ../src/eta/trip-completed-manager.js
+
+--- 2. Passing run after implementation ---
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ apps/mobile/test/trip-completed-view.spec.ts (2 tests) 9ms
+   ✓ P2-T14: Trip Completed View with 30-minute TTL (Part 6.10) > renders trip summary while within 30 minutes of completion
+   ✓ P2-T14: Trip Completed View with 30-minute TTL (Part 6.10) > expires and hides trip summary after 30 minutes, transitioning to idle/not running view
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  21:06:17
+   Duration  1.51s
+
+Result: PASS
+Scope delivered:
+- Post-trip summary card displaying bus number, route name, duration, and stops served
+- 30-minute time-to-live countdown tracking (Part 6.10)
+- Automatic transition to NOT_RUNNING state once 30 minutes elapse
