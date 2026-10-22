@@ -61,6 +61,11 @@ Date: 22 October 2026
 - **Change:** Rewrote `T-CON-01` in `services/api/test/attendance-manual-concurrency.spec.ts` to execute two concurrent transactions against native PostgreSQL 16 with the unique index `@@unique([trip_id, student_id])` on `attendance_records`. Verified that exactly one transaction commits and the second fails with unique constraint violation (`23505`) resulting in `DUPLICATE_BOARDING`. Verified `T-ATT-01` (QR token 30s accepted, 65s rejected with injected clock), `T-ATT-02` (duplicate scan in database), `T-ATT-03` (morning present, afternoon absent alert within 5m of cutoff), and `T-ATT-04` (leave prevents alert) across 16 passing tests. Recorded evidence in `docs/progress/evidence/P5-attendance-concurrency-verification.log`.
 - **Files Modified:** `services/api/test/attendance-manual-concurrency.spec.ts`, `docs/progress/evidence/P5-attendance-concurrency-verification.log`, `docs/progress/corrections.md`.
 
+## Item 11: P1 T-LOAD-01 Local Smoke Run Execution
+- **Change:** Executed `T-LOAD-01` local smoke run against native PostgreSQL 16 with PostGIS using the 50-bus fleet simulator (`scripts/load/run-t-load-01-local-smoke.ts`). Ingested 315 batches / 315 location samples across 6 operational scenarios with 0 errors in 362ms (870.17 batches/sec). Recorded output in `docs/progress/evidence/T-LOAD-01-local-smoke.log` as smoke evidence only. Confirmed that the full staging load exit remains BLOCKED-EXTERNAL on `E7`.
+- **Files Modified:** `scripts/load/run-t-load-01-local-smoke.ts`, `docs/progress/evidence/T-LOAD-01-local-smoke.log`, `docs/progress/corrections.md`.
+
+
 
 
 

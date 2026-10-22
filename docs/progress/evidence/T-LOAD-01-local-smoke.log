@@ -1,0 +1,14 @@
+T-LOAD-01 Local Smoke Run Summary:
+=========================================
+Buses simulated: 50
+Operational scenarios: 6 (NORMAL_DUAL: 25, TRACKER_FAILED: 10, DRIVER_ONLY: 5, BOTH_LOST: 5, FLAPPING: 3, CRITICAL: 2)
+Simulation ticks: 10
+Total batches processed: 315
+Total location samples inserted: 315
+Duration: 362ms
+Batch throughput: 870.17 batches/sec
+Sample insertion rate: 870.17 samples/sec
+Errors: 0
+Database target: Native PostgreSQL 16 with PostGIS 3.4.2 (Windows local)
+Exit status: VERIFIED (local smoke evidence only)
+Staging gate status: BLOCKED-EXTERNAL (E7 - awaiting staging environment)
