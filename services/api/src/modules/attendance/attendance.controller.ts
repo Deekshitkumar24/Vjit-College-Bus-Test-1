@@ -72,4 +72,65 @@ export class AttendanceController {
 
     return result;
   }
+
+  @Post('manual')
+  @Roles('DRV', 'COR', 'SAD')
+  async manualCheckIn(
+    @Body()
+    body: {
+      trip_id: string;
+      student_id: string;
+      reason?: string;
+      is_guest?: boolean;
+    },
+    @Req() req: any
+  ) {
+    const driverId = req.user.id;
+    return this.attendanceService.manualCheckIn({
+      tripId: body.trip_id,
+      studentId: body.student_id,
+      driverId,
+      reason: body.reason,
+      isGuest: body.is_guest,
+      saveRecord: async (rec) =>
+        req.prisma?.attendanceRecord?.upsert({
+          where: {
+            trip_id_student_id: { trip_id: rec.trip_id, student_id: rec.student_id },
+          },
+          create: rec,
+          update: rec,
+        }),
+    });
+  }
+
+  @Post('corrections/:id')
+  @Roles('COR', 'SAD')
+  async correctAttendance(
+    @Param('id') attendanceId: string,
+    @Body() body: { status: string; reason: string },
+    @Req() req: any
+  ) {
+    const coordinatorId = req.user.id;
+    return this.attendanceService.coordinatorCorrection({
+      attendanceId,
+      newStatus: body.status,
+      coordinatorId,
+      reason: body.reason,
+      saveRecord: async (upd) =>
+        req.prisma?.attendanceRecord?.update({
+          where: { id: attendanceId },
+          data: upd,
+        }),
+      logAudit: async (audit) =>
+        req.prisma?.auditLog?.create({
+          data: {
+            action: audit.action,
+            entity_type: audit.entity_type,
+            entity_id: audit.entity_id,
+            reason: audit.reason,
+            actor_id: audit.actor_id,
+          },
+        }),
+    });
+  }
 }

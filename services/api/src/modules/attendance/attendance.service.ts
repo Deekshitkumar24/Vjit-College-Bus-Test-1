@@ -191,20 +191,119 @@ export class AttendanceService {
     }
 
     const boardedAt = new Date(scanTime);
-    await params.saveAttendance({
-      tripId: trip.id,
-      studentId: params.studentId,
-      status: 'BOARDED',
-      method: 'QR',
-      boardingStopId: validationResult.boardingStopId,
-      boardedAt,
-    });
+    try {
+      await params.saveAttendance({
+        tripId: trip.id,
+        studentId: params.studentId,
+        status: 'BOARDED',
+        method: 'QR',
+        boardingStopId: validationResult.boardingStopId,
+        boardedAt,
+      });
+    } catch (err: any) {
+      if (err?.message?.includes('DUPLICATE_BOARDING') || err?.code === 'P2002') {
+        return { success: false, error: 'DUPLICATE_BOARDING' };
+      }
+      throw err;
+    }
 
     return {
       success: true,
       status: 'BOARDED',
       bus_number: trip.bus?.bus_number ?? 'BUS',
       boarded_at: boardedAt.toISOString(),
+    };
+  }
+
+  async processScanWithStore(params: {
+    tripId: string;
+    studentId: string;
+    token: string;
+    scanTime?: number;
+    getTrip: (tripId: string) => Promise<any>;
+    getStudentAssignment: (studentId: string, routeId: string, tripType: string) => Promise<any>;
+    store: Map<string, any>;
+  }): Promise<ScanResult> {
+    const key = `${params.tripId}:${params.studentId}`;
+    if (params.store.has(key)) {
+      return { success: false, error: 'DUPLICATE_BOARDING' };
+    }
+
+    // Process scan with store as backing repository
+    return this.processScan({
+      studentId: params.studentId,
+      token: params.token,
+      scanTime: params.scanTime,
+      getTrip: params.getTrip,
+      getStudentAssignment: params.getStudentAssignment,
+      getExistingAttendance: async () => params.store.get(key) || null,
+      saveAttendance: async (record) => {
+        if (params.store.has(key)) {
+          throw new Error('DUPLICATE_BOARDING');
+        }
+        params.store.set(key, record);
+        return { id: 'rec-concurrency', ...record };
+      },
+    });
+  }
+
+  async manualCheckIn(params: {
+    tripId: string;
+    studentId: string;
+    driverId: string;
+    reason?: string;
+    isGuest?: boolean;
+    saveRecord: (record: any) => Promise<any>;
+  }): Promise<{ success: boolean; status: string; method: string }> {
+    const status = params.isGuest ? 'FLAGGED_GUEST' : 'MANUAL_CHECKIN';
+    const method = 'DRIVER';
+
+    await params.saveRecord({
+      trip_id: params.tripId,
+      student_id: params.studentId,
+      status,
+      method,
+      marked_by: params.driverId,
+      boarded_at: new Date(),
+      note: params.reason,
+    });
+
+    return {
+      success: true,
+      status,
+      method,
+    };
+  }
+
+  async coordinatorCorrection(params: {
+    attendanceId: string;
+    newStatus: string;
+    coordinatorId: string;
+    reason: string;
+    saveRecord: (update: any) => Promise<any>;
+    logAudit: (audit: any) => Promise<any>;
+  }): Promise<{ success: boolean; status: string }> {
+    if (!params.reason || params.reason.trim().length === 0) {
+      throw new BadRequestException('Mandatory reason required for coordinator correction');
+    }
+
+    await params.saveRecord({
+      status: params.newStatus,
+      marked_by: params.coordinatorId,
+    });
+
+    await params.logAudit({
+      action: 'ATTENDANCE_CORRECTION',
+      entity_type: 'attendance_record',
+      entity_id: params.attendanceId,
+      reason: params.reason,
+      actor_id: params.coordinatorId,
+      timestamp: new Date(),
+    });
+
+    return {
+      success: true,
+      status: params.newStatus,
     };
   }
 }

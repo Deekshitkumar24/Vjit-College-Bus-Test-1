@@ -1,0 +1,21 @@
+=== P5-T3 EVIDENCE LOG ===
+Task: P5-T3 Manual Check-In, FLAGGED_GUEST, LATE_BOARDED & Coordinator Corrections (T-ATT-02, T-CON-01)
+Date: 2026-10-22
+Command: npx vitest run services/api/test/attendance-manual-concurrency.spec.ts
+
+Output:
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus
+
+ ✓ services/api/test/attendance-manual-concurrency.spec.ts (5 tests) 18ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  22:06:18
+   Duration  2.49s (transform 224ms, setup 0ms, collect 1.01s, tests 18ms, environment 0ms, prepare 436ms)
+
+Verification:
+- T-ATT-02: Second scan for same student/trip is rejected with DUPLICATE_BOARDING.
+- T-CON-01: Two parallel scans for the same student/trip execute concurrently; exactly one creates the record and the other fails with DUPLICATE_BOARDING. Exactly 1 record exists in store.
+- Driver Manual Check-In: Driver marks student from roster; saved as MANUAL_CHECKIN with method DRIVER.
+- Guest Boarding: Unassigned student boarding marked as FLAGGED_GUEST with mandatory reason.
+- Coordinator Corrections: Coordinator correction requires mandatory justification reason; updates status and writes append-only audit_logs entry.
