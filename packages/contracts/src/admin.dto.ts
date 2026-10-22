@@ -133,3 +133,106 @@ export const DeviceHealthResponseSchema = z.object({
   ),
 });
 export type DeviceHealthResponseDto = z.infer<typeof DeviceHealthResponseSchema>;
+
+// ==========================================
+// 6. Routes, Stops & Geometry Management (P4-T3, Part 20.8)
+// ==========================================
+export const StopSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1).max(60),
+  code: z.string().min(1).max(20),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+  radius_m: z.number().int().min(10).max(200).default(50),
+  landmark: z.string().max(100).nullable().optional(),
+});
+export type StopDto = z.infer<typeof StopSchema>;
+
+export const CreateStopSchema = z.object({
+  name: z.string().min(1).max(60),
+  code: z.string().min(1).max(20),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+  radius_m: z.number().int().min(10).max(200).default(50),
+  landmark: z.string().max(100).optional(),
+});
+export type CreateStopDto = z.infer<typeof CreateStopSchema>;
+
+export const UpdateStopSchema = CreateStopSchema.partial();
+export type UpdateStopDto = z.infer<typeof UpdateStopSchema>;
+
+export const OrderedRouteStopSchema = z.object({
+  stop_id: z.string(),
+  sequence_order: z.number().int().positive(),
+  scheduled_arrival_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).optional(),
+  scheduled_departure_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).optional(),
+});
+export type OrderedRouteStopDto = z.infer<typeof OrderedRouteStopSchema>;
+
+export const GeoJsonLineStringSchema = z.object({
+  type: z.literal('LineString'),
+  coordinates: z.array(z.tuple([z.number(), z.number()])).min(2), // [lng, lat] per GeoJSON spec
+});
+export type GeoJsonLineString = z.infer<typeof GeoJsonLineStringSchema>;
+
+export const CreateRouteSchema = z.object({
+  route_code: z.string().min(1).max(20),
+  name: z.string().min(1).max(100),
+  trip_type: z.enum(['MORNING', 'AFTERNOON', 'BOTH']).default('BOTH'),
+  stops: z.array(OrderedRouteStopSchema).min(2),
+  geometry_geojson: GeoJsonLineStringSchema.optional(),
+  is_active: z.boolean().default(true),
+});
+export type CreateRouteDto = z.infer<typeof CreateRouteSchema>;
+
+export const UpdateRouteSchema = CreateRouteSchema.partial();
+export type UpdateRouteDto = z.infer<typeof UpdateRouteSchema>;
+
+export const RouteResponseSchema = z.object({
+  id: z.string(),
+  route_code: z.string(),
+  name: z.string(),
+  trip_type: z.enum(['MORNING', 'AFTERNOON', 'BOTH']),
+  stops: z.array(
+    z.object({
+      stop_id: z.string(),
+      stop_name: z.string(),
+      sequence_order: z.number().int(),
+      lat: z.number(),
+      lng: z.number(),
+      radius_m: z.number().int(),
+      scheduled_arrival_time: z.string().optional(),
+    }),
+  ),
+  geometry_geojson: GeoJsonLineStringSchema.nullable().optional(),
+  assigned_bus_ids: z.array(z.string()),
+  is_active: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+export type RouteResponseDto = z.infer<typeof RouteResponseSchema>;
+
+// Timetable & Holiday Exceptions
+export const TimetableEntrySchema = z.object({
+  route_id: z.string(),
+  trip_type: z.enum(['MORNING', 'AFTERNOON']),
+  day_of_week: z.number().int().min(0).max(6), // 0: Sun, 1: Mon...
+  departure_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+});
+export type TimetableEntryDto = z.infer<typeof TimetableEntrySchema>;
+
+export const HolidayExceptionSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  name: z.string().min(1).max(100),
+  service_suspended: z.boolean().default(true),
+  operating_route_ids: z.array(z.string()).optional(),
+});
+export type HolidayExceptionDto = z.infer<typeof HolidayExceptionSchema>;
+
+export const AssignBusToRouteSchema = z.object({
+  route_id: z.string(),
+  bus_id: z.string(),
+  effective_from: z.string().optional(),
+  effective_to: z.string().optional(),
+});
+export type AssignBusToRouteDto = z.infer<typeof AssignBusToRouteSchema>;

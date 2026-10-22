@@ -1,0 +1,27 @@
+=== Evidence Log: P4-T3 ===
+Task: P4-T3: Routes, stops library, ordered stops, geometry editor or GeoJSON (Part 20.8), timetables, route-bus assignments, holidays
+Date: 2026-10-22
+Governing References: SW-MVP-1.0 §16.4, §20, §21, Master Part 20.8, Master Part 16 (P4-T3)
+
+Command:
+pnpm --filter @collegebus/admin-web test:unit test/routes-management.spec.ts
+
+Output:
+> @collegebus/admin-web@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run "test/routes-management.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/routes-management.spec.ts (4 tests) 25ms
+   ✓ Routes, Stops & Geometry Management (P4-T3, Part 20.8)
+     ✓ Stops Library Management
+       ✓ creates, lists, and updates stops with valid radius and coordinates
+     ✓ Route Definition, Ordered Stops & GeoJSON Geometry (Part 20.8)
+       ✓ creates a route with ordered stops and validates geometry LineString
+     ✓ Route-Bus Assignment
+       ✓ assigns bus to route and prevents duplicate simultaneous assignments
+     ✓ Timetables & Holiday Calendar Exceptions
+       ✓ evaluates service operating days based on timetables and holiday suspensions
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
