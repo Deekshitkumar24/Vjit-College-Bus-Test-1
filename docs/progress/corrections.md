@@ -65,6 +65,11 @@ Date: 22 October 2026
 - **Change:** Executed `T-LOAD-01` local smoke run against native PostgreSQL 16 with PostGIS using the 50-bus fleet simulator (`scripts/load/run-t-load-01-local-smoke.ts`). Ingested 315 batches / 315 location samples across 6 operational scenarios with 0 errors in 362ms (870.17 batches/sec). Recorded output in `docs/progress/evidence/T-LOAD-01-local-smoke.log` as smoke evidence only. Confirmed that the full staging load exit remains BLOCKED-EXTERNAL on `E7`.
 - **Files Modified:** `scripts/load/run-t-load-01-local-smoke.ts`, `docs/progress/evidence/T-LOAD-01-local-smoke.log`, `docs/progress/corrections.md`.
 
+## Item 12: Owner Acceptance Record Creation
+- **Change:** Created `docs/progress/owner-acceptance.md` documenting the quoted owner approvals from chat for phases P1, P2, P3, and P4 ("P1 approved", "P2 approved", "P3 approved", "P4 approved"). Affirmed that no individual unmet physical or cloud environment exits were waived or accepted in writing, and all such exits remain strictly OPEN and BLOCKED-EXTERNAL in the readiness gate per Rule O1.
+- **Files Modified:** `docs/progress/owner-acceptance.md`, `docs/progress/corrections.md`.
+
+
 
 
 
