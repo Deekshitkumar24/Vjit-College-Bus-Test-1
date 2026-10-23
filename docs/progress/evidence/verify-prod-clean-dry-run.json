@@ -1,0 +1,12 @@
+{
+  "id": "verify-prod-clean-dry-run",
+  "command": "pnpm verify:prod-clean:dry-run",
+  "gitSha": "8d525221a76c6b0005c1df12f33d9e89a7a069e8",
+  "startTime": "2026-10-23T08:04:18.849Z",
+  "endTime": "2026-10-23T08:04:20.931Z",
+  "durationMs": 2076,
+  "exitCode": 0,
+  "stdoutSha256": "77c67f58ce649b637447062f94d9c927a25185497341c12d06753335f151b0d3",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "77c67f58ce649b637447062f94d9c927a25185497341c12d06753335f151b0d3"
+}

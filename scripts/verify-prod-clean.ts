@@ -5,11 +5,15 @@ import { Pool } from 'pg';
  * Verifies that the target database has ZERO synthetic records (Rule A-10, RB-13).
  */
 async function verifyProdClean() {
-  console.log('=== Running Production Cleanliness & Zero-Synthetic Data Audit ===');
+  const isDryRun = process.argv.includes('--dry-run') || process.env['NODE_ENV'] !== 'production';
+  const modeName = isDryRun ? 'verify:prod-clean:dry-run' : 'verify:prod-clean';
+  console.log(`=== Running Database Cleanliness & Zero-Synthetic Data Audit [${modeName}] ===`);
   const databaseUrl =
     process.env['DATABASE_URL'] ||
     process.env['DATABASE_URL_TEST'] ||
     'postgresql://postgres:@localhost:5432/collegebus';
+
+  console.log(`Auditing target database (${isDryRun ? 'DRY-RUN / LOCAL' : 'PRODUCTION'})...`);
 
   const pool = new Pool({ connectionString: databaseUrl });
   const violations: Array<{ table: string; count: number; sample?: any }> = [];
