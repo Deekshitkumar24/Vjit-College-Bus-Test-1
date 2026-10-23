@@ -1,0 +1,12 @@
+{
+  "id": "idor-coverage",
+  "command": "pnpm --filter @collegebus/api test:unit test/idor-coverage.spec.ts",
+  "gitSha": "618feb6a6b7219baefbc1a0f3bf60dc057dba078",
+  "startTime": "2026-10-23T07:29:09.821Z",
+  "endTime": "2026-10-23T07:29:15.757Z",
+  "durationMs": 5934,
+  "exitCode": 0,
+  "stdoutSha256": "3df0653eec78e87fbaf4161ed40a6d25ad0f6b601d4f1cc6fba13e626156fbe8",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "3df0653eec78e87fbaf4161ed40a6d25ad0f6b601d4f1cc6fba13e626156fbe8"
+}

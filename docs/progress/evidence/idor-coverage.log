@@ -1,0 +1,25 @@
+
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/idor-coverage.spec.ts"
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api[39m
+
+[90mstdout[2m | test/idor-coverage.spec.ts[2m > [22m[2mComprehensive IDOR Coverage Suite (Part 13.9, D-4)[2m > [22m[2mfails if any identifier route in the codebase has no IDOR test
+[22m[39mAuditing IDOR coverage across 8 identifier routes:
+  - POST /api/v1/attendance/corrections/:id [Param: :id]
+  - GET /api/v1/attendance/trips/:id/qr [Param: :id]
+  - DELETE /api/v1/auth/sessions/:id [Param: :id]
+  - GET /api/v1/driver/bus/:busId [Param: :busId]
+  - GET /api/v1/driver/manifest/:tripId [Param: :tripId]
+  - GET /api/v1/driver/sos/:incidentId [Param: :incidentId]
+  - GET /api/v1/driver/stops/:shiftId [Param: :shiftId]
+  - GET /api/v1/driver/trip-summary/:shiftId [Param: :shiftId]
+
+ [32m✓[39m test/idor-coverage.spec.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 1987[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 12:59:11
+[2m   Duration [22m 3.62s[2m (transform 214ms, setup 0ms, collect 364ms, tests 1.99s, environment 0ms, prepare 514ms)[22m
+
