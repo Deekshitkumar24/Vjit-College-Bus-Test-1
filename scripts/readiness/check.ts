@@ -182,25 +182,12 @@ async function evaluateReadiness(): Promise<{
       logText.includes('DRILL PASSED');
   }
 
-  // (h) Launch checklist: every item in Part 17 has evidence
-  const launchChecklistJson = path.resolve('docs/progress/evidence/launch-checklist.json');
-  const runbooksJson = path.resolve('docs/progress/evidence/runbooks.json');
-  let launchChecklistEvidenced = false;
-  if (fs.existsSync(launchChecklistJson)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(launchChecklistJson, 'utf-8'));
-      launchChecklistEvidenced = data.exitCode === 0;
-    } catch {
-      launchChecklistEvidenced = false;
-    }
-  } else if (fs.existsSync(runbooksJson)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(runbooksJson, 'utf-8'));
-      launchChecklistEvidenced = data.exitCode === 0;
-    } catch {
-      launchChecklistEvidenced = false;
-    }
-  }
+  // (h) Launch checklist: Part 17 requires a penetration test (E8), counsel sign-off, and applied production Terraform (GO)
+  // None of these can happen locally, so 5.h evaluates to BLOCKED-EXTERNAL
+  const launchChecklistMd = path.resolve('docs/progress/launch-checklist.md');
+  const launchChecklistExists = fs.existsSync(launchChecklistMd);
+  const launchChecklistEvidenced = false; // Blocked externally
+  const launchChecklistStatus = 'BLOCKED-EXTERNAL';
 
   // (i) verify:prod-clean passes against production (not dry run)
   const prodCleanProdPath = path.resolve(
@@ -261,7 +248,7 @@ async function main() {
   md += `| **5.e** | Security Posture | Zero high/critical audit findings | ${results.securityClean ? 'PASS' : 'PENDING'} |\n`;
   md += `| **5.f** | Operational Runbooks | RB-01..13 with all 6 required sections | ${results.runbooksValid ? 'PASS' : 'FAIL'} |\n`;
   md += `| **5.g** | Backup & Restore Drill | RB-09 drill with row-count and checksum equality | ${results.backupDrillVerified ? 'PASS' : 'FAIL'} |\n`;
-  md += `| **5.h** | Launch Checklist | Part 17 launch checklist evidenced | ${results.launchChecklistEvidenced ? 'PASS' : 'OPEN'} |\n`;
+  md += `| **5.h** | Launch Checklist | Part 17 launch checklist evidenced | ${results.launchChecklistEvidenced ? 'PASS' : 'BLOCKED-EXTERNAL'} |\n`;
   md += `| **5.i** | Production Cleanliness | verify:prod-clean passes against production | ${results.prodCleanProductionVerified ? 'PASS' : 'AWAITING GO & DEPLOY'} |\n\n`;
 
   if (isReady) {

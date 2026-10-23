@@ -1,12 +1,105 @@
 {
-  "id": "launch-checklist",
-  "command": "tsx scripts/audit/check-launch-checklist.ts",
-  "gitSha": "5fb9bfd8a7836fba9edd6ba7e5871baa2e89f82c",
-  "startTime": "2026-10-23T10:51:23.282Z",
-  "endTime": "2026-10-23T10:51:24.089Z",
-  "durationMs": 806,
-  "exitCode": 0,
-  "stdoutSha256": "cd580462f6577b8dbb4e14926c04571ae6e82290ce8e523ba6ab77c7e7151c9b",
-  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "outputSha256": "cd580462f6577b8dbb4e14926c04571ae6e82290ce8e523ba6ab77c7e7151c9b"
+  "timestamp": "2026-10-23T12:48:57.350Z",
+  "total": 46,
+  "verifiedCount": 27,
+  "blockedExternalCount": 17,
+  "blockedOwnerCount": 2,
+  "status": "BLOCKED-EXTERNAL",
+  "openExternalItems": [
+    {
+      "item": "Penetration test complete. No high or critical findings open.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E8 (Third-party penetration testing)"
+    },
+    {
+      "item": "Security headers verified on the API, ingest, and admin hosts. TLS scan is acceptable.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E1 (Host deployment & TLS scan)"
+    },
+    {
+      "item": "Every acceptance criterion AC-* in Part 10 passes in staging and on real devices.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E6, E3 (Physical hardware & student/faculty devices)"
+    },
+    {
+      "item": "SOS: tier 0 within 5 seconds at the 95th percentile. Escalation tested. A drill has run end to end.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E12, E1 (APNs/FCM production push latency test)"
+    },
+    {
+      "item": "Notification suite (T-NTF) passes. All SMS templates are approved in the DLT registry.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E13 (DLT entity & template registration)"
+    },
+    {
+      "item": "Counsel sign-off on notice text, guardian consent method, limited mode, retention values, breach process.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with Counsel sign-off"
+    },
+    {
+      "item": "verify:prod-clean passes on production database.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Gated on P9-EXIT-06 (Production Terraform apply)"
+    },
+    {
+      "item": "Staging synthetic data is purged.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E7 (Staging environment purge)"
+    },
+    {
+      "item": "Every SOS tier real recipients entered by college.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with College IT / Admin recipient setup"
+    },
+    {
+      "item": "Alarms configured (Part 14.5). On-call received test alert.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E1 (AWS CloudWatch alarms)"
+    },
+    {
+      "item": "External probes live for all three hosts.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E1 (CloudWatch Synthetic canaries)"
+    },
+    {
+      "item": "Certificates valid, renewal verified, ingest chain on test-bench module.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E11 (ECE hardware test bench)"
+    },
+    {
+      "item": "Android foreground service and iOS background location verified on real devices.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E6 (Physical test devices)"
+    },
+    {
+      "item": "Play location declaration and App Store review notes submitted.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E9, E14 (App store submissions)"
+    },
+    {
+      "item": "Battery test passes on reference phone.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E6 (Reference phone test)"
+    },
+    {
+      "item": "Pilot exit criteria met (Part 16, P9).",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with E10, O7 (2-week 10-bus live pilot)"
+    },
+    {
+      "item": "Every open decision marked before-launch in Part 18.2 signed off.",
+      "status": "**BLOCKED-EXTERNAL**",
+      "evidenceOrBlocker": "Unlocks with Owner sign-off"
+    },
+    {
+      "item": "Production Terraform applied. Drift check clean.",
+      "status": "**BLOCKED-OWNER**",
+      "evidenceOrBlocker": "Unlocks with E1 + Owner instruction \"GO: apply production\""
+    },
+    {
+      "item": "Phase reports P0 to P9 approved.",
+      "status": "**BLOCKED-OWNER**",
+      "evidenceOrBlocker": "Unlocks with Owner sign-off"
+    }
+  ]
 }
