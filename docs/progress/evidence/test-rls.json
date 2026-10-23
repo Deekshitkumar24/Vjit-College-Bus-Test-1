@@ -1,0 +1,12 @@
+{
+  "id": "test-rls",
+  "command": "pnpm test:rls",
+  "gitSha": "58b4084f9e771b7bf3c653a0ae2eff14ae1b91ad",
+  "startTime": "2026-10-23T07:00:46.022Z",
+  "endTime": "2026-10-23T07:01:04.230Z",
+  "durationMs": 18206,
+  "exitCode": 0,
+  "stdoutSha256": "3b05cf61dcf91be8730948d25396990eb452bc415f8c44b8b6a8bc1061e847a9",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "3b05cf61dcf91be8730948d25396990eb452bc415f8c44b8b6a8bc1061e847a9"
+}

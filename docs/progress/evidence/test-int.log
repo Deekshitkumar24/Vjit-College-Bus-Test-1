@@ -1,0 +1,60 @@
+
+> college-bus-tracker@1.0.0 test:int C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> turbo run test:int
+
+
+   • turbo 2.11.9
+   • Packages in scope: @collegebus/admin-web, @collegebus/api, @collegebus/config, @collegebus/contracts, @collegebus/db, @collegebus/domain, @collegebus/mobile, @collegebus/simulator
+   • Running test:int in 8 packages
+   • Remote caching disabled
+
+@collegebus/config:build: cache hit, replaying logs e6a7bbada14243e5
+@collegebus/config:build: 
+@collegebus/config:build: > @collegebus/config@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\config
+@collegebus/config:build: > tsc
+@collegebus/config:build: 
+@collegebus/db:test:int: cache bypass, force executing 0461ef8655d5cb31
+@collegebus/domain:build: cache hit, replaying logs 02d840f564b945b4
+@collegebus/domain:build: 
+@collegebus/domain:build: > @collegebus/domain@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+@collegebus/domain:build: > tsc
+@collegebus/domain:build: 
+@collegebus/contracts:build: cache hit, replaying logs 9948fbea5152a17a
+@collegebus/contracts:build: 
+@collegebus/contracts:build: > @collegebus/contracts@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\contracts
+@collegebus/contracts:build: > tsc
+@collegebus/contracts:build: 
+@collegebus/db:build: cache hit, replaying logs 1742904f2496a98c
+@collegebus/db:build: 
+@collegebus/db:build: > @collegebus/db@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\db
+@collegebus/db:build: > prisma generate && tsc
+@collegebus/db:build: 
+@collegebus/db:build: Environment variables loaded from .env
+@collegebus/db:build: Prisma schema loaded from prisma\schema.prisma
+@collegebus/db:build: 
+@collegebus/db:build: ✔ Generated Prisma Client (v5.22.0) to .\..\..\node_modules\.pnpm\@prisma+client@5.22.0_prisma@5.22.0\node_modules\@prisma\client in 744ms
+@collegebus/db:build: 
+@collegebus/db:build: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+@collegebus/db:build: 
+@collegebus/db:build: Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+@collegebus/db:build: 
+@collegebus/db:test:int: 
+@collegebus/db:test:int: > @collegebus/db@1.0.0 test:int C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\db
+@collegebus/db:test:int: > vitest run test/integration.spec.ts
+@collegebus/db:test:int: 
+@collegebus/db:test:int: 
+@collegebus/db:test:int: [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/db[39m
+@collegebus/db:test:int: 
+@collegebus/db:test:int:  [32m✓[39m test/integration.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 2868[2mms[22m[39m
+@collegebus/db:test:int:    [33m[2m✓[22m[39m Real-Database Integration Tests (Section 1A, OV-20, P0 Exit 3, P0-T4/T14)[2m > [22mproves that a transient test database with PostGIS 3.4 and tables creates cleanly (P0-T4, Section 1A) [33m1029[2mms[22m[39m
+@collegebus/db:test:int: 
+@collegebus/db:test:int: [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+@collegebus/db:test:int: [2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+@collegebus/db:test:int: [2m   Start at [22m 12:31:41
+@collegebus/db:test:int: [2m   Duration [22m 4.09s[2m (transform 144ms, setup 0ms, collect 227ms, tests 2.87s, environment 1ms, prepare 360ms)[22m
+@collegebus/db:test:int: 
+
+ Tasks:    5 successful, 5 total
+Cached:    4 cached, 5 total
+  Time:    6.185s 
+

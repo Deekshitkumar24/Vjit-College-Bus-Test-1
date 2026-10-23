@@ -13,7 +13,7 @@
     "lint": "eslint src/**/*.ts",
     "test:unit": "vitest run test/db.spec.ts test/check-migrations.spec.ts",
     "test:int": "vitest run test/integration.spec.ts",
-    "test:rls": "vitest run test/integration.spec.ts"
+    "test:rls": "vitest run test/rls.spec.ts"
   },
   "dependencies": {
     "@collegebus/config": "workspace:*",

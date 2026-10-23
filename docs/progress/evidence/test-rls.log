@@ -1,0 +1,65 @@
+
+> college-bus-tracker@1.0.0 test:rls C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> turbo run test:rls
+
+
+   • turbo 2.11.9
+   • Packages in scope: @collegebus/admin-web, @collegebus/api, @collegebus/config, @collegebus/contracts, @collegebus/db, @collegebus/domain, @collegebus/mobile, @collegebus/simulator
+   • Running test:rls in 8 packages
+   • Remote caching disabled
+
+@collegebus/config:build: cache hit, replaying logs e6a7bbada14243e5
+@collegebus/contracts:build: cache hit, replaying logs 9948fbea5152a17a
+@collegebus/config:build: 
+@collegebus/config:build: > @collegebus/config@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\config
+@collegebus/config:build: > tsc
+@collegebus/config:build: 
+@collegebus/db:test:rls: cache bypass, force executing 85dd1fafe6c559a9
+@collegebus/db:build: cache miss, executing 1742904f2496a98c
+@collegebus/domain:build: cache hit, replaying logs 02d840f564b945b4
+@collegebus/contracts:build: 
+@collegebus/contracts:build: > @collegebus/contracts@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\contracts
+@collegebus/contracts:build: > tsc
+@collegebus/contracts:build: 
+@collegebus/domain:build: 
+@collegebus/domain:build: > @collegebus/domain@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+@collegebus/domain:build: > tsc
+@collegebus/domain:build: 
+@collegebus/db:test:rls: 
+@collegebus/db:test:rls: > @collegebus/db@1.0.0 test:rls C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\db
+@collegebus/db:test:rls: > vitest run test/rls.spec.ts
+@collegebus/db:test:rls: 
+@collegebus/db:build: 
+@collegebus/db:build: > @collegebus/db@1.0.0 build C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\db
+@collegebus/db:build: > prisma generate && tsc
+@collegebus/db:build: 
+@collegebus/db:test:rls: 
+@collegebus/db:test:rls: [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/db[39m
+@collegebus/db:test:rls: 
+@collegebus/db:build: Environment variables loaded from .env
+@collegebus/db:build: Prisma schema loaded from prisma\schema.prisma
+@collegebus/db:build: 
+@collegebus/db:build: ✔ Generated Prisma Client (v5.22.0) to .\..\..\node_modules\.pnpm\@prisma+client@5.22.0_prisma@5.22.0\node_modules\@prisma\client in 744ms
+@collegebus/db:build: 
+@collegebus/db:build: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+@collegebus/db:build: 
+@collegebus/db:build: Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+@collegebus/db:build: 
+@collegebus/db:test:rls: [90mstdout[2m | test/rls.spec.ts[2m > [22m[2mDatabase Row-Level Security (RLS) Isolation Suite (P0 Exit 3, Master Part 13.1, R-8, D-2)[2m > [22m[2mproves connected role is app_runtime and rolbypassrls is false (R-8, D-2)
+@collegebus/db:test:rls: [22m[39mConnected runtime user: app_runtime
+@collegebus/db:test:rls: 
+@collegebus/db:test:rls: [90mstdout[2m | test/rls.spec.ts[2m > [22m[2mDatabase Row-Level Security (RLS) Isolation Suite (P0 Exit 3, Master Part 13.1, R-8, D-2)[2m > [22m[2mproves connected role is app_runtime and rolbypassrls is false (R-8, D-2)
+@collegebus/db:test:rls: [22m[39mRole check for app_runtime: { rolname: [32m'app_runtime'[39m, rolsuper: [33mfalse[39m, rolbypassrls: [33mfalse[39m }
+@collegebus/db:test:rls: 
+@collegebus/db:test:rls:  [32m✓[39m test/rls.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 4241[2mms[22m[39m
+@collegebus/db:test:rls: 
+@collegebus/db:test:rls: [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+@collegebus/db:test:rls: [2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+@collegebus/db:test:rls: [2m   Start at [22m 12:30:54
+@collegebus/db:test:rls: [2m   Duration [22m 8.97s[2m (transform 1.21s, setup 0ms, collect 2.48s, tests 4.24s, environment 0ms, prepare 1.23s)[22m
+@collegebus/db:test:rls: 
+
+ Tasks:    5 successful, 5 total
+Cached:    3 cached, 5 total
+  Time:    15.358s 
+

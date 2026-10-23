@@ -20,7 +20,7 @@
     "phase": "P0",
     "description": "RLS integration on PostgreSQL 16 PostGIS",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P0-T4.log",
+    "evidencePath": "docs/progress/evidence/test-rls.json",
     "unlockingInput": "-"
   },
   {

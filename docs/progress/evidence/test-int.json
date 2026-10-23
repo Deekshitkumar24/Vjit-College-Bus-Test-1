@@ -1,0 +1,12 @@
+{
+  "id": "test-int",
+  "command": "pnpm test:int",
+  "gitSha": "58b4084f9e771b7bf3c653a0ae2eff14ae1b91ad",
+  "startTime": "2026-10-23T07:01:38.766Z",
+  "endTime": "2026-10-23T07:01:45.904Z",
+  "durationMs": 7137,
+  "exitCode": 0,
+  "stdoutSha256": "9fa7a14bb6318beeb8dd8b767ea86d7b6f19cfa2292e6bb6abe50a0711280292",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "9fa7a14bb6318beeb8dd8b767ea86d7b6f19cfa2292e6bb6abe50a0711280292"
+}
