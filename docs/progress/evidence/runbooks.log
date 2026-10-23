@@ -1,0 +1,15 @@
+=== Checking Operational Runbooks (RB-01 to RB-13) ===
+✓ RB-01-fleet-silence.md contains all required Part 20.12 sections.
+✓ RB-02-sos-not-delivered.md contains all required Part 20.12 sections.
+✓ RB-03-api-errors-above-threshold.md contains all required Part 20.12 sections.
+✓ RB-04-database-failover.md contains all required Part 20.12 sections.
+✓ RB-05-device-token-compromise.md contains all required Part 20.12 sections.
+✓ RB-06-certificate-renewal-failure.md contains all required Part 20.12 sections.
+✓ RB-07-queue-backlog.md contains all required Part 20.12 sections.
+✓ RB-08-rolling-back-an-api-or-app-release.md contains all required Part 20.12 sections.
+✓ RB-09-restoring-from-backup.md contains all required Part 20.12 sections.
+✓ RB-10-halting-a-firmware-rollout.md contains all required Part 20.12 sections.
+✓ RB-11-notification-provider-outage.md contains all required Part 20.12 sections.
+✓ RB-12-personal-data-breach-response.md contains all required Part 20.12 sections.
+✓ RB-13-use-of-the-emergency-access-account.md contains all required Part 20.12 sections.
+All 13 operational runbooks RB-01 to RB-13 verified successfully.

@@ -1,13 +1,16 @@
-P8 Backup and Restore Drill (RB-08 Rehearsal) Evidence:
+P8 Backup and Restore Drill (RB-09 Rehearsal) Evidence:
 =============================================================
-Source Database: cb_drill_src_1792733277858
-Target Database: cb_drill_tgt_1792733277858
-Dump File: C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\docs\progress\evidence\drill_dump_1792733277858.sql (90863 bytes)
-Measured Backup Time: 803ms
-Measured Restore Time: 3198ms
-Total Drill Time: 4001ms
+Runbook: RB-09 (Restoring from backup per AG-MASTER-FINAL-1.0 Part 20.12)
+Source Database: cb_drill_src_1792738984994
+Target Database: cb_drill_tgt_1792738984994
+Dump File: C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\docs\progress\evidence\drill_dump_1792738984994.sql (90861 bytes)
+Measured Backup Time: 884ms
+Measured Restore Time: 3193ms
+Total Drill Time: 4077ms
 Integrity Verification:
 - Source Bus Count: 10
-- Target Bus Count: 10 (PARITY VERIFIED)
+- Target Bus Count: 10 (ROW-COUNT EQUALITY: VERIFIED)
+- Source Table Checksum: 648bedc07b8b814a5439634f82bd3668
+- Target Table Checksum: 648bedc07b8b814a5439634f82bd3668 (CHECKSUM EQUALITY: VERIFIED)
 - Target PostGIS Extension: 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1 (FUNCTIONAL)
-Status: DRILL PASSED (Meets RTO/RPO targets per master Part 14.3)
+Status: DRILL PASSED (RB-09 rehearsal verified with checksum equality)

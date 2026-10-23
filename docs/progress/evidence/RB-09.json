@@ -1,0 +1,12 @@
+{
+  "id": "RB-09",
+  "command": "pnpm exec tsx scripts/drills/backup-restore-drill.ts",
+  "gitSha": "5956f7d0ced6caff38c26fadc041e0804890675a",
+  "startTime": "2026-10-23T07:03:03.519Z",
+  "endTime": "2026-10-23T07:03:15.070Z",
+  "durationMs": 11550,
+  "exitCode": 0,
+  "stdoutSha256": "22bfb42e9a92bd3ce5708dcd69d151907f44f07e151e5f194e3774c95941d696",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "22bfb42e9a92bd3ce5708dcd69d151907f44f07e151e5f194e3774c95941d696"
+}

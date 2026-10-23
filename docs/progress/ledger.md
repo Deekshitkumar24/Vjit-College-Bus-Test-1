@@ -44,13 +44,13 @@
 | **P7-EXIT-05** | P7 | Exports (100k limit & 24h presigned URLs) | **VERIFIED** | `docs/progress/evidence/P7-T5.json` | - |
 | **P7-EXIT-06** | P7 | Staging infrastructure apply | **BLOCKED-EXTERNAL** | `pnpm activate:staging-load` | E1, E7 |
 | **P8-EXIT-01** | P8 | Part 13 checks (IDOR, SQLi, headers, Argon2id) | **VERIFIED** | `docs/progress/evidence/P8-T1.json` | - |
-| **P8-EXIT-02** | P8 | Backup and restore drill (RB-09 rehearsal) | **VERIFIED** | `docs/progress/evidence/P8-backup-restore-drill.log` | - |
+| **P8-EXIT-02** | P8 | Backup and restore drill (RB-09 rehearsal) | **VERIFIED** | `docs/progress/evidence/RB-09.json` | - |
 | **P8-EXIT-03** | P8 | Zero high/critical audit findings | **VERIFIED** | `docs/progress/evidence/P8-T3.json` | - |
 | **P8-EXIT-04** | P8 | Complete SBOM generated | **VERIFIED** | `docs/progress/evidence/P8-T4.json` | - |
 | **P8-EXIT-05** | P8 | TLS scan & HSTS on deployed hosts | **BLOCKED-EXTERNAL** | `pnpm activate:headers` | E1 |
 | **P8-EXIT-06** | P8 | Staging load and failover tests (T-FO-01..04) | **BLOCKED-EXTERNAL** | `pnpm activate:staging-load` | E1, E7 |
 | **P8-EXIT-07** | P8 | Third-party penetration testing | **BLOCKED-EXTERNAL** | `pnpm activate:pentest` | E8 |
-| **P9-EXIT-01** | P9 | Runbooks RB-01 to RB-13 written | **NOT VERIFIED** | `docs/progress/evidence/P9-EXIT-01.json` | - |
+| **P9-EXIT-01** | P9 | Runbooks RB-01 to RB-13 written | **VERIFIED** | `docs/progress/evidence/runbooks.json` | - |
 | **P9-EXIT-02** | P9 | verify:prod-clean dry run passed | **VERIFIED** | `docs/progress/evidence/P9-T2.json` | - |
 | **P9-EXIT-03** | P9 | EAS builds & store submission | **BLOCKED-EXTERNAL** | `pnpm activate:stores` | E9, E14 |
 | **P9-EXIT-04** | P9 | 2-week, 10-bus live operational pilot | **BLOCKED-EXTERNAL** | `pnpm activate:pilot` | E10, O7 |

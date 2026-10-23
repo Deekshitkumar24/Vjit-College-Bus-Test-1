@@ -2,14 +2,15 @@ import { Pool } from 'pg';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as crypto from 'crypto';
 
 /**
- * P8-T4: Backup and Restore Drill (RB-08 Rehearsal)
+ * P8-T2: Backup and Restore Drill (RB-09 Rehearsal per Part 20.12 / D-3)
  * Measures backup and restore times against native PostgreSQL 16 with PostGIS.
- * Verifies complete data and schema integrity.
+ * Verifies complete data, row-count, and checksum equality.
  */
 async function runDrill() {
-  console.log('=== Starting P8 Backup and Restore Drill (PostgreSQL 16 with PostGIS) ===');
+  console.log('=== Starting P8 Backup and Restore Drill (RB-09 Rehearsal: PostgreSQL 16 with PostGIS) ===');
   const baseAdminUrl =
     process.env['DATABASE_URL_TEST'] ||
     process.env['DATABASE_URL'] ||
@@ -51,7 +52,13 @@ async function runDrill() {
 
     const srcBusCountRes = await sourcePool.query(`SELECT COUNT(*) FROM buses;`);
     const srcBusCount = parseInt(srcBusCountRes.rows[0].count, 10);
-    console.log(`Source database populated with ${srcBusCount} buses.`);
+
+    const srcChecksumRes = await sourcePool.query(`
+      SELECT md5(string_agg(id::text || registration_number, ',' ORDER BY id)) AS checksum FROM buses;
+    `);
+    const srcChecksum = srcChecksumRes.rows[0].checksum;
+
+    console.log(`Source database populated with ${srcBusCount} buses (Checksum: ${srcChecksum}).`);
     await sourcePool.end();
 
     // 3. Measure Backup execution via pg_dump
@@ -85,18 +92,28 @@ async function runDrill() {
     const tgtBusCountRes = await targetPool.query(`SELECT COUNT(*) FROM buses;`);
     const tgtBusCount = parseInt(tgtBusCountRes.rows[0].count, 10);
 
+    const tgtChecksumRes = await targetPool.query(`
+      SELECT md5(string_agg(id::text || registration_number, ',' ORDER BY id)) AS checksum FROM buses;
+    `);
+    const tgtChecksum = tgtChecksumRes.rows[0].checksum;
+
     const postgisCheck = await targetPool.query(`SELECT PostGIS_Version();`);
     const postgisVersion = postgisCheck.rows[0].postgis_version;
 
-    console.log(`Target database verified: ${tgtBusCount} buses, PostGIS: ${postgisVersion}`);
+    console.log(`Target database verified: ${tgtBusCount} buses (Checksum: ${tgtChecksum}), PostGIS: ${postgisVersion}`);
     await targetPool.end();
 
     if (tgtBusCount !== srcBusCount) {
       throw new Error(`Data mismatch: source had ${srcBusCount} buses, target has ${tgtBusCount}`);
     }
 
-    const report = `P8 Backup and Restore Drill (RB-08 Rehearsal) Evidence:
+    if (tgtChecksum !== srcChecksum) {
+      throw new Error(`Checksum mismatch: source checksum ${srcChecksum}, target checksum ${tgtChecksum}`);
+    }
+
+    const report = `P8 Backup and Restore Drill (RB-09 Rehearsal) Evidence:
 =============================================================
+Runbook: RB-09 (Restoring from backup per AG-MASTER-FINAL-1.0 Part 20.12)
 Source Database: ${sourceDb}
 Target Database: ${targetDb}
 Dump File: ${dumpFile} (${dumpSizeBytes} bytes)
@@ -105,17 +122,20 @@ Measured Restore Time: ${restoreDurationMs}ms
 Total Drill Time: ${backupDurationMs + restoreDurationMs}ms
 Integrity Verification:
 - Source Bus Count: ${srcBusCount}
-- Target Bus Count: ${tgtBusCount} (PARITY VERIFIED)
+- Target Bus Count: ${tgtBusCount} (ROW-COUNT EQUALITY: VERIFIED)
+- Source Table Checksum: ${srcChecksum}
+- Target Table Checksum: ${tgtChecksum} (CHECKSUM EQUALITY: VERIFIED)
 - Target PostGIS Extension: ${postgisVersion} (FUNCTIONAL)
-Status: DRILL PASSED (Meets RTO/RPO targets per master Part 14.3)
+Status: DRILL PASSED (RB-09 rehearsal verified with checksum equality)
 `;
 
     console.log(report);
 
-    const evidencePath = path.resolve('docs/progress/evidence/P8-backup-restore-drill.log');
-    fs.mkdirSync(path.dirname(evidencePath), { recursive: true });
-    fs.writeFileSync(evidencePath, report, 'utf-8');
-    console.log(`Evidence saved to ${evidencePath}`);
+    const evidenceDir = path.resolve('docs/progress/evidence');
+    fs.mkdirSync(evidenceDir, { recursive: true });
+
+    fs.writeFileSync(path.join(evidenceDir, 'RB-09.log'), report, 'utf-8');
+    fs.writeFileSync(path.join(evidenceDir, 'P8-backup-restore-drill.log'), report, 'utf-8');
 
     // Cleanup dump file
     if (fs.existsSync(dumpFile)) {

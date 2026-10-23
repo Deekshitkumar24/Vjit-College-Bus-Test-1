@@ -340,7 +340,7 @@
     "phase": "P8",
     "description": "Backup and restore drill (RB-09 rehearsal)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P8-backup-restore-drill.log",
+    "evidencePath": "docs/progress/evidence/RB-09.json",
     "unlockingInput": "-"
   },
   {
@@ -387,8 +387,8 @@
     "id": "P9-EXIT-01",
     "phase": "P9",
     "description": "Runbooks RB-01 to RB-13 written",
-    "status": "NOT VERIFIED",
-    "evidencePath": "docs/progress/evidence/P9-EXIT-01.json",
+    "status": "VERIFIED",
+    "evidencePath": "docs/progress/evidence/runbooks.json",
     "unlockingInput": "-"
   },
   {

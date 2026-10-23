@@ -1,0 +1,12 @@
+{
+  "id": "runbooks",
+  "command": "pnpm exec tsx scripts/audit/check-runbooks.ts",
+  "gitSha": "5956f7d0ced6caff38c26fadc041e0804890675a",
+  "startTime": "2026-10-23T07:05:24.779Z",
+  "endTime": "2026-10-23T07:05:26.212Z",
+  "durationMs": 1431,
+  "exitCode": 0,
+  "stdoutSha256": "d5311cdf4a2301f01ca7a7c8b21a55ac466ef38b4b9213f860201fa57aa33235",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "d5311cdf4a2301f01ca7a7c8b21a55ac466ef38b4b9213f860201fa57aa33235"
+}
