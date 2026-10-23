@@ -1,52 +1,13 @@
 {
   "phase": "P2",
-  "timestamp": "2026-10-23T11:25:50.947Z",
+  "timestamp": "2026-10-23T12:25:58.034Z",
   "cache": "miss (forced)",
-  "passed": true,
+  "passed": false,
   "checks": [
     {
       "command": "pnpm lint",
-      "success": true
-    },
-    {
-      "command": "pnpm typecheck",
-      "success": true
-    },
-    {
-      "command": "pnpm test:unit",
-      "success": true
-    },
-    {
-      "command": "pnpm test:int",
-      "success": true
-    },
-    {
-      "command": "pnpm test:rls",
-      "success": true
-    },
-    {
-      "command": "pnpm test:security",
-      "success": true
-    },
-    {
-      "command": "pnpm verify:no-mock",
-      "success": true
-    },
-    {
-      "command": "pnpm verify:routes-auth",
-      "success": true
-    },
-    {
-      "command": "pnpm verify:migrations",
-      "success": true
-    },
-    {
-      "command": "pnpm security:scan",
-      "success": true
-    },
-    {
-      "command": "pnpm --filter @collegebus/mobile test:unit",
-      "success": true
+      "success": false,
+      "error": "Command failed: pnpm lint"
     }
   ]
 }
