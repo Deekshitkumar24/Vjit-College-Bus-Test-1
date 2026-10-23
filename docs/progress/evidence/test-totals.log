@@ -1,0 +1,17 @@
+=== Generating Authoritative Test Totals via Vitest JSON Reporter ===
+Running tests for @collegebus/mobile...
+  ✓ @collegebus/mobile: 168 passed across 89 files
+Running tests for @collegebus/admin-web...
+  ✓ @collegebus/admin-web: 50 passed across 48 files
+Running tests for @collegebus/api...
+  ✓ @collegebus/api: 141 passed across 78 files
+Running tests for @collegebus/db...
+  ✓ @collegebus/db: 13 passed across 8 files
+Running tests for @collegebus/simulator...
+  ✓ @collegebus/simulator: 7 passed across 2 files
+
+=============================================================
+TOTAL PASSING TESTS: 379 across 225 test files
+Saved: C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\docs\progress\counts.json
+Saved: C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\docs\progress\counts.md
+=============================================================

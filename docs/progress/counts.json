@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-10-23T07:40:42.730Z",
+  "totalPassed": 379,
+  "totalFiles": 225,
+  "packages": [
+    {
+      "packageName": "@collegebus/mobile",
+      "packagePath": "apps/mobile",
+      "testFiles": 89,
+      "totalTests": 168,
+      "passedTests": 168,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/admin-web",
+      "packagePath": "apps/admin-web",
+      "testFiles": 48,
+      "totalTests": 50,
+      "passedTests": 50,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/api",
+      "packagePath": "services/api",
+      "testFiles": 78,
+      "totalTests": 141,
+      "passedTests": 141,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/db",
+      "packagePath": "packages/db",
+      "testFiles": 8,
+      "totalTests": 13,
+      "passedTests": 13,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/simulator",
+      "packagePath": "tools/simulator",
+      "testFiles": 2,
+      "totalTests": 7,
+      "passedTests": 7,
+      "failedTests": 0,
+      "skippedTests": 0
+    }
+  ]
+}
