@@ -1,0 +1,12 @@
+{
+  "id": "P6-T5",
+  "command": "pnpm --filter @collegebus/api test:unit test/p6-sos-notifications.spec.ts -t T-SOS-06",
+  "gitSha": "bf812f35945d7e9c51e95190f45aabc6fd16075d",
+  "startTime": "2026-10-23T06:50:41.363Z",
+  "endTime": "2026-10-23T06:50:46.965Z",
+  "durationMs": 5600,
+  "exitCode": 0,
+  "stdoutSha256": "95dd89b5a09a74c790ec821345a61a44d2dd20948ff03413ba3f5799d6d29628",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "95dd89b5a09a74c790ec821345a61a44d2dd20948ff03413ba3f5799d6d29628"
+}

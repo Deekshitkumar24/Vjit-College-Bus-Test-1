@@ -1,0 +1,12 @@
+{
+  "id": "P8-T1",
+  "command": "pnpm --filter @collegebus/api test:unit test/p8-security-hardening.spec.ts",
+  "gitSha": "bf812f35945d7e9c51e95190f45aabc6fd16075d",
+  "startTime": "2026-10-23T06:54:19.975Z",
+  "endTime": "2026-10-23T06:54:25.295Z",
+  "durationMs": 5319,
+  "exitCode": 0,
+  "stdoutSha256": "6a34931e333c19eec4ac07cb7f1802947bcdf2f2c2a82ca344427ebc1b70ea9a",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "6a34931e333c19eec4ac07cb7f1802947bcdf2f2c2a82ca344427ebc1b70ea9a"
+}

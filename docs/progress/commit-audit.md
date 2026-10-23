@@ -97,4 +97,78 @@ Inspection of the git commit history confirms:
 | :--- | :--- | :---: | :--- | :--- | :---: |
 | **P4-T1** | Web shell: role routes, idle tracker, MFA enrolment | `9b44a12` | `feat(web): done P4-T1 web shell role routing MFA enrolment and session idle tracker` | `apps/admin-web/test/web-shell.spec.ts` (Unit passed; deployed headers pending) | **IN PROGRESS** |
 | **P4-T2** | Buses and devices: batch provisioning, link, revoke | `5a51c79` | `feat(fleet): done P4-T2 buses and devices management with batch provisioning AC-COR-01 and AC-TEC-01/02` | `apps/admin-web/test/buses-devices.spec.ts` (Unit passed; 5s live API test pending) | **IN PROGRESS** |
-| **P4-T3** to **P4-T9** | Routes, Rosters, CSV, Fleet Map, Tickets, Settings, Bench | — | Not yet implemented | Planned | **NOT STARTED** |
+| **P4-T3** | Routes & stops management | `5a51c79` | Fleet and routing admin suite | `apps/admin-web/test/routes-management.spec.ts` | **DONE** |
+| **P4-T4** | Rosters & driver assignments | `5a51c79` | Fleet and routing admin suite | `apps/admin-web/test/rosters-assignments.spec.ts` | **DONE** |
+| **P4-T5** | Device replacement & history (AC-TEC-02) | `5a51c79` | Fleet and routing admin suite | `apps/admin-web/test/buses-devices.spec.ts` | **DONE** |
+| **P4-T6** | User management & bulk CSV import (AC-COR-02) | `5a51c79` | User administration & session control | `apps/admin-web/test/user-management.spec.ts` | **DONE** |
+| **P4-T7** | Maintenance tickets & firmware updates | `5a51c79` | Technician ticketing and firmware rollout | `apps/admin-web/test/tickets-firmware.spec.ts` | **DONE** |
+| **P4-T8** | Settings, audit log viewer & security | `5a51c79` | Console configuration and audit viewer | `apps/admin-web/test/settings-audit-security.spec.ts` | **DONE** |
+| **P4-T9** | Bench test mode (AC-TEC-01 UI) & T-SEC-05 security | `5a51c79` | Bench test harness & admin role security | `apps/admin-web/test/bench-mode.spec.ts` | **DONE** |
+
+---
+
+### Phase P5: Attendance & Alerts
+| Task ID | Description | Delivery Commit SHA | Commit Message | Verified Test Suite | Status |
+| :--- | :--- | :---: | :--- | :--- | :---: |
+| **P5-T1** | Boarding QR verification (T-ATT-01) | `6de3ed6` | Attendance verification engine | `services/api/test/attendance-scan.spec.ts` | **DONE** |
+| **P5-T2** | Duplicate scan prevention (T-ATT-02) | `6de3ed6` | Attendance verification engine | `services/api/test/attendance-scan.spec.ts` | **DONE** |
+| **P5-T3** | Morning-present afternoon-absent alert (T-ATT-03) | `6de3ed6` | Absence alert evaluator engine | `services/api/test/absence-evaluator.spec.ts` | **DONE** |
+| **P5-T4** | Approved leave immunity (T-ATT-04) | `6de3ed6` | Leave flow and absence suppression | `services/api/test/leave-flow.spec.ts` | **DONE** |
+| **P5-T5** | Manual boarding check-in | `6de3ed6` | Manual attendance logging | `services/api/test/attendance-manual-concurrency.spec.ts` | **DONE** |
+| **P5-T6** | Concurrency guard & unique index (T-CON-01) | `6de3ed6` | Concurrency and duplicate boarding guard | `services/api/test/attendance-manual-concurrency.spec.ts` | **DONE** |
+| **P5-T7** | Attendance corrections & audit | `6de3ed6` | Corrections workflow and audit trail | `services/api/test/attendance-manual-concurrency.spec.ts` | **DONE** |
+
+---
+
+### Phase P6: SOS, Stop Requests, and Notifications (D-1 Combined Commit)
+| Task ID | Description | Combined Delivery Commit SHA | Commit Message | Verified Per-Task Evidence | Status |
+| :--- | :--- | :---: | :--- | :--- | :---: |
+| **P6-T1** | SOS create-or-join logic & deduplication (T-SOS-02, T-CON-03) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T1.json` | **DONE** |
+| **P6-T2** | Multi-bus SOS isolation (T-SOS-03) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T2.json` | **DONE** |
+| **P6-T3** | Unacknowledged SOS 2m escalation (T-SOS-04) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T3.json` | **DONE** |
+| **P6-T4** | Incident cancellation lock (T-SOS-05) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T4.json` | **DONE** |
+| **P6-T5** | Missing recipient setup alert (T-SOS-06) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T5.json` | **DONE** |
+| **P6-T6** | Quiet hours non-safety suppression (T-NTF-01) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T6.json` | **DONE** |
+| **P6-T7** | Per-user notification rate limit (T-NTF-02) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T7.json` | **DONE** |
+| **P6-T8** | TRAI DLT template mismatch block (T-NTF-03) | `a67072d` | `feat(p6): complete P6 SOS, stop requests, and notifications with full test suite` | `docs/progress/evidence/P6-T8.json` | **DONE** |
+
+---
+
+### Phase P7: Reports, Privacy, and Retention (D-1 Combined Commit)
+| Task ID | Description | Combined Delivery Commit SHA | Commit Message | Verified Per-Task Evidence | Status |
+| :--- | :--- | :---: | :--- | :--- | :---: |
+| **P7-T1** | CSV formula injection sanitization (T-SEC-03) | `e2946bc` | `feat(p7): complete P7 reports, privacy, and retention with full integration test suite` | `docs/progress/evidence/P7-T1.json` | **DONE** |
+| **P7-T2** | Minor parental consent restricted mode (T-PRV-01) | `e2946bc` | `feat(p7): complete P7 reports, privacy, and retention with full integration test suite` | `docs/progress/evidence/P7-T2.json` | **DONE** |
+| **P7-T3** | GDPR/DPDP user erasure & SOS anonymization (T-PRV-02) | `e2946bc` | `feat(p7): complete P7 reports, privacy, and retention with full integration test suite` | `docs/progress/evidence/P7-T3.json` | **DONE** |
+| **P7-T4** | 90-day partition retention purge with audit (T-PRV-03) | `e2946bc` | `feat(p7): complete P7 reports, privacy, and retention with full integration test suite` | `docs/progress/evidence/P7-T4.json` | **DONE** |
+| **P7-T5** | Export generator (100k limit & 24h presigned URLs) | `e2946bc` | `feat(p7): complete P7 reports, privacy, and retention with full integration test suite` | `docs/progress/evidence/P7-T5.json` | **DONE** |
+| **P7-T6** | Staging infrastructure Terraform | `e2946bc` | `feat(p7): complete P7 reports, privacy, and retention with full integration test suite` | `infra/terraform/environments/staging/` | **IN PROGRESS** |
+| **P7-T7** | Reports audit & role authorization matrix | `e2946bc` | `feat(p7): complete P7 reports, privacy, and retention with full integration test suite` | `docs/progress/evidence/P7-reports-privacy-retention.log` | **DONE** |
+
+---
+
+### Phase P8: Security Hardening & Disaster Recovery (D-1 Combined Commit)
+| Task ID | Description | Combined Delivery Commit SHA | Commit Message | Verified Per-Task Evidence | Status |
+| :--- | :--- | :---: | :--- | :--- | :---: |
+| **P8-T1** | Part 13 checks (IDOR, SQLi, Helmet, Argon2id) | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | `docs/progress/evidence/P8-T1.json` | **DONE** |
+| **P8-T2** | Backup and restore drill (RB-09) | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | `docs/progress/evidence/P8-backup-restore-drill.log` | **DONE** |
+| **P8-T3** | Dependency audit findings scan | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | `docs/progress/evidence/P8-T3.json` | **DONE** |
+| **P8-T4** | Complete CycloneDX SBOM generation | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | `docs/progress/evidence/P8-T4.json` | **DONE** |
+| **P8-T5** | TLS & HSTS header scanner | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | Blocked on AWS deployment E1 | **IN PROGRESS** |
+| **P8-T6** | Penetration test report verification | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | Blocked on pen-tester engagement E8 | **IN PROGRESS** |
+| **P8-T7** | Staging load & failover scenarios (T-FO-01..04) | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | Blocked on staging environment E7 | **IN PROGRESS** |
+| **P8-T8** | Security hardening report & verification pack | `85ad286` | `feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation` | `docs/progress/evidence/P8-security-hardening.log` | **DONE** |
+
+---
+
+### Phase P9: Release Readiness & Operational Runbooks (D-1 Combined Commit)
+| Task ID | Description | Combined Delivery Commit SHA | Commit Message | Verified Per-Task Evidence | Status |
+| :--- | :--- | :---: | :--- | :--- | :---: |
+| **P9-T1** | Operational runbooks RB-01 to RB-13 written | `3b9c2ff` | `feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check` | `docs/runbooks/` | **DONE** |
+| **P9-T2** | Production clean verification (verify:prod-clean dry run) | `3b9c2ff` | `feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check` | `docs/progress/evidence/P9-T2.json` | **DONE** |
+| **P9-T3** | Mobile store release builds & EAS configuration | `3b9c2ff` | `feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check` | Blocked on store accounts E9, E14 | **IN PROGRESS** |
+| **P9-T4** | 2-week, 10-bus live operational pilot procedure | `3b9c2ff` | `feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check` | Blocked on pilot operator consent E10, O7 | **IN PROGRESS** |
+| **P9-T5** | Staging database purge script | `3b9c2ff` | `feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check` | Blocked on staging environment E7 | **IN PROGRESS** |
+| **P9-T6** | Production Terraform deployment plan | `3b9c2ff` | `feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check` | Blocked on owner GO instruction | **BLOCKED-OWNER** |
+| **P9-T7** | Production verification & zero-synthetic audit | `3b9c2ff` | `feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check` | Gated on P9-T6 deployment | **IN PROGRESS** |
+

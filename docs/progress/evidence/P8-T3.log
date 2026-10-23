@@ -1,0 +1,6 @@
+
+> college-bus-tracker@1.0.0 security:scan C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> pnpm audit --prod --audit-level=high
+
+7 vulnerabilities found
+Severity: 1 low | 6 moderate

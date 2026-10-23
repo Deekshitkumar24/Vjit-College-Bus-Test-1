@@ -1,0 +1,12 @@
+{
+  "id": "P8-T4",
+  "command": "tsx scripts/audit/verify-sbom.ts",
+  "gitSha": "bf812f35945d7e9c51e95190f45aabc6fd16075d",
+  "startTime": "2026-10-23T06:55:51.010Z",
+  "endTime": "2026-10-23T06:55:51.800Z",
+  "durationMs": 789,
+  "exitCode": 0,
+  "stdoutSha256": "82ef35f0251f6944eb3c6076f264363d61271dae113d93efefd90e1f3080b4ee",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "82ef35f0251f6944eb3c6076f264363d61271dae113d93efefd90e1f3080b4ee"
+}

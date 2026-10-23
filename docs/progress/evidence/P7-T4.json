@@ -1,0 +1,12 @@
+{
+  "id": "P7-T4",
+  "command": "pnpm --filter @collegebus/api test:unit test/p7-reports-privacy-retention.spec.ts -t T-PRV-03",
+  "gitSha": "bf812f35945d7e9c51e95190f45aabc6fd16075d",
+  "startTime": "2026-10-23T06:52:24.645Z",
+  "endTime": "2026-10-23T06:52:30.847Z",
+  "durationMs": 6200,
+  "exitCode": 0,
+  "stdoutSha256": "7ee23417586ec5de0cbc32dc5cd871d2eb71e2917d5abdb8c280dedc0a725b4d",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "7ee23417586ec5de0cbc32dc5cd871d2eb71e2917d5abdb8c280dedc0a725b4d"
+}

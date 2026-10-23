@@ -1,0 +1,6 @@
+
+> college-bus-tracker@1.0.0 verify:prod-clean:dry-run C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-prod-clean.ts --dry-run
+
+=== Running Production Cleanliness & Zero-Synthetic Data Audit ===
+PROD-CLEAN AUDIT PASSED: Zero synthetic records discovered across all audited tables.
