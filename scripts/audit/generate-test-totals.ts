@@ -13,15 +13,22 @@ interface PackageTestResult {
 }
 
 const packages = [
-  { name: '@collegebus/mobile', path: 'apps/mobile', command: 'vitest run --reporter=json' },
-  { name: '@collegebus/admin-web', path: 'apps/admin-web', command: 'vitest run --reporter=json' },
-  { name: '@collegebus/api', path: 'services/api', command: 'vitest run --reporter=json' },
+  { name: '@collegebus/config', path: 'packages/config', command: 'vitest run --reporter=json' },
+  {
+    name: '@collegebus/contracts',
+    path: 'packages/contracts',
+    command: 'vitest run --reporter=json',
+  },
+  { name: '@collegebus/domain', path: 'packages/domain', command: 'vitest run --reporter=json' },
   {
     name: '@collegebus/db',
     path: 'packages/db',
     command:
       'vitest run test/db.spec.ts test/check-migrations.spec.ts test/integration.spec.ts test/rls.spec.ts --reporter=json',
   },
+  { name: '@collegebus/api', path: 'services/api', command: 'vitest run --reporter=json' },
+  { name: '@collegebus/admin-web', path: 'apps/admin-web', command: 'vitest run --reporter=json' },
+  { name: '@collegebus/mobile', path: 'apps/mobile', command: 'vitest run --reporter=json' },
   { name: '@collegebus/simulator', path: 'tools/simulator', command: 'vitest run --reporter=json' },
 ];
 

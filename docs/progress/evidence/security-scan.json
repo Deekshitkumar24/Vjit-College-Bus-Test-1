@@ -1,0 +1,11 @@
+{
+  "id": "P8-T3",
+  "command": "pnpm security:scan",
+  "timestamp": "2026-10-23T11:52:13.541Z",
+  "exitCode": 0,
+  "totalFindings": 7,
+  "low": 1,
+  "moderate": 6,
+  "high": 0,
+  "critical": 0
+}

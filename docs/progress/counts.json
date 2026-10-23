@@ -1,14 +1,50 @@
 {
-  "timestamp": "2026-10-23T07:40:42.730Z",
-  "totalPassed": 379,
-  "totalFiles": 225,
+  "timestamp": "2026-10-23T11:53:32.179Z",
+  "totalPassed": 530,
+  "totalFiles": 283,
   "packages": [
     {
-      "packageName": "@collegebus/mobile",
-      "packagePath": "apps/mobile",
-      "testFiles": 89,
-      "totalTests": 168,
-      "passedTests": 168,
+      "packageName": "@collegebus/config",
+      "packagePath": "packages/config",
+      "testFiles": 2,
+      "totalTests": 9,
+      "passedTests": 9,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/contracts",
+      "packagePath": "packages/contracts",
+      "testFiles": 2,
+      "totalTests": 6,
+      "passedTests": 6,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/domain",
+      "packagePath": "packages/domain",
+      "testFiles": 54,
+      "totalTests": 128,
+      "passedTests": 128,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/db",
+      "packagePath": "packages/db",
+      "testFiles": 8,
+      "totalTests": 13,
+      "passedTests": 13,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "packageName": "@collegebus/api",
+      "packagePath": "services/api",
+      "testFiles": 78,
+      "totalTests": 149,
+      "passedTests": 149,
       "failedTests": 0,
       "skippedTests": 0
     },
@@ -22,20 +58,11 @@
       "skippedTests": 0
     },
     {
-      "packageName": "@collegebus/api",
-      "packagePath": "services/api",
-      "testFiles": 78,
-      "totalTests": 141,
-      "passedTests": 141,
-      "failedTests": 0,
-      "skippedTests": 0
-    },
-    {
-      "packageName": "@collegebus/db",
-      "packagePath": "packages/db",
-      "testFiles": 8,
-      "totalTests": 13,
-      "passedTests": 13,
+      "packageName": "@collegebus/mobile",
+      "packagePath": "apps/mobile",
+      "testFiles": 89,
+      "totalTests": 168,
+      "passedTests": 168,
       "failedTests": 0,
       "skippedTests": 0
     },

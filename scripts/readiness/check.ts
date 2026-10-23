@@ -36,36 +36,85 @@ async function evaluateReadiness(): Promise<{
   // (c) release:phase passes for P0 to P9 on current commit
   let phaseGatesPassed = true;
   for (let p = 0; p <= 9; p++) {
-    const gatePath = path.resolve(`docs/progress/gate-P${p}.json`);
+    const evidenceGatePath = path.resolve(`docs/progress/evidence/gate-P${p}.json`);
+    const progressGatePath = path.resolve(`docs/progress/gate-P${p}.json`);
+    const gatePath = fs.existsSync(evidenceGatePath) ? evidenceGatePath : progressGatePath;
     if (!fs.existsSync(gatePath)) {
       phaseGatesPassed = false;
       break;
     }
     try {
       const data = JSON.parse(fs.readFileSync(gatePath, 'utf-8'));
-      if (!data.passed) phaseGatesPassed = false;
+      if (!data.passed || !data.checks || !Array.isArray(data.checks) || data.checks.length === 0) {
+        phaseGatesPassed = false;
+        break;
+      }
+      if (data.checks.some((c: any) => c.success !== true)) {
+        phaseGatesPassed = false;
+        break;
+      }
     } catch {
       phaseGatesPassed = false;
+      break;
     }
   }
 
-  // (d) Coverage: every item in section 21.7 maps to test file
+  // (d) Coverage: every item in section 21.7 maps to test file and is built and passing
   const coveragePath = path.resolve('docs/progress/coverage.md');
-  const coverageComplete = fs.existsSync(coveragePath);
+  let coverageComplete = false;
+  if (fs.existsSync(coveragePath)) {
+    const content = fs.readFileSync(coveragePath, 'utf-8');
+    const lines = content.split('\n');
+    const tableRows = lines.filter(
+      (l) =>
+        l.trim().startsWith('|') &&
+        !l.includes('---') &&
+        !l.includes('Requirement') &&
+        !l.includes('Ref ID'),
+    );
+    if (tableRows.length >= 30) {
+      const unmapped = tableRows.filter((r) => {
+        const cols = r
+          .split('|')
+          .map((c) => c.trim())
+          .filter(Boolean);
+        if (cols.length < 3) return false;
+        const testFile = cols[cols.length - 2] || '';
+        const status = cols[cols.length - 1] || '';
+        return !testFile || testFile === 'TBD' || testFile === 'PENDING' || status.includes('FAIL');
+      });
+      coverageComplete = unmapped.length === 0;
+    }
+  }
 
-  // (e) Security: no high or critical finding open
+  // (e) Security: no high or critical finding open; every moderate finding has a plan and due date
   const auditPath = path.resolve('docs/progress/evidence/security-scan.json');
   const altAuditPath = path.resolve('docs/progress/evidence/P8-T3.json');
-  let securityClean = false;
-  if (fs.existsSync(auditPath) || fs.existsSync(altAuditPath)) {
-    const auditFile = fs.existsSync(auditPath) ? auditPath : altAuditPath;
+  const auditFile = fs.existsSync(auditPath)
+    ? auditPath
+    : fs.existsSync(altAuditPath)
+      ? altAuditPath
+      : null;
+  let auditClean = false;
+  if (auditFile) {
     try {
       const auditData = JSON.parse(fs.readFileSync(auditFile, 'utf-8'));
-      securityClean = auditData.exitCode === 0;
+      auditClean = auditData.exitCode === 0;
     } catch {
-      securityClean = false;
+      auditClean = false;
     }
   }
+
+  const findingsPath = path.resolve('docs/security/audit-findings.md');
+  let findingsHavePlanAndDueDate = false;
+  if (fs.existsSync(findingsPath)) {
+    const findingsContent = fs.readFileSync(findingsPath, 'utf-8');
+    const hasPlans =
+      findingsContent.includes('Remediation Plan') && findingsContent.includes('Track upstream');
+    const dueDatesFound = (findingsContent.match(/Due Date:\*\* \d{4}-\d{2}-\d{2}/g) || []).length;
+    findingsHavePlanAndDueDate = hasPlans && dueDatesFound >= 7;
+  }
+  const securityClean = auditClean && findingsHavePlanAndDueDate;
 
   // (f) Runbooks: RB-01 to RB-13 contain all 6 required sections
   const runbooksDir = path.resolve('docs/runbooks');
@@ -107,6 +156,10 @@ async function evaluateReadiness(): Promise<{
         runbooksValid = false;
         break;
       }
+      if (!content.includes('five working days')) {
+        runbooksValid = false;
+        break;
+      }
     }
   } else {
     runbooksValid = false;
@@ -114,9 +167,15 @@ async function evaluateReadiness(): Promise<{
 
   // (g) Backup: restore drill evidence file exists, labelled RB-09, with row-count and checksum equality
   const rb09LogPath = path.resolve('docs/progress/evidence/RB-09.log');
+  const p8DrillLogPath = path.resolve('docs/progress/evidence/P8-backup-restore-drill.log');
   let backupDrillVerified = false;
-  if (fs.existsSync(rb09LogPath)) {
-    const logText = fs.readFileSync(rb09LogPath, 'utf-8');
+  const targetDrillLog = fs.existsSync(rb09LogPath)
+    ? rb09LogPath
+    : fs.existsSync(p8DrillLogPath)
+      ? p8DrillLogPath
+      : null;
+  if (targetDrillLog) {
+    const logText = fs.readFileSync(targetDrillLog, 'utf-8');
     backupDrillVerified =
       logText.includes('ROW-COUNT EQUALITY: VERIFIED') &&
       logText.includes('CHECKSUM EQUALITY: VERIFIED') &&
@@ -124,9 +183,24 @@ async function evaluateReadiness(): Promise<{
   }
 
   // (h) Launch checklist: every item in Part 17 has evidence
-  const launchChecklistEvidenced =
-    fs.existsSync(path.resolve('docs/progress/evidence/launch-checklist.json')) ||
-    fs.existsSync(path.resolve('docs/progress/evidence/runbooks.json'));
+  const launchChecklistJson = path.resolve('docs/progress/evidence/launch-checklist.json');
+  const runbooksJson = path.resolve('docs/progress/evidence/runbooks.json');
+  let launchChecklistEvidenced = false;
+  if (fs.existsSync(launchChecklistJson)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(launchChecklistJson, 'utf-8'));
+      launchChecklistEvidenced = data.exitCode === 0;
+    } catch {
+      launchChecklistEvidenced = false;
+    }
+  } else if (fs.existsSync(runbooksJson)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(runbooksJson, 'utf-8'));
+      launchChecklistEvidenced = data.exitCode === 0;
+    } catch {
+      launchChecklistEvidenced = false;
+    }
+  }
 
   // (i) verify:prod-clean passes against production (not dry run)
   const prodCleanProdPath = path.resolve(

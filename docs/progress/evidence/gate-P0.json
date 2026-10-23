@@ -1,0 +1,48 @@
+{
+  "phase": "P0",
+  "timestamp": "2026-10-23T11:20:41.346Z",
+  "cache": "miss (forced)",
+  "passed": true,
+  "checks": [
+    {
+      "command": "pnpm lint",
+      "success": true
+    },
+    {
+      "command": "pnpm typecheck",
+      "success": true
+    },
+    {
+      "command": "pnpm test:unit",
+      "success": true
+    },
+    {
+      "command": "pnpm test:int",
+      "success": true
+    },
+    {
+      "command": "pnpm test:rls",
+      "success": true
+    },
+    {
+      "command": "pnpm test:security",
+      "success": true
+    },
+    {
+      "command": "pnpm verify:no-mock",
+      "success": true
+    },
+    {
+      "command": "pnpm verify:routes-auth",
+      "success": true
+    },
+    {
+      "command": "pnpm verify:migrations",
+      "success": true
+    },
+    {
+      "command": "pnpm security:scan",
+      "success": true
+    }
+  ]
+}

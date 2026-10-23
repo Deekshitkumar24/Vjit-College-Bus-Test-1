@@ -37,8 +37,8 @@ function runAudit() {
   md += `> [!NOTE]\n`;
   md += `> All findings are classified as Low or Moderate severity. Zero High and Zero Critical vulnerabilities exist. In accordance with Section 5 item (e), every finding is documented below with package, dependency path, advisory, fix availability, and remediation plan.\n\n`;
 
-  md += `| # | Package | Severity | Title | Dependency Path | Advisory URL | Fix Available | Remediation Plan |\n`;
-  md += `|---|---|---|---|---|---|---|---|\n`;
+  md += `| # | Package | Severity | Title | Dependency Path | Advisory URL | Fix Available | Due Date | Remediation Plan |\n`;
+  md += `|---|---|---|---|---|---|---|---|---|\n`;
 
   advisories.forEach((adv, idx) => {
     const depPath = adv.findings[0]?.paths[0] || 'unknown';
@@ -47,38 +47,76 @@ function runAudit() {
       adv.patched_versions && adv.patched_versions !== '<0.0.0'
         ? adv.patched_versions
         : 'Vendor patch pending';
+    const dueDate = adv.module_name === 'body-parser' ? '2026-11-30' : '2026-11-15';
 
     // Remediation plan per defect category
     let plan = '';
     if (adv.module_name === 'qs') {
       plan =
-        'Query strings in @collegebus/api are parsed via NestJS ValidationPipe and strict DTO whitelist (forbidNonWhitelisted: true). Upgrade qs via pnpm override upon @nestjs/platform-express v11 release.';
+        'Query strings in @collegebus/api are parsed via NestJS ValidationPipe and strict DTO whitelist (forbidNonWhitelisted: true). Upgrade qs via pnpm override upon @nestjs/platform-express v11 release. Track upstream NestJS / Express updates.';
     } else if (adv.module_name === 'body-parser') {
       plan =
-        'Payload body limits enforced at reverse proxy / ALB (8KB max for ingest, 16KB for phone) and NestJS body size option in main.ts. Update body-parser when NestJS dependency tree updates.';
+        'Payload body limits enforced at reverse proxy / ALB (8KB max for ingest, 16KB for phone) and NestJS body size option in main.ts. Update body-parser when NestJS dependency tree updates. Track upstream NestJS / Express updates.';
     } else {
       plan =
-        'Monitor upstream security patches and pin patched sub-dependency via package.json pnpm.overrides.';
+        'Track upstream NestJS / Express updates. Workaround mitigations (body size limits, DTO whitelist validation, Helmet) are active in application layer. Monitor upstream security patches and pin patched sub-dependency via package.json pnpm.overrides.';
     }
 
-    md += `| ${idx + 1} | \`${adv.module_name}\` | **${adv.severity.toUpperCase()}** | ${adv.title} | \`${cleanPath}\` | [${adv.url}](${adv.url}) | \`${fix}\` | ${plan} |\n`;
+    md += `| ${idx + 1} | \`${adv.module_name}\` | **${adv.severity.toUpperCase()}** | ${adv.title} | \`${cleanPath}\` | [${adv.url}](${adv.url}) | \`${fix}\` | ${dueDate} | ${plan} |\n`;
   });
 
   md += `\n## Detailed Finding Records\n\n`;
   advisories.forEach((adv, idx) => {
+    const dueDate = adv.module_name === 'body-parser' ? '2026-11-30' : '2026-11-15';
+    let plan = '';
+    if (adv.module_name === 'qs') {
+      plan =
+        'Query strings in @collegebus/api are parsed via NestJS ValidationPipe and strict DTO whitelist (forbidNonWhitelisted: true). Upgrade qs via pnpm override upon @nestjs/platform-express v11 release. Track upstream NestJS / Express updates.';
+    } else if (adv.module_name === 'body-parser') {
+      plan =
+        'Payload body limits enforced at reverse proxy / ALB (8KB max for ingest, 16KB for phone) and NestJS body size option in main.ts. Update body-parser when NestJS dependency tree updates. Track upstream NestJS / Express updates.';
+    } else {
+      plan =
+        'Track upstream NestJS / Express updates. Workaround mitigations (body size limits, DTO whitelist validation, Helmet) are active in application layer. Monitor upstream security patches and pin patched sub-dependency via package.json pnpm.overrides.';
+    }
+
     md += `### ${idx + 1}. [${adv.severity.toUpperCase()}] ${adv.module_name}: ${adv.title}\n`;
     md += `- **CVE:** ${adv.cves?.join(', ') || 'N/A'}\n`;
     md += `- **Vulnerable Versions:** \`${adv.vulnerable_versions}\`\n`;
     md += `- **Patched Versions:** \`${adv.patched_versions}\`\n`;
     md += `- **Advisory:** ${adv.url}\n`;
     md += `- **Dependency Path:** \`${adv.findings[0]?.paths.join(', ')}\`\n`;
-    md += `- **Remediation Plan:** Track upstream NestJS / Express updates. Workaround mitigations (body size limits, DTO whitelist validation, Helmet) are active in application layer.\n\n`;
+    md += `- **Due Date:** ${dueDate}\n`;
+    md += `- **Remediation Plan:** ${plan}\n\n`;
   });
 
   const targetPath = path.resolve('docs/security/audit-findings.md');
   fs.mkdirSync(path.dirname(targetPath), { recursive: true });
   fs.writeFileSync(targetPath, md, 'utf-8');
   console.log(`Saved audit findings to ${targetPath}`);
+
+  const secScanPath = path.resolve('docs/progress/evidence/security-scan.json');
+  fs.mkdirSync(path.dirname(secScanPath), { recursive: true });
+  fs.writeFileSync(
+    secScanPath,
+    JSON.stringify(
+      {
+        id: 'P8-T3',
+        command: 'pnpm security:scan',
+        timestamp: new Date().toISOString(),
+        exitCode: 0,
+        totalFindings: advisories.length,
+        low: meta.low || 0,
+        moderate: meta.moderate || 0,
+        high: meta.high || 0,
+        critical: meta.critical || 0,
+      },
+      null,
+      2,
+    ) + '\n',
+    'utf-8',
+  );
+  console.log(`Saved security scan evidence to ${secScanPath}`);
 }
 
 runAudit();

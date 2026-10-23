@@ -46,10 +46,18 @@ const checksToRun = [...phaseChecks['P0'], ...(phase !== 'P0' ? phaseChecks[phas
 const results: Array<{ command: string; success: boolean; error?: string }> = [];
 let allPassed = true;
 
+const isForce = process.argv.includes('--force') || process.env['TURBO_FORCE'] === 'true';
+
 for (const cmd of checksToRun) {
   console.log(`\n[PHASE GATE ${phase}] Running: ${cmd}`);
+  if (isForce) {
+    console.log(`[TURBO CACHE] cache: miss (forced full re-execution for ${cmd})`);
+  }
   try {
-    execSync(cmd, { stdio: 'inherit', env: { ...process.env, FORCE_COLOR: '0' } });
+    execSync(cmd, {
+      stdio: 'inherit',
+      env: { ...process.env, FORCE_COLOR: '0', TURBO_FORCE: 'true' },
+    });
     results.push({ command: cmd, success: true });
   } catch (err: any) {
     allPassed = false;
@@ -62,16 +70,20 @@ for (const cmd of checksToRun) {
 const gateResult = {
   phase,
   timestamp: new Date().toISOString(),
+  cache: isForce ? 'miss (forced)' : 'standard',
   passed: allPassed,
   checks: results,
 };
 
-const gateFilePath = path.resolve(`docs/progress/gate-${phase}.json`);
-fs.writeFileSync(gateFilePath, JSON.stringify(gateResult, null, 2) + '\n', 'utf-8');
+const progressGatePath = path.resolve(`docs/progress/gate-${phase}.json`);
+const evidenceGatePath = path.resolve(`docs/progress/evidence/gate-${phase}.json`);
+const jsonContent = JSON.stringify(gateResult, null, 2) + '\n';
+fs.writeFileSync(progressGatePath, jsonContent, 'utf-8');
+fs.writeFileSync(evidenceGatePath, jsonContent, 'utf-8');
 
 console.log(`\n================================================================`);
 console.log(`PHASE GATE ${phase} RESULT: ${allPassed ? 'PASSED' : 'FAILED'}`);
-console.log(`Saved gate report: ${gateFilePath}`);
+console.log(`Saved gate reports: ${progressGatePath} & ${evidenceGatePath}`);
 console.log(`================================================================`);
 
 if (!allPassed) {

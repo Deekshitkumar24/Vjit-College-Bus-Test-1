@@ -1,0 +1,12 @@
+{
+  "id": "launch-checklist",
+  "command": "tsx scripts/audit/check-launch-checklist.ts",
+  "gitSha": "5fb9bfd8a7836fba9edd6ba7e5871baa2e89f82c",
+  "startTime": "2026-10-23T10:51:23.282Z",
+  "endTime": "2026-10-23T10:51:24.089Z",
+  "durationMs": 806,
+  "exitCode": 0,
+  "stdoutSha256": "cd580462f6577b8dbb4e14926c04571ae6e82290ce8e523ba6ab77c7e7151c9b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "cd580462f6577b8dbb4e14926c04571ae6e82290ce8e523ba6ab77c7e7151c9b"
+}
