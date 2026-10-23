@@ -17,6 +17,10 @@
       "dependsOn": ["^build"],
       "cache": false
     },
+    "test:rls": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
     "test:contract": {
       "dependsOn": ["^build"],
       "cache": false

@@ -43,27 +43,6 @@ export async function withRlsTransaction<T>(
  * Generates SQL migration commands for RLS and audit log append-only triggers.
  */
 export function getRlsAndAuditSql(): string {
-  const rlsTables = [
-    'users',
-    'sessions',
-    'mfa_factors',
-    'recovery_codes',
-    'student_profiles',
-    'attendance_records',
-    'leave_records',
-    'student_routes',
-    'absence_alerts',
-    'sos_incidents',
-    'sos_events',
-    'notifications',
-    'notification_deliveries',
-    'notification_preferences',
-    'consents',
-    'data_requests',
-    'location_samples',
-    'export_jobs',
-  ];
-
   const enableRlsSql = `
     DO $$
     DECLARE

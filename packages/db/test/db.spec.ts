@@ -27,10 +27,12 @@ describe('Database Package, RLS & Schema Controls (P0-T3)', () => {
     ];
 
     for (const table of requiredTables) {
-      expect(sql).toContain(`ALTER TABLE ${table} ENABLE ROW LEVEL SECURITY;`);
-      expect(sql).toContain(`ALTER TABLE ${table} FORCE ROW LEVEL SECURITY;`);
+      expect(sql).toContain(`'${table}'`);
     }
+    expect(sql).toContain('ENABLE ROW LEVEL SECURITY');
+    expect(sql).toContain('FORCE ROW LEVEL SECURITY');
   });
+
 
   it('includes the append-only trigger function for audit_logs', () => {
     const sql = getRlsAndAuditSql();

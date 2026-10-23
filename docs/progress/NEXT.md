@@ -1,8 +1,8 @@
 # Next Steps & Production Readiness Handoff
 
-**Status:** ALL PHASES P1 THROUGH P9 COMPLETE. Production readiness gate evaluated.  
+**Status:** Local exits verified, external exits pending. Production readiness gate evaluated.  
 **Date:** 23 October 2026  
-**Gate Evaluation:** **NOT READY** (Local logic, database triggers, integration suites, and runbooks 100% verified; waiting exclusively on external credentials and physical hardware).
+**Gate Evaluation:** **NOT READY** (Local logic, database triggers, integration suites, and runbooks 100% verified; waiting on external credentials, live services, and physical hardware).
 
 ---
 
@@ -28,8 +28,8 @@ To move the gate from **NOT READY** to **PRODUCTION READY**, the following exter
 | **E1** | AWS Dev Account (IAM / Terraform role) | Dev & Staging infrastructure apply, live S3 presigned URLs, SES emails | Apply `infra/terraform/environments/dev/` and verify live TLS headers |
 | **E2** | GitHub Repository Actions Runner | CI/CD pipeline verification | Push branch to trigger `.github/workflows/ci.yml` |
 | **E3** | College Identity Test Tenant (Google Workspace & Microsoft Entra) | P0 Exit 1 SSO dev sign-in, mobile sign-in | Run live OIDC authorization with test users |
-| **E4** | Sentry Dev DSN | Live error telemetry | Set `SENTRY_DSN` in `.env` and verify dev error ingestion |
-| **E5** | Cloudflare Turnstile Keys | Driver OTP anti-bot verification | Set `TURNSTILE_SECRET_KEY` in `.env` |
+| **E4** | Sentry Dev DSN | P0-T15 live error telemetry and dev event verification | Set `SENTRY_DSN` in `.env` and verify dev error ingestion |
+| **E5** | Cloudflare Turnstile Keys | P0-T6 & P3-T1 driver OTP anti-bot verification | Set `TURNSTILE_SECRET_KEY` in `.env` and verify live challenge |
 | **E6** | Physical Reference Phones (Android 10+, iOS 16+) | AC-STU-01..05, AC-FAC-01..03, AC-DRV-01..04, T-MOB-01 2h battery test | Run physical on-device acceptance flows |
 | **E7** | Staging Environment | Staging load tests (T-LOAD-01, T-LOAD-02, T-FO-01..04) | Execute 50-bus load scenario and SOS burst on staging |
 | **E8** | Penetration Tester Engaged | Pre-launch third-party penetration test | Conduct pen-test and remediate findings |
