@@ -1,0 +1,27 @@
+> @collegebus/api@1.0.0 test:unit
+> vitest run "test/p8-security-hardening.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/p8-security-hardening.spec.ts (4 tests) 2009ms
+   ✓ Phase P8: Security Hardening Suite (Real DB & API) > IDOR Suite: cross-tenant access is blocked between College Alpha and College Beta
+   ✓ Phase P8: Security Hardening Suite (Real DB & API) > SQL Injection Resistance: malformed and malicious SQL inputs are neutralized
+   ✓ Phase P8: Security Hardening Suite (Real DB & API) > Security Headers: Helmet baseline headers verified
+   ✓ Phase P8: Security Hardening Suite (Real DB & API) > Argon2id Recovery Code Hashing: single-use enforcement and replay protection
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+ Duration  4.85s
+
+Audit scan:
+7 vulnerabilities found (1 low, 6 moderate)
+0 high, 0 critical (CLEAN per Part 15.1 criteria)
+
+SBOM generated:
+docs/progress/evidence/sbom.json
+
+Backup and Restore Drill:
+docs/progress/evidence/P8-backup-restore-drill.log
+Measured backup time: 803ms
+Measured restore time: 3198ms
+PostGIS extension functional, parity verified.

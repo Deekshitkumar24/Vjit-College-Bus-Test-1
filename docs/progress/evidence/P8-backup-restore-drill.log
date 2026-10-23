@@ -1,0 +1,13 @@
+P8 Backup and Restore Drill (RB-08 Rehearsal) Evidence:
+=============================================================
+Source Database: cb_drill_src_1792733277858
+Target Database: cb_drill_tgt_1792733277858
+Dump File: C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\docs\progress\evidence\drill_dump_1792733277858.sql (90863 bytes)
+Measured Backup Time: 803ms
+Measured Restore Time: 3198ms
+Total Drill Time: 4001ms
+Integrity Verification:
+- Source Bus Count: 10
+- Target Bus Count: 10 (PARITY VERIFIED)
+- Target PostGIS Extension: 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1 (FUNCTIONAL)
+Status: DRILL PASSED (Meets RTO/RPO targets per master Part 14.3)
