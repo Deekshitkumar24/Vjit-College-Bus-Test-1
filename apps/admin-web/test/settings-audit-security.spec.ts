@@ -24,9 +24,9 @@ describe('P4-T8: Settings, Feature Flags, Audit Viewer & T-SEC-05 Verification',
       // Verify audit log entry
       const auditEntries = settingsMgr.getAuditLogs();
       expect(auditEntries).toHaveLength(1);
-      expect(auditEntries[0].entity_type).toBe('SYSTEM_SETTING');
-      expect(auditEntries[0].change_reason).toContain('Updated highway bus speed tolerance');
-      expect(auditEntries[0].user_id).toBe('usr-sad-1');
+      expect(auditEntries[0]!.entity_type).toBe('SYSTEM_SETTING');
+      expect(auditEntries[0]!.change_reason).toContain('Updated highway bus speed tolerance');
+      expect(auditEntries[0]!.user_id).toBe('usr-sad-1');
     });
 
     it('rejects setting update if role is not SUPER_ADMIN', () => {
@@ -100,7 +100,7 @@ describe('P4-T8: Settings, Feature Flags, Audit Viewer & T-SEC-05 Verification',
 
       const deviceAudits = auditViewer.query({ entity_type: 'DEVICE' });
       expect(deviceAudits).toHaveLength(1);
-      expect(deviceAudits[0].entity_id).toBe('dev-001');
+      expect(deviceAudits[0]!.entity_id).toBe('dev-001');
 
       const allAudits = auditViewer.query({});
       expect(allAudits).toHaveLength(2);

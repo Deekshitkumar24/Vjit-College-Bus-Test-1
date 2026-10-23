@@ -44,7 +44,7 @@ export class BenchModeManager {
     device.status = 'BENCH';
     device.bench_notes = params.reason;
     device.bench_set_at = new Date().toISOString();
-    device.bus_id = undefined;
+    delete device.bus_id;
 
     this.devices.set(deviceId, device);
     return device;

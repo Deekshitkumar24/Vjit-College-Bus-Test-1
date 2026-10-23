@@ -12,48 +12,72 @@ export interface AttendanceServiceOptions {
   rotationSeconds?: number;
 }
 
+export interface TripRecord {
+  id: string;
+  route_id?: string;
+  trip_type?: string;
+  bus_id: string;
+  status: string;
+  scheduled_departure?: Date | string;
+  bus?: { id?: string; bus_number?: string };
+}
+
+export interface ShiftRecord {
+  id: string;
+  driver_id?: string;
+  bus_id: string;
+  status: string;
+}
+
+export interface StudentAssignmentRecord {
+  student_id: string;
+  route_id: string;
+  boarding_stop_id: string;
+  on_leave: boolean;
+}
+
+export interface AttendanceRecordItem {
+  id?: string;
+  status: string;
+}
+
 export interface GetTripQrParams {
   tripId: string;
   driverId: string;
-  getTrip: (tripId: string) => Promise<{ bus?: { id?: string; bus_number?: string } } | null>;
-  getActiveShift: (driverId: string) => Promise<{ id: string } | null>;
+  getTrip: (tripId: string) => Promise<TripRecord | null>;
+  getActiveShift: (driverId: string) => Promise<ShiftRecord | null>;
 }
 
 export interface ProcessScanParams {
   studentId: string;
   token: string;
-  scanTime?: number;
-  getTrip: (tripId: string) => Promise<{
-    id: string;
-    route_id?: string;
-    trip_type?: string;
-    bus?: { bus_number?: string };
-  } | null>;
+  scanTime?: number | undefined;
+  getTrip: (tripId: string) => Promise<TripRecord | null>;
   getStudentAssignment: (
     studentId: string,
     routeId: string,
     tripType: string,
-  ) => Promise<Record<string, unknown> | null>;
+  ) => Promise<StudentAssignmentRecord | null>;
   getExistingAttendance: (
     tripId: string,
     studentId: string,
-  ) => Promise<Record<string, unknown> | null>;
+  ) => Promise<AttendanceRecordItem | null>;
   saveAttendance: (record: {
     tripId: string;
     studentId: string;
     status: string;
     method: string;
-    boardingStopId?: string;
+    boardingStopId?: string | undefined;
     boardedAt: Date;
   }) => Promise<Record<string, unknown>>;
 }
 
 export interface ScanResult {
   success: boolean;
-  error?: QrScanErrorCode | string;
-  status?: string;
-  bus_number?: string;
-  boarded_at?: string;
+  error?: QrScanErrorCode | string | undefined;
+  status?: string | undefined;
+  bus_number?: string | undefined;
+  boarded_at?: string | undefined;
 }
 
 @Injectable()
@@ -66,7 +90,7 @@ export class AttendanceService {
 
   constructor(options?: AttendanceServiceOptions) {
     const keys = options?.keys ?? {
-      '2026-10': process.env.QR_HMAC_KEY || 'default-fallback-key-32-bytes-minimum-length!',
+      '2026-10': process.env['QR_HMAC_KEY'] || 'default-fallback-key-32-bytes-minimum-length!',
     };
     const activeKeyVersion = options?.activeKeyVersion ?? '2026-10';
     this.rotationSeconds = options?.rotationSeconds ?? 30;
@@ -149,7 +173,7 @@ export class AttendanceService {
 
     let payloadStr: string;
     try {
-      payloadStr = Buffer.from(parts[2], 'base64url').toString('utf8');
+      payloadStr = Buffer.from(parts[2]!, 'base64url').toString('utf8');
     } catch {
       return { success: false, error: 'QR_INVALID' };
     }
@@ -166,8 +190,8 @@ export class AttendanceService {
 
     const studentAssignment = await params.getStudentAssignment(
       params.studentId,
-      trip.route_id,
-      trip.trip_type,
+      trip.route_id ?? '',
+      trip.trip_type ?? '',
     );
 
     const existing = await params.getExistingAttendance(trip.id, params.studentId);
@@ -182,7 +206,9 @@ export class AttendanceService {
           id: trip.id,
           bus_id: trip.bus_id,
           status: trip.status,
-          scheduled_departure: trip.scheduled_departure,
+          scheduled_departure: trip.scheduled_departure
+            ? new Date(trip.scheduled_departure)
+            : new Date(),
         },
         studentAssignment: studentAssignment
           ? {
@@ -199,7 +225,7 @@ export class AttendanceService {
     if (!validationResult.valid) {
       return {
         success: false,
-        error: validationResult.error,
+        error: validationResult.error ?? 'INVALID_TOKEN',
       };
     }
 
@@ -233,18 +259,13 @@ export class AttendanceService {
     tripId: string;
     studentId: string;
     token: string;
-    scanTime?: number;
-    getTrip: (tripId: string) => Promise<{
-      id: string;
-      route_id?: string;
-      trip_type?: string;
-      bus?: { bus_number?: string };
-    } | null>;
+    scanTime?: number | undefined;
+    getTrip: (tripId: string) => Promise<TripRecord | null>;
     getStudentAssignment: (
       studentId: string,
       routeId: string,
       tripType: string,
-    ) => Promise<Record<string, unknown> | null>;
+    ) => Promise<StudentAssignmentRecord | null>;
     store: Map<string, unknown>;
   }): Promise<ScanResult> {
     const key = `${params.tripId}:${params.studentId}`;
@@ -259,7 +280,7 @@ export class AttendanceService {
       scanTime: params.scanTime,
       getTrip: params.getTrip,
       getStudentAssignment: params.getStudentAssignment,
-      getExistingAttendance: async () => (params.store.get(key) as Record<string, unknown>) || null,
+      getExistingAttendance: async () => (params.store.get(key) as AttendanceRecordItem) || null,
       saveAttendance: async (record) => {
         if (params.store.has(key)) {
           throw new Error('DUPLICATE_BOARDING');

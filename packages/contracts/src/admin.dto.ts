@@ -147,7 +147,7 @@ export const CreateStopSchema = z.object({
   code: z.string().min(1).max(20),
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
-  radius_m: z.number().int().min(10).max(200).default(50),
+  radius_m: z.number().int().min(10).max(200).default(50).optional(),
   landmark: z.string().max(100).optional(),
 });
 export type CreateStopDto = z.infer<typeof CreateStopSchema>;
@@ -178,10 +178,10 @@ export type GeoJsonLineString = z.infer<typeof GeoJsonLineStringSchema>;
 export const CreateRouteSchema = z.object({
   route_code: z.string().min(1).max(20),
   name: z.string().min(1).max(100),
-  trip_type: z.enum(['MORNING', 'AFTERNOON', 'BOTH']).default('BOTH'),
+  trip_type: z.enum(['MORNING', 'AFTERNOON', 'BOTH']).default('BOTH').optional(),
   stops: z.array(OrderedRouteStopSchema).min(2),
   geometry_geojson: GeoJsonLineStringSchema.optional(),
-  is_active: z.boolean().default(true),
+  is_active: z.boolean().default(true).optional(),
 });
 export type CreateRouteDto = z.infer<typeof CreateRouteSchema>;
 

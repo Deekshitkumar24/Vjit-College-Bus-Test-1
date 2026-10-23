@@ -74,9 +74,9 @@ export interface EvaluateSosParams {
   senderRole: string;
   category: SosCategory;
   now: Date;
-  dedupeWindowSec?: number;
-  deviceTriggeredAt?: Date;
-  tripId?: string | null;
+  dedupeWindowSec?: number | undefined;
+  deviceTriggeredAt?: Date | undefined;
+  tripId?: string | null | undefined;
 }
 
 export interface EvaluateSosResult {

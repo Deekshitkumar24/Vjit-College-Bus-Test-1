@@ -88,11 +88,11 @@ export function getAccessibilityProps(options: {
   return {
     accessible: true,
     accessibilityLabel: options.label,
-    accessibilityRole: options.role,
-    accessibilityHint: options.hint,
+    ...(options.role !== undefined ? { accessibilityRole: options.role } : {}),
+    ...(options.hint !== undefined ? { accessibilityHint: options.hint } : {}),
     accessibilityState: {
-      disabled: options.disabled,
-      selected: options.selected,
+      ...(options.disabled !== undefined ? { disabled: options.disabled } : {}),
+      ...(options.selected !== undefined ? { selected: options.selected } : {}),
     },
   };
 }

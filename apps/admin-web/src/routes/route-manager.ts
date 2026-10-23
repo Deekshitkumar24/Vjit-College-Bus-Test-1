@@ -145,11 +145,11 @@ export class RouteManager {
       id,
       route_code: dto.route_code.trim().toUpperCase(),
       name: dto.name.trim(),
-      trip_type: dto.trip_type,
+      trip_type: dto.trip_type ?? 'BOTH',
       stops: routeStops,
       geometry_geojson: dto.geometry_geojson ?? null,
       assigned_bus_ids: [],
-      is_active: dto.is_active,
+      is_active: dto.is_active ?? true,
       created_at: now,
       updated_at: now,
     };

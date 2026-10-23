@@ -1,5 +1,14 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 
+export interface LeaveRecord {
+  id: string;
+  student_id: string;
+  service_date: string;
+  trip_type: string;
+  reason_category: string;
+  cancelled_at?: Date | string | null;
+}
+
 export interface SubmitLeaveParams {
   studentId: string;
   serviceDate: string; // YYYY-MM-DD
@@ -17,7 +26,7 @@ export interface SubmitLeaveParams {
     trip_type: string;
     reason_category: string;
     created_by: string;
-  }) => Promise<Record<string, unknown>>;
+  }) => Promise<LeaveRecord>;
   updateAttendanceStatus: (tripId: string, studentId: string, status: string) => Promise<void>;
 }
 
@@ -26,7 +35,7 @@ export interface CancelLeaveParams {
   studentId: string;
   cancelTime?: Date;
   isFaculty?: boolean;
-  getLeave: (leaveId: string) => Promise<Record<string, unknown> | null>;
+  getLeave: (leaveId: string) => Promise<LeaveRecord | null>;
   getTrip: (
     serviceDate: string,
     tripType: string,

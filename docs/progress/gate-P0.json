@@ -1,12 +1,16 @@
 {
   "phase": "P0",
-  "timestamp": "2026-10-23T08:10:05.202Z",
+  "timestamp": "2026-10-23T08:19:28.319Z",
   "passed": false,
   "checks": [
     {
       "command": "pnpm lint",
+      "success": true
+    },
+    {
+      "command": "pnpm typecheck",
       "success": false,
-      "error": "Command failed: pnpm lint"
+      "error": "Command failed: pnpm typecheck"
     }
   ]
 }

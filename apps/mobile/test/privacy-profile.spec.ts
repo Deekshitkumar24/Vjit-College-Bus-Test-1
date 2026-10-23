@@ -61,6 +61,6 @@ describe('P2-T13: Profile and Privacy Management', () => {
     const revokedIds = manager.signOutOtherDevices();
     expect(revokedIds).toEqual(['sess_old_ipad', 'sess_old_android']);
     expect(manager.getSessions()).toHaveLength(1);
-    expect(manager.getSessions()[0].current).toBe(true);
+    expect(manager.getSessions()[0]!.current).toBe(true);
   });
 });

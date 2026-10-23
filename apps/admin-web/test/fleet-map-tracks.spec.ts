@@ -80,8 +80,8 @@ describe('P4-T6: Live Fleet Map, Source-Switch Log & Dual Track (Part 16, Part 2
 
       const bus1Switches = fleetManager.getSourceSwitches('bus-1');
       expect(bus1Switches).toHaveLength(1);
-      expect(bus1Switches[0].reason).toBe('DEVICE_TIMEOUT');
-      expect(bus1Switches[0].new_source).toBe('DRIVER_PHONE');
+      expect(bus1Switches[0]!.reason).toBe('DEVICE_TIMEOUT');
+      expect(bus1Switches[0]!.new_source).toBe('DRIVER_PHONE');
 
       const allSwitches = fleetManager.getSourceSwitches();
       expect(allSwitches).toHaveLength(2);
@@ -117,7 +117,7 @@ describe('P4-T6: Live Fleet Map, Source-Switch Log & Dual Track (Part 16, Part 2
       expect(comparison.bus_id).toBe('bus-1');
       expect(comparison.max_divergence_m).toBeGreaterThan(200);
       expect(comparison.disagreement_intervals.length).toBeGreaterThan(0);
-      expect(comparison.disagreement_intervals[0].reason).toContain('Divergence exceeded 200m threshold');
+      expect(comparison.disagreement_intervals[0]!.reason).toContain('Divergence exceeded 200m threshold');
     });
   });
 });

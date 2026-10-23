@@ -82,7 +82,7 @@ describe('P4-T9: Bench Mode (Decision L-1, master Part 16, §16.5 workflow 7)', 
 
     const diagnostics = benchMgr.getBenchDiagnostics('dev-bench-03');
     expect(diagnostics).toHaveLength(1);
-    expect(diagnostics[0].battery_v).toBe(12.4);
+    expect(diagnostics[0]!.battery_v).toBe(12.4);
   });
 
   it('transitions device from BENCH to ACTIVE upon successful bench commissioning', () => {

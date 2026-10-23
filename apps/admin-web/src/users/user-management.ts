@@ -39,7 +39,7 @@ export class UserImportManager {
       };
     }
 
-    const headerLine = lines[0];
+    const headerLine = lines[0]!;
     const headers = headerLine.split(',').map((h) => h.trim());
     const dataLines = lines.slice(1);
 

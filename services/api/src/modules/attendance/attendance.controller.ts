@@ -9,7 +9,13 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { AttendanceService } from './attendance.service.js';
+import {
+  AttendanceService,
+  type TripRecord,
+  type ShiftRecord,
+  type StudentAssignmentRecord,
+  type AttendanceRecordItem,
+} from './attendance.service.js';
 import { GlobalAuthGuard } from '../../common/guards/auth.guard.js';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
@@ -25,6 +31,7 @@ interface AuthenticatedAttendanceRequest {
     studentRoute?: { findFirst: (args: unknown) => Promise<unknown> };
     attendanceRecord?: {
       findFirst: (args: unknown) => Promise<unknown>;
+      findUnique: (args: unknown) => Promise<unknown>;
       create: (args: unknown) => Promise<unknown>;
       upsert: (args: unknown) => Promise<unknown>;
       update: (args: unknown) => Promise<unknown>;
@@ -46,13 +53,14 @@ export class AttendanceController {
       tripId,
       driverId,
       getTrip: async (id) =>
-        req.prisma?.trip?.findUnique({ where: { id }, include: { bus: true } }) as Promise<{
-          bus?: { id?: string; bus_number?: string };
-        }>,
+        (await req.prisma?.trip?.findUnique({
+          where: { id },
+          include: { bus: true },
+        })) as TripRecord | null,
       getActiveShift: async (drvId) =>
-        req.prisma?.shift?.findFirst({ where: { driver_id: drvId, status: 'ACTIVE' } }) as Promise<{
-          id: string;
-        }>,
+        (await req.prisma?.shift?.findFirst({
+          where: { driver_id: drvId, status: 'ACTIVE' },
+        })) as ShiftRecord | null,
     });
   }
 
@@ -70,17 +78,20 @@ export class AttendanceController {
       token: body.qr_token,
       scanTime,
       getTrip: async (id) =>
-        req.prisma?.trip?.findUnique({ where: { id }, include: { bus: true } }),
+        (await req.prisma?.trip?.findUnique({
+          where: { id },
+          include: { bus: true },
+        })) as TripRecord | null,
       getStudentAssignment: async (stuId, routeId, tripType) =>
-        req.prisma?.studentRoute?.findFirst({
+        (await req.prisma?.studentRoute?.findFirst({
           where: { student_id: stuId, route_id: routeId, trip_type: tripType },
-        }),
+        })) as StudentAssignmentRecord | null,
       getExistingAttendance: async (tId, stuId) =>
-        req.prisma?.attendanceRecord?.findUnique({
+        (await req.prisma?.attendanceRecord?.findUnique({
           where: { trip_id_student_id: { trip_id: tId, student_id: stuId } },
-        }),
+        })) as AttendanceRecordItem | null,
       saveAttendance: async (record) =>
-        req.prisma?.attendanceRecord?.upsert({
+        (await req.prisma?.attendanceRecord?.upsert({
           where: {
             trip_id_student_id: { trip_id: record.tripId, student_id: record.studentId },
           },
@@ -98,7 +109,7 @@ export class AttendanceController {
             boarding_stop_id: record.boardingStopId,
             boarded_at: record.boardedAt,
           },
-        }),
+        })) as Record<string, unknown>,
     });
 
     if (!result.success) {
@@ -134,16 +145,19 @@ export class AttendanceController {
       tripId: body.trip_id,
       studentId: body.student_id,
       driverId,
-      reason: body.reason,
-      isGuest: body.is_guest,
+      ...(body.reason !== undefined ? { reason: body.reason } : {}),
+      ...(body.is_guest !== undefined ? { isGuest: body.is_guest } : {}),
       saveRecord: async (rec) =>
-        req.prisma?.attendanceRecord?.upsert({
+        (await req.prisma?.attendanceRecord?.upsert({
           where: {
-            trip_id_student_id: { trip_id: rec.trip_id, student_id: rec.student_id },
+            trip_id_student_id: {
+              trip_id: rec['trip_id'] as string,
+              student_id: rec['student_id'] as string,
+            },
           },
           create: rec,
           update: rec,
-        }),
+        })) as Record<string, unknown>,
     });
   }
 
@@ -161,20 +175,20 @@ export class AttendanceController {
       coordinatorId,
       reason: body.reason,
       saveRecord: async (upd) =>
-        req.prisma?.attendanceRecord?.update({
+        (await req.prisma?.attendanceRecord?.update({
           where: { id: attendanceId },
           data: upd,
-        }),
+        })) as Record<string, unknown>,
       logAudit: async (audit) =>
-        req.prisma?.auditLog?.create({
+        (await req.prisma?.auditLog?.create({
           data: {
-            action: audit.action,
-            entity_type: audit.entity_type,
-            entity_id: audit.entity_id,
-            reason: audit.reason,
-            actor_id: audit.actor_id,
+            action: audit['action'] as string,
+            entity_type: audit['entity_type'] as string,
+            entity_id: audit['entity_id'] as string,
+            reason: audit['reason'] as string,
+            actor_id: audit['actor_id'] as string,
           },
-        }),
+        })) as Record<string, unknown>,
     });
   }
 }

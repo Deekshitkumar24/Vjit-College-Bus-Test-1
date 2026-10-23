@@ -50,6 +50,7 @@ describe('Rosters, Faculty & Student Route Assignments (P4-T4)', () => {
         rosterManager.scheduleDriver({
           driver_id: 'drv_01',
           bus_id: 'bus_20',
+          recurrence: 'DAILY',
           valid_from: new Date('2026-10-15T00:00:00Z').toISOString(),
           valid_to: new Date('2026-11-15T00:00:00Z').toISOString(),
         }),
@@ -60,6 +61,7 @@ describe('Rosters, Faculty & Student Route Assignments (P4-T4)', () => {
         rosterManager.scheduleDriver({
           driver_id: 'drv_02',
           bus_id: 'bus_10',
+          recurrence: 'DAILY',
           valid_from: new Date('2026-10-15T00:00:00Z').toISOString(),
           valid_to: new Date('2026-10-20T00:00:00Z').toISOString(),
         }),

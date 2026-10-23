@@ -16,12 +16,12 @@ export interface TriggerOrJoinParams {
   senderRole: string;
   source: SosSource;
   category: SosCategory;
-  now?: Date;
-  lat?: number | null;
-  lng?: number | null;
-  accuracy_m?: number | null;
-  deviceTriggeredAt?: Date;
-  tripId?: string | null;
+  now?: Date | undefined;
+  lat?: number | null | undefined;
+  lng?: number | null | undefined;
+  accuracy_m?: number | null | undefined;
+  deviceTriggeredAt?: Date | undefined;
+  tripId?: string | null | undefined;
 }
 
 export interface StoredSosIncidentWithEvents extends SosIncidentCore {

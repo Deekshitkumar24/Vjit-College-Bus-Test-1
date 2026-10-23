@@ -58,8 +58,8 @@ describe('P2-T12: Attendance History Screen (GET /attendance/me)', () => {
     const history = manager.getHistory();
 
     expect(history).toHaveLength(3);
-    expect(history[0].morning.status).toBe('PRESENT');
-    expect(history[0].afternoon.status).toBe('PRESENT');
+    expect(history[0]!.morning.status).toBe('PRESENT');
+    expect(history[0]!.afternoon.status).toBe('PRESENT');
   });
 
   it('detects D-12 morning-present afternoon-absent discrepancy rule', () => {
@@ -78,7 +78,7 @@ describe('P2-T12: Attendance History Screen (GET /attendance/me)', () => {
 
     const discrepancies = manager.getMorningPresentAfternoonAbsentDiscrepancies();
     expect(discrepancies).toHaveLength(1);
-    expect(discrepancies[0].date).toBe('2026-10-21');
+    expect(discrepancies[0]!.date).toBe('2026-10-21');
   });
 
   it('computes summary statistics accurately', () => {

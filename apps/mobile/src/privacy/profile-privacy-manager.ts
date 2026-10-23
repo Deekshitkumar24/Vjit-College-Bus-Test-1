@@ -94,7 +94,7 @@ export class ProfilePrivacyManager {
       id: `del_${Date.now()}`,
       userId: this.profile.userId,
       status: 'QUEUED_FOR_PURGE',
-      reason,
+      ...(reason !== undefined ? { reason } : {}),
       requestedAt: new Date().toISOString(),
     };
   }

@@ -55,7 +55,7 @@ export class ExportService {
   public formatCsv(rows: Array<Record<string, unknown>>): string {
     if (rows.length === 0) return '';
 
-    const headers = Object.keys(rows[0]);
+    const headers = Object.keys(rows[0]!);
     const headerLine = headers.map((h) => this.sanitizeCsvCell(h)).join(',');
 
     const lines = rows.map((row) =>
