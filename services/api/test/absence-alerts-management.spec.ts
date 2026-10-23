@@ -42,7 +42,8 @@ describe('Absence Alerts Management & Late Boarding (P5-T6)', () => {
       note: null as string | null,
     };
 
-    const noteText = 'Spoke with parent at 17:15. Student was picked up by elder sister from gate 2.';
+    const noteText =
+      'Spoke with parent at 17:15. Student was picked up by elder sister from gate 2.';
 
     const res = await alertsService.addNote({
       alertId: sampleAlertId,
@@ -66,7 +67,7 @@ describe('Absence Alerts Management & Late Boarding (P5-T6)', () => {
         note: longNote,
         getAlert: async () => alertRecord,
         updateAlert: async () => {},
-      })
+      }),
     ).rejects.toThrow('Note exceeds maximum length of 500 characters');
   });
 
@@ -83,7 +84,10 @@ describe('Absence Alerts Management & Late Boarding (P5-T6)', () => {
     const res = await alertsService.reconcileLateBoarding({
       tripId: sampleAfternoonTripId,
       studentId: sampleStudentId,
-      getOpenAlertForTrip: async (tId, sId) => (tId === alertRecord.afternoon_trip_id && sId === alertRecord.student_id ? alertRecord : null),
+      getOpenAlertForTrip: async (tId, sId) =>
+        tId === alertRecord.afternoon_trip_id && sId === alertRecord.student_id
+          ? alertRecord
+          : null,
       updateAlertStatus: async (alertId, newStatus) => {
         alertRecord.status = newStatus;
       },

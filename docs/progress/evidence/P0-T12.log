@@ -1,0 +1,16 @@
+=== P0-T12 Admin MFA Recovery Codes Verification ===
+Date: 2026-10-21T19:36:37+05:30
+Command: pnpm --filter @collegebus/api test:unit -- test/auth.spec.ts
+Commit SHA: 441b4e5 (and base 7e5bb3e)
+
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/auth.spec.ts"
+
+ ✓ test/auth.spec.ts (8 tests) 2764ms
+   ✓ Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9) > Admin MFA Recovery Codes (P0-T12, Part 13.20) > generates 10 single-use recovery codes hashed with Argon2id and shown once 2734ms
+
+Result: PASS
+Recovery Code Generation: 10 alphanumeric single-use codes (format RC-XXXX-XXXX)
+Cryptographic Hash: Argon2id verified
+Single-Use Consumption: First use succeeds; immediate second attempt fails with replay rejection
+Invalid Code Rejection: Verified

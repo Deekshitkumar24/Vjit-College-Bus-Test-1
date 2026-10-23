@@ -33,7 +33,6 @@ describe('Database Package, RLS & Schema Controls (P0-T3)', () => {
     expect(sql).toContain('FORCE ROW LEVEL SECURITY');
   });
 
-
   it('includes the append-only trigger function for audit_logs', () => {
     const sql = getRlsAndAuditSql();
     expect(sql).toContain('CREATE OR REPLACE FUNCTION prevent_audit_log_modification');

@@ -7,6 +7,7 @@
 ---
 
 ## 1. Summary of Accomplishments (P1 to P9)
+
 1. **Phase P1 (Ingestion & Source Engine):** Telemetry pipelines, anti-flapping source selection, contract test harness passing, local 50-bus load smoke run verified against native PostgreSQL 16.
 2. **Phase P2 (Student & Faculty Mobile Shell):** MapLibre live map, ETA calculations, QR attendance scanner, stop requests, leave applications, 168 unit/integration tests passing.
 3. **Phase P3 (Driver App & Phone Tracking):** Driver shift lifecycle, offline SQLite location buffer, pre-trip diagnostics, mutual exclusion shift claims, driver emergency SOS.
@@ -23,26 +24,27 @@
 
 To move the gate from **NOT READY** to **PRODUCTION READY**, the following external credentials, environments, and owner authorizations are required:
 
-| External Ref | Required External Input | Unblocks | Next Action Upon Provisioning |
-| :--- | :--- | :--- | :--- |
-| **E1** | AWS Dev Account (IAM / Terraform role) | Dev & Staging infrastructure apply, live S3 presigned URLs, SES emails | Apply `infra/terraform/environments/dev/` and verify live TLS headers |
-| **E2** | GitHub Repository Actions Runner | CI/CD pipeline verification | Push branch to trigger `.github/workflows/ci.yml` |
-| **E3** | College Identity Test Tenant (Google Workspace & Microsoft Entra) | P0 Exit 1 SSO dev sign-in, mobile sign-in | Run live OIDC authorization with test users |
-| **E4** | Sentry Dev DSN | P0-T15 live error telemetry and dev event verification | Set `SENTRY_DSN` in `.env` and verify dev error ingestion |
-| **E5** | Cloudflare Turnstile Keys | P0-T6 & P3-T1 driver OTP anti-bot verification | Set `TURNSTILE_SECRET_KEY` in `.env` and verify live challenge |
-| **E6** | Physical Reference Phones (Android 10+, iOS 16+) | AC-STU-01..05, AC-FAC-01..03, AC-DRV-01..04, T-MOB-01 2h battery test | Run physical on-device acceptance flows |
-| **E7** | Staging Environment | Staging load tests (T-LOAD-01, T-LOAD-02, T-FO-01..04) | Execute 50-bus load scenario and SOS burst on staging |
-| **E8** | Penetration Tester Engaged | Pre-launch third-party penetration test | Conduct pen-test and remediate findings |
-| **E9** | Apple Developer & Google Play Console Accounts | App Store submissions | Configure app store signing and submit store packages |
-| **E10** | Pilot Operator Consent & Participants | Live 10-bus operational pilot | Execute RB-12 2-week pilot deployment |
-| **E11** | Bench Tracker Hardware (ECE team) | AC-TEC-01 live first heartbeat within 2 minutes | Power on bench tracker and verify first heartbeat |
-| **E12** | Firebase Project (FCM / APNs credentials) | Live mobile push notifications | Add `service-account.json` to push worker |
-| **E13** | Approved TRAI DLT Entity & SMS Templates | Live SMS transmission | Register DLT entity IDs in `sms_templates` |
-| **E14** | Expo Account with EAS Access | Cloud mobile builds | Run `eas build` for release artifacts |
-| **O-Item** | Owner instruction: `"GO: apply production"` | Production Terraform apply | Execute `terraform apply` in `infra/terraform/environments/production/` |
+| External Ref | Required External Input                                           | Unblocks                                                               | Next Action Upon Provisioning                                           |
+| :----------- | :---------------------------------------------------------------- | :--------------------------------------------------------------------- | :---------------------------------------------------------------------- |
+| **E1**       | AWS Dev Account (IAM / Terraform role)                            | Dev & Staging infrastructure apply, live S3 presigned URLs, SES emails | Apply `infra/terraform/environments/dev/` and verify live TLS headers   |
+| **E2**       | GitHub Repository Actions Runner                                  | CI/CD pipeline verification                                            | Push branch to trigger `.github/workflows/ci.yml`                       |
+| **E3**       | College Identity Test Tenant (Google Workspace & Microsoft Entra) | P0 Exit 1 SSO dev sign-in, mobile sign-in                              | Run live OIDC authorization with test users                             |
+| **E4**       | Sentry Dev DSN                                                    | P0-T15 live error telemetry and dev event verification                 | Set `SENTRY_DSN` in `.env` and verify dev error ingestion               |
+| **E5**       | Cloudflare Turnstile Keys                                         | P0-T6 & P3-T1 driver OTP anti-bot verification                         | Set `TURNSTILE_SECRET_KEY` in `.env` and verify live challenge          |
+| **E6**       | Physical Reference Phones (Android 10+, iOS 16+)                  | AC-STU-01..05, AC-FAC-01..03, AC-DRV-01..04, T-MOB-01 2h battery test  | Run physical on-device acceptance flows                                 |
+| **E7**       | Staging Environment                                               | Staging load tests (T-LOAD-01, T-LOAD-02, T-FO-01..04)                 | Execute 50-bus load scenario and SOS burst on staging                   |
+| **E8**       | Penetration Tester Engaged                                        | Pre-launch third-party penetration test                                | Conduct pen-test and remediate findings                                 |
+| **E9**       | Apple Developer & Google Play Console Accounts                    | App Store submissions                                                  | Configure app store signing and submit store packages                   |
+| **E10**      | Pilot Operator Consent & Participants                             | Live 10-bus operational pilot                                          | Execute RB-12 2-week pilot deployment                                   |
+| **E11**      | Bench Tracker Hardware (ECE team)                                 | AC-TEC-01 live first heartbeat within 2 minutes                        | Power on bench tracker and verify first heartbeat                       |
+| **E12**      | Firebase Project (FCM / APNs credentials)                         | Live mobile push notifications                                         | Add `service-account.json` to push worker                               |
+| **E13**      | Approved TRAI DLT Entity & SMS Templates                          | Live SMS transmission                                                  | Register DLT entity IDs in `sms_templates`                              |
+| **E14**      | Expo Account with EAS Access                                      | Cloud mobile builds                                                    | Run `eas build` for release artifacts                                   |
+| **O-Item**   | Owner instruction: `"GO: apply production"`                       | Production Terraform apply                                             | Execute `terraform apply` in `infra/terraform/environments/production/` |
 
 ---
 
 ## 3. How to Resume
+
 1. Once any external input (e.g. AWS credentials or GitHub Actions) is available, input the credentials into the environment.
 2. Run `pnpm check:readiness` to update the ledger and re-evaluate the production readiness gate.

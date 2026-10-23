@@ -48,7 +48,7 @@ export class SosManagementService {
         FROM sos_incidents
         WHERE status = 'OPEN' AND received_at >= $1::timestamptz - INTERVAL '60 seconds'
       `;
-      const queryParams: any[] = [now];
+      const queryParams: unknown[] = [now];
 
 
       if (params.busId) {

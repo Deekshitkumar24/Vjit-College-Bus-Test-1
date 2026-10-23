@@ -1,0 +1,14 @@
+=== P0-T11 Dev Infrastructure (Terraform) Status ===
+Date: 2026-10-21T19:36:27+05:30
+Status: IN PROGRESS (External Blocker: AWS Dev Account & Terraform CI Environment)
+Contract Reference: Rule A-6, OV-5, OV-18
+
+Configuration Files:
+- infra/terraform/main.tf (VPC, private subnets, ALB HTTPS, ECS, RDS Multi-AZ PostGIS, S3, KMS, WAF, ACM, Secrets Manager, CloudFront)
+- infra/terraform/variables.tf (AWS region ap-south-1 default, us-east-1 for CloudFront ACM/WAF)
+- infra/terraform/outputs.tf
+
+Rule A-6 Enforcement:
+Local machine lacks Terraform binary and live AWS dev account credentials.
+Per Rule A-6, `terraform init -backend=false`, `terraform validate`, and `terraform plan` execution is NOT VERIFIED until executed in CI with run link.
+Task P0-T11 stays IN PROGRESS pending AWS dev credentials and CI runner setup.

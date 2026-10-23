@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { Pool } from 'pg';
 import { AttendanceService } from '../src/modules/attendance/attendance.service.js';
-import { createTransientTestDatabase, TestDatabaseHandle } from '../../../packages/db/src/native-test-db.js';
+import {
+  createTransientTestDatabase,
+  TestDatabaseHandle,
+} from '../../../packages/db/src/native-test-db.js';
 
 describe('Manual Check-In, FLAGGED_GUEST, Corrections & Native Concurrency (P5-T3, T-ATT-02, T-CON-01)', () => {
   let attendanceService: AttendanceService;
@@ -122,7 +125,10 @@ describe('Manual Check-In, FLAGGED_GUEST, Corrections & Native Concurrency (P5-T
     expect(secondError).toBe('DUPLICATE_BOARDING');
 
     // Clean up record for next test
-    await pool.query(`DELETE FROM attendance_records WHERE trip_id = $1 AND student_id = $2;`, [tripId, studentId]);
+    await pool.query(`DELETE FROM attendance_records WHERE trip_id = $1 AND student_id = $2;`, [
+      tripId,
+      studentId,
+    ]);
   });
 
   it('T-CON-01: two parallel transactions create exactly one record against native PostgreSQL unique index', async () => {
@@ -159,10 +165,7 @@ describe('Manual Check-In, FLAGGED_GUEST, Corrections & Native Concurrency (P5-T
     };
 
     // Run both concurrent transactions in parallel
-    const [resA, resB] = await Promise.all([
-      executeConcurrentScan(),
-      executeConcurrentScan(),
-    ]);
+    const [resA, resB] = await Promise.all([executeConcurrentScan(), executeConcurrentScan()]);
 
     const successes = [resA, resB].filter((r) => r.success);
     const duplicates = [resA, resB].filter((r) => r.error === 'DUPLICATE_BOARDING');
@@ -222,7 +225,7 @@ describe('Manual Check-In, FLAGGED_GUEST, Corrections & Native Concurrency (P5-T
         logAudit: async () => {
           auditLogged = true;
         },
-      })
+      }),
     ).rejects.toThrow();
 
     // Succeed with reason

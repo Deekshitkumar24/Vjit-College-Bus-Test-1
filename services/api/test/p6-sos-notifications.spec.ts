@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { Pool } from 'pg';
-import { createTransientTestDatabase, TestDatabaseHandle } from '../../../packages/db/src/native-test-db.js';
+import {
+  createTransientTestDatabase,
+  TestDatabaseHandle,
+} from '../../../packages/db/src/native-test-db.js';
 import { SosManagementService } from '../src/modules/sos/sos.service.js';
 import { NotificationDispatcherService } from '../src/modules/notifications/notification-dispatcher.service.js';
 import { StopRequestsService } from '../src/modules/stop-requests/stop-requests.service.js';
@@ -206,10 +209,9 @@ describe('Phase P6: SOS, Stop Requests, and Notifications (Real DB & API)', () =
     const escalatedCount = await sosService.evaluateEscalations(evalTime);
     expect(escalatedCount).toBeGreaterThanOrEqual(1);
 
-    const updatedRes = await pool.query(
-      `SELECT current_tier FROM sos_incidents WHERE id = $1;`,
-      [res.incidentId],
-    );
+    const updatedRes = await pool.query(`SELECT current_tier FROM sos_incidents WHERE id = $1;`, [
+      res.incidentId,
+    ]);
     expect(updatedRes.rows[0].current_tier).toBe(1);
   });
 
@@ -349,6 +351,8 @@ describe('Phase P6: SOS, Stop Requests, and Notifications (Real DB & API)', () =
     expect(voteRes.voteCount).toBe(2);
 
     // 3. Duplicate vote rejected
-    await expect(stopRequestsService.vote(sub.id, studentUser2)).rejects.toThrowError('DUPLICATE_VOTE');
+    await expect(stopRequestsService.vote(sub.id, studentUser2)).rejects.toThrowError(
+      'DUPLICATE_VOTE',
+    );
   });
 });

@@ -30,7 +30,9 @@ describe('Authentication & Security Hardening Unit Tests (P0-T6 to P0-T9)', () =
       const redirectUri = 'https://portal.college.edu/auth/callback';
       const result = authService.generateOidcAuthorizationUrl('MICROSOFT', redirectUri);
 
-      expect(result.url).toContain('https://login.microsoftonline.com/common/oauth2/v2.0/authorize');
+      expect(result.url).toContain(
+        'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+      );
       expect(result.url).toContain('code_challenge_method=S256');
       expect(result.url).toContain(`state=${result.state}`);
       expect(result.url).toContain(`nonce=${result.nonce}`);

@@ -16,7 +16,12 @@ const packages = [
   { name: '@collegebus/mobile', path: 'apps/mobile', command: 'vitest run --reporter=json' },
   { name: '@collegebus/admin-web', path: 'apps/admin-web', command: 'vitest run --reporter=json' },
   { name: '@collegebus/api', path: 'services/api', command: 'vitest run --reporter=json' },
-  { name: '@collegebus/db', path: 'packages/db', command: 'vitest run test/db.spec.ts test/check-migrations.spec.ts test/integration.spec.ts test/rls.spec.ts --reporter=json' },
+  {
+    name: '@collegebus/db',
+    path: 'packages/db',
+    command:
+      'vitest run test/db.spec.ts test/check-migrations.spec.ts test/integration.spec.ts test/rls.spec.ts --reporter=json',
+  },
   { name: '@collegebus/simulator', path: 'tools/simulator', command: 'vitest run --reporter=json' },
 ];
 
@@ -39,10 +44,11 @@ for (const pkg of packages) {
     const jsonMatch = rawOutput.substring(rawOutput.indexOf('{'));
     const parsed = JSON.parse(jsonMatch);
 
-    const testFiles = parsed.numTotalTestSuites || (parsed.testResults ? parsed.testResults.length : 0);
+    const testFiles =
+      parsed.numTotalTestSuites || (parsed.testResults ? parsed.testResults.length : 0);
     const passedTests = parsed.numPassedTests || 0;
     const failedTests = parsed.numFailedTests || 0;
-    const totalTests = parsed.numTotalTests || (passedTests + failedTests);
+    const totalTests = parsed.numTotalTests || passedTests + failedTests;
     const skippedTests = parsed.numPendingTests || 0;
 
     results.push({
@@ -62,10 +68,11 @@ for (const pkg of packages) {
         const jsonMatch = rawOutput.substring(rawOutput.indexOf('{'));
         const parsed = JSON.parse(jsonMatch);
 
-        const testFiles = parsed.numTotalTestSuites || (parsed.testResults ? parsed.testResults.length : 0);
+        const testFiles =
+          parsed.numTotalTestSuites || (parsed.testResults ? parsed.testResults.length : 0);
         const passedTests = parsed.numPassedTests || 0;
         const failedTests = parsed.numFailedTests || 0;
-        const totalTests = parsed.numTotalTests || (passedTests + failedTests);
+        const totalTests = parsed.numTotalTests || passedTests + failedTests;
         const skippedTests = parsed.numPendingTests || 0;
 
         results.push({
@@ -77,7 +84,9 @@ for (const pkg of packages) {
           failedTests,
           skippedTests,
         });
-        console.log(`  ✓ ${pkg.name} (with errors): ${passedTests} passed across ${testFiles} files`);
+        console.log(
+          `  ✓ ${pkg.name} (with errors): ${passedTests} passed across ${testFiles} files`,
+        );
         continue;
       } catch {}
     }

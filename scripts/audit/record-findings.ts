@@ -18,7 +18,10 @@ function runAudit() {
   console.log('Generating docs/security/audit-findings.md for D-11...');
   let jsonOutput = '';
   try {
-    jsonOutput = execSync('pnpm audit --prod --json', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    jsonOutput = execSync('pnpm audit --prod --json', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
   } catch (err: any) {
     jsonOutput = err.stdout?.toString() || '';
   }
@@ -40,16 +43,22 @@ function runAudit() {
   advisories.forEach((adv, idx) => {
     const depPath = adv.findings[0]?.paths[0] || 'unknown';
     const cleanPath = depPath.replace(/__([a-zA-Z0-9_-]+)/g, '/$1').replace(/>/g, ' -> ');
-    const fix = adv.patched_versions && adv.patched_versions !== '<0.0.0' ? adv.patched_versions : 'Vendor patch pending';
-    
+    const fix =
+      adv.patched_versions && adv.patched_versions !== '<0.0.0'
+        ? adv.patched_versions
+        : 'Vendor patch pending';
+
     // Remediation plan per defect category
     let plan = '';
     if (adv.module_name === 'qs') {
-      plan = 'Query strings in @collegebus/api are parsed via NestJS ValidationPipe and strict DTO whitelist (forbidNonWhitelisted: true). Upgrade qs via pnpm override upon @nestjs/platform-express v11 release.';
+      plan =
+        'Query strings in @collegebus/api are parsed via NestJS ValidationPipe and strict DTO whitelist (forbidNonWhitelisted: true). Upgrade qs via pnpm override upon @nestjs/platform-express v11 release.';
     } else if (adv.module_name === 'body-parser') {
-      plan = 'Payload body limits enforced at reverse proxy / ALB (8KB max for ingest, 16KB for phone) and NestJS body size option in main.ts. Update body-parser when NestJS dependency tree updates.';
+      plan =
+        'Payload body limits enforced at reverse proxy / ALB (8KB max for ingest, 16KB for phone) and NestJS body size option in main.ts. Update body-parser when NestJS dependency tree updates.';
     } else {
-      plan = 'Monitor upstream security patches and pin patched sub-dependency via package.json pnpm.overrides.';
+      plan =
+        'Monitor upstream security patches and pin patched sub-dependency via package.json pnpm.overrides.';
     }
 
     md += `| ${idx + 1} | \`${adv.module_name}\` | **${adv.severity.toUpperCase()}** | ${adv.title} | \`${cleanPath}\` | [${adv.url}](${adv.url}) | \`${fix}\` | ${plan} |\n`;

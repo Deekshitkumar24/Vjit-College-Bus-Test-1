@@ -55,7 +55,8 @@ export function extractRoutes(): RouteInventoryItem[] {
       const basePrefix = (classBlocks[i] || '').trim().replace(/^\/|\/$/g, '');
       const body = classBlocks[i + 1] || '';
 
-      const methodRegex = /@(Get|Post|Put|Patch|Delete)\(\s*(?:['"]([^'"]*)['"])?\s*\)([\s\S]*?)(?:async\s+)?([a-zA-Z0-9_]+)\s*\(/g;
+      const methodRegex =
+        /@(Get|Post|Put|Patch|Delete)\(\s*(?:['"]([^'"]*)['"])?\s*\)([\s\S]*?)(?:async\s+)?([a-zA-Z0-9_]+)\s*\(/g;
       let match;
 
       while ((match = methodRegex.exec(body)) !== null) {

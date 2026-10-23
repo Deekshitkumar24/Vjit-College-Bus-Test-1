@@ -108,11 +108,11 @@ export class AuthService {
   /**
    * P0-T6: Validates OIDC callback with state, PKCE code verifier, and nonce verification.
    */
-  public validateOidcCallback(params: {
-    state: string;
-    code: string;
-    idTokenNonce?: string;
-  }): { valid: boolean; provider: 'GOOGLE' | 'MICROSOFT'; codeVerifier: string } {
+  public validateOidcCallback(params: { state: string; code: string; idTokenNonce?: string }): {
+    valid: boolean;
+    provider: 'GOOGLE' | 'MICROSOFT';
+    codeVerifier: string;
+  } {
     const pending = this.oidcPendingRequests.get(params.state);
     if (!pending || pending.expiresAt < Date.now()) {
       throw new UnauthorizedException({

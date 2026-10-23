@@ -13,13 +13,7 @@ export type SosSource = 'DEVICE' | 'DRIVER' | 'FACULTY' | 'STUDENT' | 'SECURITY'
 export type SosCategory = 'EMERGENCY' | 'MEDICAL' | 'BREAKDOWN' | 'OTHER' | 'UNKNOWN';
 export type SosIncidentStatus = 'OPEN' | 'RESPONDING' | 'RESOLVED' | 'CANCELLED' | 'DRILL_CLOSED';
 export type SosEventType =
-  | 'TRIGGERED'
-  | 'JOINED'
-  | 'ACKNOWLEDGED'
-  | 'RESPONDING'
-  | 'ESCALATED'
-  | 'CANCELLED'
-  | 'RESOLVED';
+  'TRIGGERED' | 'JOINED' | 'ACKNOWLEDGED' | 'RESPONDING' | 'ESCALATED' | 'CANCELLED' | 'RESOLVED';
 
 export interface SosIncidentCore {
   id: string;

@@ -5,7 +5,7 @@ export interface OperationalAlert {
   severity: 1 | 2 | 3;
   description: string;
   target_id?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: Date;
 }
 
@@ -26,7 +26,11 @@ export class OperationalAlertsEngine {
         severity: 1,
         description: `Fleet silence detected: ${Math.round(ratio * 100)}% (${params.silentActiveBuses}/${params.totalActiveBuses}) of active buses have transmitted no valid data for >3 minutes.`,
         created_at: new Date(),
-        metadata: { ratio, silentCount: params.silentActiveBuses, totalCount: params.totalActiveBuses },
+        metadata: {
+          ratio,
+          silentCount: params.silentActiveBuses,
+          totalCount: params.totalActiveBuses,
+        },
       };
     }
     return null;
@@ -107,28 +111,22 @@ export class CoordinatorSummaryJob {
    * Compiles the 08:00 IST coordinator daily operational summary (Part 12.3).
    */
   async compileDailySummary(params: {
-    getSosIncidentsLast24h: () => Promise<any[]>;
-    getOpenAbsenceAlerts: () => Promise<any[]>;
-    getOfflineOrDelayedDevices: () => Promise<any[]>;
-    getPendingStopRequests: () => Promise<any[]>;
-    getLateOrCancelledTrips: () => Promise<any[]>;
-    getDocumentsExpiring30Days: () => Promise<any[]>;
+    getSosIncidentsLast24h: () => Promise<unknown[]>;
+    getOpenAbsenceAlerts: () => Promise<unknown[]>;
+    getOfflineOrDelayedDevices: () => Promise<unknown[]>;
+    getPendingStopRequests: () => Promise<unknown[]>;
+    getLateOrCancelledTrips: () => Promise<unknown[]>;
+    getDocumentsExpiring30Days: () => Promise<unknown[]>;
   }): Promise<CoordinatorDailySummary> {
-    const [
-      sos,
-      absenceAlerts,
-      offlineDevices,
-      stopRequests,
-      lateTrips,
-      expiringDocs,
-    ] = await Promise.all([
-      params.getSosIncidentsLast24h(),
-      params.getOpenAbsenceAlerts(),
-      params.getOfflineOrDelayedDevices(),
-      params.getPendingStopRequests(),
-      params.getLateOrCancelledTrips(),
-      params.getDocumentsExpiring30Days(),
-    ]);
+    const [sos, absenceAlerts, offlineDevices, stopRequests, lateTrips, expiringDocs] =
+      await Promise.all([
+        params.getSosIncidentsLast24h(),
+        params.getOpenAbsenceAlerts(),
+        params.getOfflineOrDelayedDevices(),
+        params.getPendingStopRequests(),
+        params.getLateOrCancelledTrips(),
+        params.getDocumentsExpiring30Days(),
+      ]);
 
     return {
       sos_count_24h: sos.length,
@@ -148,7 +146,7 @@ export interface AttendanceCsvRow {
   trip_type: string;
   status: string;
   notes?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 @Injectable()
@@ -157,7 +155,9 @@ export class AttendanceCsvExporter {
 
   validateExportLimits(rowCount: number): void {
     if (rowCount > this.maxRowLimit) {
-      throw new BadRequestException(`Export exceeds maximum allowed limit of ${this.maxRowLimit.toLocaleString()} rows`);
+      throw new BadRequestException(
+        `Export exceeds maximum allowed limit of ${this.maxRowLimit.toLocaleString()} rows`,
+      );
     }
   }
 
@@ -165,7 +165,7 @@ export class AttendanceCsvExporter {
    * Sanitizes cell content against Formula Injection (Part 13.16).
    * Any cell starting with =, +, -, or @ is prepended with a single quote ' and escaped.
    */
-  sanitizeCell(value: any): string {
+  sanitizeCell(value: unknown): string {
     if (value === null || value === undefined) {
       return '';
     }

@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { Pool } from 'pg';
-import { createTransientTestDatabase, TestDatabaseHandle } from '../../../packages/db/src/native-test-db.js';
+import {
+  createTransientTestDatabase,
+  TestDatabaseHandle,
+} from '../../../packages/db/src/native-test-db.js';
 import { extractRoutes, RouteInventoryItem } from '../../../scripts/audit/routes.js';
 
 describe('Comprehensive IDOR Coverage Suite (Part 13.9, D-4)', () => {
@@ -107,11 +110,14 @@ describe('Comprehensive IDOR Coverage Suite (Part 13.9, D-4)', () => {
       `);
 
       // Attacker tries to query or delete victim's session
-      const deleteRes = await pool.query(`
+      const deleteRes = await pool.query(
+        `
         DELETE FROM sessions 
         WHERE id = $1 AND user_id = $2 
         RETURNING id;
-      `, [sessionId, attackerUserId]);
+      `,
+        [sessionId, attackerUserId],
+      );
 
       expect(deleteRes.rows.length).toBe(0);
 
@@ -176,10 +182,13 @@ describe('Comprehensive IDOR Coverage Suite (Part 13.9, D-4)', () => {
       `);
 
       // Driver Alpha attempts to query Driver Beta's shift stops
-      const res = await pool.query(`
+      const res = await pool.query(
+        `
         SELECT id FROM shifts 
         WHERE id = $1 AND driver_id = $2;
-      `, [shiftBetaId, driverAlpha]);
+      `,
+        [shiftBetaId, driverAlpha],
+      );
 
       expect(res.rows.length).toBe(0);
     });
@@ -189,10 +198,13 @@ describe('Comprehensive IDOR Coverage Suite (Part 13.9, D-4)', () => {
       const foreignShiftId = '00000000-0000-0000-0000-000000000988';
 
       // Driver Alpha attempting to fetch trip summary of another driver
-      const res = await pool.query(`
+      const res = await pool.query(
+        `
         SELECT id, driver_id, bus_id FROM shifts 
         WHERE id = $1 AND driver_id = $2;
-      `, [foreignShiftId, driverAlpha]);
+      `,
+        [foreignShiftId, driverAlpha],
+      );
 
       expect(res.rows.length).toBe(0);
     });

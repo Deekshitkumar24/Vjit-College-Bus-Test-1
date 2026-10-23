@@ -1,0 +1,24 @@
+=== P1-T2 Device Links & Attribution Rule Verification ===
+Date: 2026-10-21T21:29:37+05:30
+Command: pnpm --filter @collegebus/domain test:unit -- test/device-links.spec.ts ; pnpm --filter @collegebus/domain typecheck
+Commit SHA: dfa07b7
+
+> @collegebus/domain@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> vitest run
+
+ ✓ test/device-links.spec.ts (5 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  21:29:10
+   Duration  2.11s (transform 2.09s, setup 0ms, collect 2.10s, tests 16ms, environment 1ms, prepare 763ms)
+
+> @collegebus/domain@1.0.0 typecheck C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> tsc --noEmit
+
+Result: PASS
+Features Verified:
+- Exclusive Linking (1 tracker <-> 1 bus): Verified (rejects if bus or tracker is already actively linked)
+- Status Gate: REVOKED and RETIRED devices cannot be linked
+- Attribution Rule (Part 6.6): Telemetry timestamp is resolved against link history intervals [linked_at, unlinked_at) to correctly attribute historical bus_id
+- Unlinked telemetry handling: Returns null bus_id when device transmits while unlinked

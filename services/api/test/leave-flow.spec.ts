@@ -64,7 +64,7 @@ describe('Leave Flows & Absence Alert Immunity (P5-T5, T-ATT-04)', () => {
         }),
         saveLeave: async () => ({}),
         updateAttendanceStatus: async () => {},
-      })
+      }),
     ).rejects.toThrow('LEAVE_CUTOFF_PASSED');
   });
 

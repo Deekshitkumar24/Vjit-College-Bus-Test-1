@@ -251,7 +251,7 @@ export function calculateTripSummary(input: TripCalculationInput): TripSummaryRe
     const sum = movingSpeeds.reduce((a, b) => a + b, 0);
     average_speed_kmh = Math.round((sum / movingSpeeds.length) * 10) / 10;
   } else if (duration_seconds > 0 && distance_km > 0) {
-    average_speed_kmh = Math.round(((distance_km / duration_seconds) * 3600) * 10) / 10;
+    average_speed_kmh = Math.round((distance_km / duration_seconds) * 3600 * 10) / 10;
   }
 
   // Source uptime breakdown

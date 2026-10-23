@@ -1,8 +1,37 @@
-import { Controller, Get, Post, Param, Body, Req, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  Req,
+  UseGuards,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AttendanceService } from './attendance.service.js';
 import { GlobalAuthGuard } from '../../common/guards/auth.guard.js';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
+
+interface AuthenticatedAttendanceRequest {
+  user: {
+    id: string;
+    role?: string;
+  };
+  prisma?: {
+    trip?: { findUnique: (args: unknown) => Promise<unknown> };
+    shift?: { findFirst: (args: unknown) => Promise<unknown> };
+    studentRoute?: { findFirst: (args: unknown) => Promise<unknown> };
+    attendanceRecord?: {
+      findFirst: (args: unknown) => Promise<unknown>;
+      create: (args: unknown) => Promise<unknown>;
+      upsert: (args: unknown) => Promise<unknown>;
+      update: (args: unknown) => Promise<unknown>;
+    };
+    auditLog?: { create: (args: unknown) => Promise<unknown> };
+  };
+}
 
 @Controller('attendance')
 @UseGuards(GlobalAuthGuard, RolesGuard)
@@ -11,20 +40,28 @@ export class AttendanceController {
 
   @Get('trips/:id/qr')
   @Roles('DRV', 'COR', 'SAD')
-  async getTripQr(@Param('id') tripId: string, @Req() req: any) {
+  async getTripQr(@Param('id') tripId: string, @Req() req: AuthenticatedAttendanceRequest) {
     const driverId = req.user.id;
     return this.attendanceService.getTripQr({
       tripId,
       driverId,
-      getTrip: async (id) => req.prisma?.trip?.findUnique({ where: { id }, include: { bus: true } }),
+      getTrip: async (id) =>
+        req.prisma?.trip?.findUnique({ where: { id }, include: { bus: true } }) as Promise<{
+          bus?: { id?: string; bus_number?: string };
+        }>,
       getActiveShift: async (drvId) =>
-        req.prisma?.shift?.findFirst({ where: { driver_id: drvId, status: 'ACTIVE' } }),
+        req.prisma?.shift?.findFirst({ where: { driver_id: drvId, status: 'ACTIVE' } }) as Promise<{
+          id: string;
+        }>,
     });
   }
 
   @Post('scan')
   @Roles('STU')
-  async scanQr(@Body() body: { qr_token: string; client_timestamp?: string }, @Req() req: any) {
+  async scanQr(
+    @Body() body: { qr_token: string; client_timestamp?: string },
+    @Req() req: AuthenticatedAttendanceRequest,
+  ) {
     const studentId = req.user.id;
     const scanTime = body.client_timestamp ? new Date(body.client_timestamp).getTime() : Date.now();
 
@@ -32,7 +69,8 @@ export class AttendanceController {
       studentId,
       token: body.qr_token,
       scanTime,
-      getTrip: async (id) => req.prisma?.trip?.findUnique({ where: { id }, include: { bus: true } }),
+      getTrip: async (id) =>
+        req.prisma?.trip?.findUnique({ where: { id }, include: { bus: true } }),
       getStudentAssignment: async (stuId, routeId, tripType) =>
         req.prisma?.studentRoute?.findFirst({
           where: { student_id: stuId, route_id: routeId, trip_type: tripType },
@@ -65,9 +103,15 @@ export class AttendanceController {
 
     if (!result.success) {
       if (result.error === 'RATE_LIMIT_EXCEEDED') {
-        throw new HttpException({ error: 'RATE_LIMIT_EXCEEDED', message: 'Rate limit exceeded: max 10 scans per minute' }, HttpStatus.TOO_MANY_REQUESTS);
+        throw new HttpException(
+          { error: 'RATE_LIMIT_EXCEEDED', message: 'Rate limit exceeded: max 10 scans per minute' },
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
       }
-      throw new HttpException({ error: result.error, message: `Scan rejected: ${result.error}` }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { error: result.error, message: `Scan rejected: ${result.error}` },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     return result;
@@ -83,7 +127,7 @@ export class AttendanceController {
       reason?: string;
       is_guest?: boolean;
     },
-    @Req() req: any
+    @Req() req: AuthenticatedAttendanceRequest,
   ) {
     const driverId = req.user.id;
     return this.attendanceService.manualCheckIn({
@@ -108,7 +152,7 @@ export class AttendanceController {
   async correctAttendance(
     @Param('id') attendanceId: string,
     @Body() body: { status: string; reason: string },
-    @Req() req: any
+    @Req() req: AuthenticatedAttendanceRequest,
   ) {
     const coordinatorId = req.user.id;
     return this.attendanceService.coordinatorCorrection({

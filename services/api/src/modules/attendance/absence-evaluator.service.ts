@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 export interface BoardingCutoffParams {
   now?: Date;
-  getActiveTripsWithPassedCutoff: (cutoffTime: Date) => Promise<Array<{ id: string; scheduled_departure: Date }>>;
+  getActiveTripsWithPassedCutoff: (
+    cutoffTime: Date,
+  ) => Promise<Array<{ id: string; scheduled_departure: Date }>>;
   getPendingRecords: (tripId: string) => Promise<Array<{ id: string; status: string }>>;
   updateStatus: (recordId: string, newStatus: string) => Promise<void>;
 }
@@ -50,7 +52,10 @@ export interface EvaluateAbsenceParams {
   serviceDate: string;
   afternoonDepartureTime: Date;
   getCandidates: (serviceDate: string) => Promise<CandidateStudentAbsence[]>;
-  getExistingAlert: (studentId: string, serviceDate: string) => Promise<any>;
+  getExistingAlert: (
+    studentId: string,
+    serviceDate: string,
+  ) => Promise<Record<string, unknown> | null>;
   saveAlert: (alert: {
     student_id: string;
     service_date: string;
@@ -58,7 +63,7 @@ export interface EvaluateAbsenceParams {
     afternoon_trip_id: string;
     status: 'OPEN';
     alerted_at: Date;
-  }) => Promise<any>;
+  }) => Promise<Record<string, unknown>>;
   sendSafetyNotification: (notification: {
     recipient_role: string;
     category: string;

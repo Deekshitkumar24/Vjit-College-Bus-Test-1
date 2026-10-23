@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import {
   AttendanceHistoryManager,
   DailyAttendanceRow,
-  AttendanceTripStatus,
 } from '../src/attendance/attendance-history.js';
 
 describe('P2-T12: Attendance History Screen (GET /attendance/me)', () => {

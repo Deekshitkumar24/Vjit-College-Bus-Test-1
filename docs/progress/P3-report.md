@@ -17,6 +17,7 @@ P3-T18 | fc17ced | Shift auto-end background job with idle warnings and timeout 
 Tests: 100 run, 100 pass, 0 fail across 13 test files (all mobile driver and backend driver pipeline tests passing).
 
 Exit criteria:
+
 1. AC-DRV-01 to AC-DRV-04 pass on device: NOT VERIFIED (awaiting physical reference phones E6 and college identity tenant E3)
 2. Two-hour battery test passes on reference phone: NOT VERIFIED (awaiting physical reference phone execution E6)
 
@@ -27,15 +28,17 @@ E3: College identity test tenant (college IT)
 E6: Physical reference phones for on-device acceptance runs (college IT)
 
 Open decisions used:
-| Ref | Question | Default in force | Owner |
-| --- | --- | --- | --- |
-| L-2 | SOS category | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner |
-| D-06 | Driver phones | College-issued preferred, personal with consent | Transport office |
-| C-02 | Turnstile on driver OTP | Turnstile bot protection enabled | Security lead |
-| C-07 | Driver email exception | Exception allowed if `college_email_exception` is true | Product owner |
-| C-10 | Phone sample flag name | `is_mock` | Engineering lead |
+
+| Ref  | Question                | Default in force                                        | Owner            |
+| ---- | ----------------------- | ------------------------------------------------------- | ---------------- |
+| L-2  | SOS category            | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner    |
+| D-06 | Driver phones           | College-issued preferred, personal with consent         | Transport office |
+| C-02 | Turnstile on driver OTP | Turnstile bot protection enabled                        | Security lead    |
+| C-07 | Driver email exception  | Exception allowed if `college_email_exception` is true  | Product owner    |
+| C-10 | Phone sample flag name  | `is_mock`                                               | Engineering lead |
 
 Git log for this phase:
+
 ```
 fc17ced P3-T18: implement shift auto-end background job with idle warnings and timeout (Part 12.3, Part 9.8, T-SHF-04)
 b46b70e P3-T17: implement driver trip summary metrics and API after shift end (Part 20.9 fields)

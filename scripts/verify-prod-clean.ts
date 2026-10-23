@@ -70,7 +70,9 @@ async function verifyProdClean() {
       }
       process.exit(1);
     } else {
-      console.log('PROD-CLEAN AUDIT PASSED: Zero synthetic records discovered across all audited tables.');
+      console.log(
+        'PROD-CLEAN AUDIT PASSED: Zero synthetic records discovered across all audited tables.',
+      );
     }
   } finally {
     await pool.end();

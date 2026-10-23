@@ -47,7 +47,7 @@ export class TripGenerator {
   generateTrips(params: GenerateTripsParams): GeneratedTrip[] {
     const { startDate, daysAhead, timetables, assignments, holidays, existingTrips = [] } = params;
     const existingKeySet = new Set(
-      existingTrips.map((t) => `${t.route_id}|${t.bus_id}|${t.service_date}|${t.trip_type}`)
+      existingTrips.map((t) => `${t.route_id}|${t.bus_id}|${t.service_date}|${t.trip_type}`),
     );
     const holidayDateSet = new Set(holidays.map((h) => h.holiday_date));
     const generated: GeneratedTrip[] = [];
@@ -85,7 +85,7 @@ export class TripGenerator {
           (a) =>
             a.route_id === tt.route_id &&
             a.active_from <= current &&
-            (!a.active_until || a.active_until >= current)
+            (!a.active_until || a.active_until >= current),
         );
 
         if (!assignment) {
@@ -101,7 +101,7 @@ export class TripGenerator {
         const [hours, minutes] = tt.departure_time.split(':').map((s) => parseInt(s, 10));
         // Construct scheduled departure ISO timestamp (IST +05:30 offset representation)
         const scheduledDeparture = `${serviceDate}T${String(hours).padStart(2, '0')}:${String(
-          minutes
+          minutes,
         ).padStart(2, '0')}:00+05:30`;
 
         generated.push({
@@ -172,8 +172,10 @@ export class ExpectedPassengerBuilder {
     const records: ExpectedPassengerRecord[] = [];
     const activeLeaves = new Set(
       leaves
-        .filter((l) => l.service_date === serviceDate && l.trip_type === tripType && !l.cancelled_at)
-        .map((l) => l.student_id)
+        .filter(
+          (l) => l.service_date === serviceDate && l.trip_type === tripType && !l.cancelled_at,
+        )
+        .map((l) => l.student_id),
     );
 
     for (const sa of studentAssignments) {

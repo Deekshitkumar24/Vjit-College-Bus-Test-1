@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import {
   ProfilePrivacyManager,
   UserProfile,
-  UserConsentRecord,
   ActiveSession,
 } from '../src/privacy/profile-privacy-manager.js';
 

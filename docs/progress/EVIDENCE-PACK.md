@@ -8,18 +8,18 @@
 
 ## 1. Phase by Phase Exit Status (P0 to P9)
 
-| Phase | Phase Classification | Exit Items VERIFIED (Local Evidence Path) | Exit Items BLOCKED-EXTERNAL (Blocker ID) |
-| :--- | :--- | :--- | :--- |
-| **P0** | Local exits verified, external exits pending | • P0-EXIT-02: `verify:routes-auth` 32/32 routes verified ([P0-T7.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P0-T7.log))<br>• P0-EXIT-03: Real DB RLS isolation, tenant separation, append-only triggers ([P0-T4.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P0-T4.log), `packages/db/test/integration.spec.ts`) | • P0-EXIT-01: SSO dev sign-in against college test tenant (`E3`)<br>• P0-EXIT-04: CI green on GitHub Actions (`E2`)<br>• P0-EXIT-05: Security headers & TLS on deployed API host (`E1`)<br>• P0-T15: Live Sentry dev event ingestion (`E4`) |
-| **P1** | Local exits verified, external exits pending | • P1-EXIT-01: Simulator 50-bus fleet replayed with zero data loss ([P1-T11.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P1-T11.log))<br>• P1-EXIT-02: Contract test harness hardware stream replayed ([P1-T10.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P1-T10.log))<br>• Local smoke load test passing on native PostgreSQL 16 | • P1-EXIT-03: T-LOAD-01 50-bus load test on staging (`E7`) |
-| **P2** | Local exits verified, external exits pending | • Navigation tree, live map, ETA calculations, QR scanner, student requests, faculty manifest, mobile test harness (168 tests passed, `apps/mobile/test/`) | • P2-EXIT-01: AC-STU-01 to AC-STU-05 on physical device (`E6`, `E3`)<br>• P2-EXIT-02: AC-FAC-01 to AC-FAC-03 on physical device (`E6`, `E3`) |
-| **P3** | Local exits verified, external exits pending | • Driver shift start/resume/timeout, pre-trip diagnostics, background tracking & 24h SQLite buffer, 30s rotating QR, mock-location detection banner, auto-end job (Part 12.3) | • P3-EXIT-01: AC-DRV-01 to AC-DRV-04 on physical reference phone (`E6`, `E3`)<br>• P3-EXIT-02: T-MOB-01 2-hour battery drain test <= 8%/hr (`E6`)<br>• P3-T1: Live Cloudflare Turnstile verification (`E5`) |
-| **P4** | Local exits verified, external exits pending | • AC-COR-01: Revoked device 401 rejection on real DB ([P4-T2.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P4-T2.log))<br>• AC-COR-02: Bulk CSV import dry-run validation<br>• AC-COR-03: User deactivation session purge<br>• AC-TEC-02: Replacement hardware telemetry segregation<br>• T-SEC-05: Admin role guards 403/404 verified | • P4-EXIT-04: AC-TEC-01 bench tracker first heartbeat < 2 minutes on physical hardware (`E11`) |
-| **P5** | Local exits verified, external exits pending | • T-CON-01: Real DB concurrency guard prevents duplicate boarding ([P5-T3.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P5-T3.log))<br>• T-ATT-01: Expired QR token rejection<br>• T-ATT-02: Duplicate scan within 60s rejection<br>• T-ATT-03: Morning-present afternoon-absent safety alert (D-12)<br>• T-ATT-04: Approved leave immunity | None open locally (all local exits verified) |
-| **P6** | Local exits verified, external exits pending | • T-SOS-02: SOS create-or-join with 60s window ([P6-T1.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P6-T1.log))<br>• T-SOS-03: Multi-bus isolation<br>• T-CON-03: Advisory lock concurrency<br>• T-SOS-04: 2-minute unacknowledged escalation<br>• T-SOS-05: Incident cancellation lock<br>• T-SOS-06: Missing recipient setup alert<br>• T-NTF-01: Quiet hours suppression<br>• T-NTF-02: Per-user rate limiting<br>• T-NTF-03: TRAI DLT template validation | • P6-EXIT-01: T-SOS-01 Tier-0 push within 5s at p95 over live APNs/FCM (`E12`, `E1`)<br>• P6-EXIT-11: T-LOAD-02 SOS burst on staging (`E7`)<br>• P6-EXIT-12: Live SMS delivery via DLT telecom route (`E13`) |
-| **P7** | Local exits verified, external exits pending | • 100k row export limit with 24h presigned URLs (C-06)<br>• T-SEC-03: Formula injection sanitization<br>• T-PRV-01: Minor restricted mode without guardian consent<br>• T-PRV-02: GDPR/DPDP user erasure and SOS anonymization<br>• T-PRV-03: 90-day partition purge with audit log | • P7-EXIT-06: Staging infrastructure terraform apply (`E1`, `E7`) |
-| **P8** | Local exits verified, external exits pending | • IDOR cross-tenant access blocked on real DB<br>• SQL injection parameterized query neutralization<br>• Audit log append-only trigger rejection of UPDATE/DELETE<br>• Local HTTP security headers & Helmet allowlist<br>• CycloneDX SBOM generation (`docs/security/sbom.json`)<br>• Backup & restore drill RB-08 passing (803ms backup, 3198ms restore) | • P8-EXIT-05: TLS 1.3 & HSTS header scan on deployed hosts (`E1`)<br>• P8-EXIT-06: Staging load & failover tests T-FO-01..04 (`E1`, `E7`)<br>• P8-EXIT-07: Third-party penetration testing (`E8`) |
-| **P9** | Local exits verified, external exits pending | • Operational runbooks RB-01 to RB-13 written ([docs/runbooks/](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/runbooks/))<br>• Traceability matrix verified ([coverage.md](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/coverage.md))<br>• Local zero-synthetic audit passed (`verify:prod-clean` dry-run)<br>• Exit ledger compiled ([ledger.md](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/ledger.md)) | • P9-EXIT-03: Store submission & EAS release builds (`E9`, `E14`)<br>• P9-EXIT-04: 2-week, 10-bus live operational pilot (`E10`, `O7`)<br>• P9-EXIT-05: Staging database purge (`E7`)<br>• P9-EXIT-06: Production Terraform apply (`E1`, Owner instruction `"GO: apply production"`)<br>• P9-EXIT-07: Production clean verification (Gated on P9-EXIT-06) |
+| Phase  | Phase Classification                         | Exit Items VERIFIED (Local Evidence Path)                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Exit Items BLOCKED-EXTERNAL (Blocker ID)                                                                                                                                                                                                                                                                                                                  |
+| :----- | :------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **P0** | Local exits verified, external exits pending | • P0-EXIT-02: `verify:routes-auth` 32/32 routes verified ([P0-T7.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P0-T7.log))<br>• P0-EXIT-03: Real DB RLS isolation, tenant separation, append-only triggers ([P0-T4.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P0-T4.log), `packages/db/test/integration.spec.ts`)                                                                                          | • P0-EXIT-01: SSO dev sign-in against college test tenant (`E3`)<br>• P0-EXIT-04: CI green on GitHub Actions (`E2`)<br>• P0-EXIT-05: Security headers & TLS on deployed API host (`E1`)<br>• P0-T15: Live Sentry dev event ingestion (`E4`)                                                                                                               |
+| **P1** | Local exits verified, external exits pending | • P1-EXIT-01: Simulator 50-bus fleet replayed with zero data loss ([P1-T11.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P1-T11.log))<br>• P1-EXIT-02: Contract test harness hardware stream replayed ([P1-T10.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P1-T10.log))<br>• Local smoke load test passing on native PostgreSQL 16                                                                          | • P1-EXIT-03: T-LOAD-01 50-bus load test on staging (`E7`)                                                                                                                                                                                                                                                                                                |
+| **P2** | Local exits verified, external exits pending | • Navigation tree, live map, ETA calculations, QR scanner, student requests, faculty manifest, mobile test harness (168 tests passed, `apps/mobile/test/`)                                                                                                                                                                                                                                                                                                                                                      | • P2-EXIT-01: AC-STU-01 to AC-STU-05 on physical device (`E6`, `E3`)<br>• P2-EXIT-02: AC-FAC-01 to AC-FAC-03 on physical device (`E6`, `E3`)                                                                                                                                                                                                              |
+| **P3** | Local exits verified, external exits pending | • Driver shift start/resume/timeout, pre-trip diagnostics, background tracking & 24h SQLite buffer, 30s rotating QR, mock-location detection banner, auto-end job (Part 12.3)                                                                                                                                                                                                                                                                                                                                   | • P3-EXIT-01: AC-DRV-01 to AC-DRV-04 on physical reference phone (`E6`, `E3`)<br>• P3-EXIT-02: T-MOB-01 2-hour battery drain test <= 8%/hr (`E6`)<br>• P3-T1: Live Cloudflare Turnstile verification (`E5`)                                                                                                                                               |
+| **P4** | Local exits verified, external exits pending | • AC-COR-01: Revoked device 401 rejection on real DB ([P4-T2.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P4-T2.log))<br>• AC-COR-02: Bulk CSV import dry-run validation<br>• AC-COR-03: User deactivation session purge<br>• AC-TEC-02: Replacement hardware telemetry segregation<br>• T-SEC-05: Admin role guards 403/404 verified                                                                                                                         | • P4-EXIT-04: AC-TEC-01 bench tracker first heartbeat < 2 minutes on physical hardware (`E11`)                                                                                                                                                                                                                                                            |
+| **P5** | Local exits verified, external exits pending | • T-CON-01: Real DB concurrency guard prevents duplicate boarding ([P5-T3.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P5-T3.log))<br>• T-ATT-01: Expired QR token rejection<br>• T-ATT-02: Duplicate scan within 60s rejection<br>• T-ATT-03: Morning-present afternoon-absent safety alert (D-12)<br>• T-ATT-04: Approved leave immunity                                                                                                                    | None open locally (all local exits verified)                                                                                                                                                                                                                                                                                                              |
+| **P6** | Local exits verified, external exits pending | • T-SOS-02: SOS create-or-join with 60s window ([P6-T1.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P6-T1.log))<br>• T-SOS-03: Multi-bus isolation<br>• T-CON-03: Advisory lock concurrency<br>• T-SOS-04: 2-minute unacknowledged escalation<br>• T-SOS-05: Incident cancellation lock<br>• T-SOS-06: Missing recipient setup alert<br>• T-NTF-01: Quiet hours suppression<br>• T-NTF-02: Per-user rate limiting<br>• T-NTF-03: TRAI DLT template validation | • P6-EXIT-01: T-SOS-01 Tier-0 push within 5s at p95 over live APNs/FCM (`E12`, `E1`)<br>• P6-EXIT-11: T-LOAD-02 SOS burst on staging (`E7`)<br>• P6-EXIT-12: Live SMS delivery via DLT telecom route (`E13`)                                                                                                                                              |
+| **P7** | Local exits verified, external exits pending | • 100k row export limit with 24h presigned URLs (C-06)<br>• T-SEC-03: Formula injection sanitization<br>• T-PRV-01: Minor restricted mode without guardian consent<br>• T-PRV-02: GDPR/DPDP user erasure and SOS anonymization<br>• T-PRV-03: 90-day partition purge with audit log                                                                                                                                                                                                                             | • P7-EXIT-06: Staging infrastructure terraform apply (`E1`, `E7`)                                                                                                                                                                                                                                                                                         |
+| **P8** | Local exits verified, external exits pending | • IDOR cross-tenant access blocked on real DB<br>• SQL injection parameterized query neutralization<br>• Audit log append-only trigger rejection of UPDATE/DELETE<br>• Local HTTP security headers & Helmet allowlist<br>• CycloneDX SBOM generation (`docs/security/sbom.json`)<br>• Backup & restore drill RB-08 passing (803ms backup, 3198ms restore)                                                                                                                                                       | • P8-EXIT-05: TLS 1.3 & HSTS header scan on deployed hosts (`E1`)<br>• P8-EXIT-06: Staging load & failover tests T-FO-01..04 (`E1`, `E7`)<br>• P8-EXIT-07: Third-party penetration testing (`E8`)                                                                                                                                                         |
+| **P9** | Local exits verified, external exits pending | • Operational runbooks RB-01 to RB-13 written ([docs/runbooks/](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/runbooks/))<br>• Traceability matrix verified ([coverage.md](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/coverage.md))<br>• Local zero-synthetic audit passed (`verify:prod-clean` dry-run)<br>• Exit ledger compiled ([ledger.md](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/ledger.md))    | • P9-EXIT-03: Store submission & EAS release builds (`E9`, `E14`)<br>• P9-EXIT-04: 2-week, 10-bus live operational pilot (`E10`, `O7`)<br>• P9-EXIT-05: Staging database purge (`E7`)<br>• P9-EXIT-06: Production Terraform apply (`E1`, Owner instruction `"GO: apply production"`)<br>• P9-EXIT-07: Production clean verification (Gated on P9-EXIT-06) |
 
 ---
 
@@ -63,6 +63,7 @@ Open items remaining before production readiness:
 ## 3. Git Log Grouped by Task ID and Phase
 
 ### Commit Counts Summary per Phase
+
 - **Phase P0:** 32 commits
 - **Phase P1:** 17 commits
 - **Phase P2:** 25 commits
@@ -79,6 +80,7 @@ Open items remaining before production readiness:
 ### Detailed Commits Grouped by Task ID
 
 #### Phase P0 (32 commits)
+
 - **P0-T1:**
   - `b598b27` P0-T1: monorepo scaffolding with Turborepo, ESLint security rules, and project configs
 - **P0-T2:**
@@ -137,6 +139,7 @@ Open items remaining before production readiness:
   - `44cb895` chore(p0): correction 3 - update P0 commit map to true implementation SHAs
 
 #### Phase P1 (17 commits)
+
 - **P1-T1:** `e393f9a` feat(domain): implement device token generation, HMAC validation, and C-01 activation (P1-T1)
 - **P1-T2:** `dfa07b7` feat(domain): implement device links and historical sample attribution rule (P1-T2)
 - **P1-T3:** `a0ba87b` feat(api): implement telemetry pipeline stages S1 to S13 with C-09 conflict handling (P1-T3)
@@ -160,6 +163,7 @@ Open items remaining before production readiness:
   - `70b2cbc` chore(p1): correction 11 - run local T-LOAD-01 smoke test against native PostgreSQL
 
 #### Phase P2 (25 commits)
+
 - **P2-T1:**
   - `da561c0` feat(mobile): implement navigation tree, offline cache store, and snapshot poller with 304 ETag (P2-T1)
   - `d1500a8` docs(p2): record commit SHA da561c0 for P2-T1
@@ -198,6 +202,7 @@ Open items remaining before production readiness:
   - `396b12b` chore(p2): correction 7 - verify tasks P2-T1 to P2-T14 under Part 16 IDs with discrete unit tests
 
 #### Phase P3 (27 commits)
+
 - **P3-T1:**
   - `f795f5a` feat(driver): P3-T1 driver OTP sign-in, roster list and device registration
   - `3868dea` docs(p3): record commit SHA f795f5a for P3-T1 in P3-plan.md
@@ -237,6 +242,7 @@ Open items remaining before production readiness:
   - `41be698` chore(p3): correction 8 - verify P3 tasks locally and record device exits as BLOCKED-EXTERNAL
 
 #### Phase P4 (14 commits)
+
 - **P4-T1:** `9b44a12` feat(web): complete P4-T1 web shell role routing MFA enrolment and session idle tracker
 - **P4-T2:** `5a51c79` feat(fleet): complete P4-T2 buses and devices management with batch provisioning AC-COR-01 and AC-TEC-01/02
 - **P4-T3:** `61ac62d` P4-T3: implement routes, stops library, GeoJSON geometry, timetables and holidays (Part 20.8)
@@ -255,6 +261,7 @@ Open items remaining before production readiness:
   - `4aa1e2c` chore(p4): correction 9 - verify P4 integration tests and mark AC-TEC-01 as BLOCKED-EXTERNAL
 
 #### Phase P5 (10 commits)
+
 - **P5-T1:** `c7a012a` P5-T1: implement trip generator and expected passenger builder
 - **P5-T2:** `cc4bfdf` P5-T2: implement QR token generation, scan validation, rate limiting and verify T-ATT-01
 - **P5-T3:** `d593142` P5-T3: implement manual check-in, FLAGGED_GUEST, coordinator corrections and concurrency guard (T-ATT-02, T-CON-01)
@@ -268,15 +275,19 @@ Open items remaining before production readiness:
   - `10878c9` chore(p5): correction 10 - verify T-CON-01 on native PostgreSQL and T-ATT-01 to T-ATT-04 with injected clock
 
 #### Phase P6 (1 commit)
+
 - `a67072d` feat(p6): complete P6 SOS, stop requests, and notifications with full test suite
 
 #### Phase P7 (1 commit)
+
 - `e2946bc` feat(p7): complete P7 reports, privacy, and retention with full integration test suite
 
 #### Phase P8 (1 commit)
+
 - `85ad286` feat(p8): complete P8 security hardening, backup-restore drill, and SBOM generation
 
 #### Phase P9 (1 commit)
+
 - `3b9c2ff` feat(p9): complete P9 release readiness, runbooks RB-01 to RB-13, and readiness gate check
 
 ---
@@ -284,6 +295,7 @@ Open items remaining before production readiness:
 ## 4. Raw Per-Package Test Totals
 
 ### A. `pnpm test:unit`
+
 - **`@collegebus/mobile`**: 23 test files passed, 168 tests passed (Duration: 7.98s)
 - **`@collegebus/domain`**: 11 test files passed, 128 tests passed (Cached)
 - **`@collegebus/admin-web`**: 10 test files passed, 50 tests passed (Duration: 4.00s)
@@ -294,6 +306,7 @@ Open items remaining before production readiness:
 - **Unit Suite Overall Total:** 72 test files, 499 tests passed across 8 packages (0 failed).
 
 ### B. `pnpm test:int`
+
 - **`@collegebus/db:test:int`**: 1 test file passed (`test/integration.spec.ts`), 4 tests passed (Duration: 7.70s).
   - Proves transient PostgreSQL 16 test database with PostGIS 3.4 creates cleanly (P0-T4, Section 1A).
   - Proves `app_runtime` RLS isolation: user cannot read other user rows.
@@ -302,12 +315,14 @@ Open items remaining before production readiness:
   - Proves partial unique indexes prevent duplicate active assignments.
 
 ### C. `pnpm test:rls`
+
 - **`@collegebus/db:test:rls`**: 1 test file passed (`test/integration.spec.ts`), 4 tests passed (Duration: 6.68s).
   - Verifies NOBYPASSRLS on PostgreSQL 16 with PostGIS.
   - Verifies append-only security trigger rejecting tampering on `audit_logs`.
   - Verifies session parameter enforcement for `app.current_user_id` and `app.current_college_id`.
 
 ### D. `pnpm test:security`
+
 - **`tsx scripts/test-security.ts`**: 1 test file passed (`services/api/test/p8-security-hardening.spec.ts`), 4 tests passed (Duration: 3.52s).
   - IDOR Suite: cross-tenant access is blocked between College Alpha and College Beta.
   - SQL Injection Defence: parameterized queries prevent classic and stacked SQL injection attacks.
@@ -322,7 +337,8 @@ Open items remaining before production readiness:
 7 vulnerabilities found
 Severity: 1 low | 6 moderate
 ```
-*(Exit code: 0; zero high-severity and zero critical-severity vulnerabilities).*
+
+_(Exit code: 0; zero high-severity and zero critical-severity vulnerabilities)._
 
 ---
 
@@ -330,29 +346,30 @@ Severity: 1 low | 6 moderate
 
 - **P0 Exit 1: SSO Dev Sign-in Against College Test Tenant**  
   **Status: BLOCKED-EXTERNAL** (`E3`: College Identity Test Tenant).  
-  *Context:* Unit tests for OIDC PKCE flow, state/nonce validation, dual provider configuration refuse-on-startup, and mock tenant pass locally in `services/api/test/auth.spec.ts`. Live verification against a real Google Workspace or Microsoft Entra ID test tenant requires the college IT department to provide tenant credentials (`E3`).
+  _Context:_ Unit tests for OIDC PKCE flow, state/nonce validation, dual provider configuration refuse-on-startup, and mock tenant pass locally in `services/api/test/auth.spec.ts`. Live verification against a real Google Workspace or Microsoft Entra ID test tenant requires the college IT department to provide tenant credentials (`E3`).
 
 - **P0 Exit 2: `verify:routes-auth` Passes**  
   **Status: VERIFIED LOCALLY** (Evidence: [P0-T7.log](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/evidence/P0-T7.log)).  
-  *Context:* `scripts/verify-routes-auth.ts` verifies all 32 Fastify/NestJS routes against the Master Part 20 permissions matrix, ensuring every endpoint has explicit `@Roles(...)` or `@Public()` decorators and default-deny is active.
+  _Context:_ `scripts/verify-routes-auth.ts` verifies all 32 Fastify/NestJS routes against the Master Part 20 permissions matrix, ensuring every endpoint has explicit `@Roles(...)` or `@Public()` decorators and default-deny is active.
 
 - **P0 Exit 3: RLS Integration Tests Pass Against Native PostgreSQL with PostGIS**  
   **Status: VERIFIED LOCALLY** (Evidence: `packages/db/test/integration.spec.ts`, per OV-20).  
-  *Context:* Executed via `pnpm test:rls` on PostgreSQL 16 with PostGIS 3.4. Proves `app_runtime` cannot read rows belonging to other users, unauthenticated requests return zero rows, and `audit_logs` append-only trigger rejects UPDATE and DELETE. Output: 4 passed.
+  _Context:_ Executed via `pnpm test:rls` on PostgreSQL 16 with PostGIS 3.4. Proves `app_runtime` cannot read rows belonging to other users, unauthenticated requests return zero rows, and `audit_logs` append-only trigger rejects UPDATE and DELETE. Output: 4 passed.
 
 - **P0 Exit 4: CI Green on GitHub Actions**  
   **Status: BLOCKED-EXTERNAL** (`E2`: GitHub Repository with Actions Runner).  
-  *Context:* The workflow `.github/workflows/ci.yml` is committed and executes `typecheck`, `lint`, `test:unit`, `test:int`, `test:rls`, `verify:no-mock`, `verify:routes-auth`, `verify:migrations`, and `security:scan`. It cannot produce a live GitHub Actions run link until pushed to an active GitHub remote with runners enabled.
+  _Context:_ The workflow `.github/workflows/ci.yml` is committed and executes `typecheck`, `lint`, `test:unit`, `test:int`, `test:rls`, `verify:no-mock`, `verify:routes-auth`, `verify:migrations`, and `security:scan`. It cannot produce a live GitHub Actions run link until pushed to an active GitHub remote with runners enabled.
 
 - **P0 Exit 5: Security Headers Test on API Host**  
   **Status: BLOCKED-EXTERNAL** (`E1`: AWS Dev Account for deployed CloudFront/ALB endpoint).  
-  *Context:* Security headers (Helmet CSP, X-Content-Type-Options, X-Frame-Options, HSTS preload) are verified locally against `http://localhost:3000` via curl and unit tests (`services/api/test/health.spec.ts`). However, testing TLS 1.3 negotiation, valid ACM certificate chains, and live domain HSTS requires a deployed host on AWS.
+  _Context:_ Security headers (Helmet CSP, X-Content-Type-Options, X-Frame-Options, HSTS preload) are verified locally against `http://localhost:3000` via curl and unit tests (`services/api/test/health.spec.ts`). However, testing TLS 1.3 negotiation, valid ACM certificate chains, and live domain HSTS requires a deployed host on AWS.
 
 ---
 
 ## 7. Open Blockers E4 and E5 in NEXT.md
 
 Both `E4` (Sentry) and `E5` (Turnstile) are recorded in [docs/progress/NEXT.md](file:///c:/Users/Deekshit%20kumar%20.k/OneDrive/Desktop/collegebus/docs/progress/NEXT.md):
+
 - **E4 (Sentry Dev DSN):** Unblocks `P0-T15` (telemetry baseline dev event verification in Sentry).
 - **E5 (Cloudflare Turnstile Keys):** Unblocks `P0-T6` (driver OTP anti-bot verification) and `P3-T1` (driver OTP sign-in).
 
@@ -373,4 +390,3 @@ The true production execution of `verify:prod-clean` (`P9-EXIT-07`) is strictly 
 - **Configuration Placeholders Pending Deployed Domain (BLOCKED-EXTERNAL `E1`, D-12):**
   - `api.dev.collegebus.internal` / AWS ALB & CloudFront Distribution: Configuration placeholders only (not deployed). Live TLS 1.3 cipher negotiation, ACM certificate chain validity, DNS CAA records, and internet-facing HSTS headers require deployed infrastructure on AWS once E1 provides the real domain.
   - `admin.dev.collegebus.internal`: Configuration placeholder for Admin web S3/CloudFront HTTPS distribution. Will be replaced by the real registered domain upon receipt of E1 without requiring an owner GO.
-

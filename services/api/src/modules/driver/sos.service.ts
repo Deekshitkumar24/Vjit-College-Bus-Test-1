@@ -51,7 +51,10 @@ export class SosService {
       releaseLock = resolve;
     });
 
-    this.lockQueues.set(key, prevLock.then(() => currentLock));
+    this.lockQueues.set(
+      key,
+      prevLock.then(() => currentLock),
+    );
 
     await prevLock;
     try {

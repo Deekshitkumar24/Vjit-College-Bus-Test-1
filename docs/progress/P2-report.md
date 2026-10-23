@@ -19,6 +19,7 @@ P2-T14 | 7ca85d7 | Trip completed view: visible for 30 minutes after the trip en
 Tests: 168 run, 168 pass, 0 fail across 23 test files (full mobile component and integration test suite passing).
 
 Exit criteria:
+
 1. AC-STU-01 to AC-STU-05 pass on device: NOT VERIFIED (awaiting physical reference phones E6 and college identity tenant E3)
 2. AC-FAC-01 to AC-FAC-03 pass on device: NOT VERIFIED (awaiting physical reference phones E6 and college identity tenant E3)
 
@@ -29,18 +30,20 @@ E3: College identity test tenant (college IT)
 E6: Physical reference phones (iOS 16+, Android 10+) for on-device acceptance runs (college IT)
 
 Open decisions used:
-| Ref | Question | Default in force | Owner |
-| --- | --- | --- | --- |
-| L-2 | SOS category | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner |
-| L-3 | Security staff visibility | Read-only view of all active buses | Product owner |
-| D-08 | Minimum mobile OS | Android 10 and later, iOS 16 and later | Product owner |
-| D-10 | Boarding method | QR at launch (dynamic rotating HMAC) | Transport office |
-| D-11 | Map provider | MapLibre with OSM tiles | Product owner |
-| D-12 | Morning-present, afternoon-absent rule | Discrepancy safety alert raised | Faculty committee |
-| D-15 | Parental consent | Guardian one-time code | Counsel |
-| D-16 | Critical Alerts on iOS | Time-sensitive interruption level | Product owner |
+
+| Ref  | Question                               | Default in force                                        | Owner             |
+| ---- | -------------------------------------- | ------------------------------------------------------- | ----------------- |
+| L-2  | SOS category                           | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner     |
+| L-3  | Security staff visibility              | Read-only view of all active buses                      | Product owner     |
+| D-08 | Minimum mobile OS                      | Android 10 and later, iOS 16 and later                  | Product owner     |
+| D-10 | Boarding method                        | QR at launch (dynamic rotating HMAC)                    | Transport office  |
+| D-11 | Map provider                           | MapLibre with OSM tiles                                 | Product owner     |
+| D-12 | Morning-present, afternoon-absent rule | Discrepancy safety alert raised                         | Faculty committee |
+| D-15 | Parental consent                       | Guardian one-time code                                  | Counsel           |
+| D-16 | Critical Alerts on iOS                 | Time-sensitive interruption level                       | Product owner     |
 
 Git log for this phase:
+
 ```
 7ca85d7 P2-T14: trip completed summary view with 30-minute time-to-live per Part 6.10
 c2464f7 P2-T13: profile correction, GDPR/DPDP export/deletion, consent history, and session sign-out

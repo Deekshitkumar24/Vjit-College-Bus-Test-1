@@ -1,0 +1,20 @@
+=== P0-T10 Observability Baseline Verification ===
+Date: 2026-10-21T19:27:37+05:30
+Command: pnpm --filter @collegebus/api test:unit -- test/health.spec.ts
+Commit SHA: d8c029a
+
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/health.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/health.spec.ts (2 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  19:24:37
+   Duration  1.68s (transform 132ms, setup 0ms, collect 666ms, tests 5ms, environment 0ms, prepare 333ms)
+
+Result: PASS
+Liveness endpoint (/health): 200 OK verified
+Readiness endpoint (/health/ready): 200 OK verified

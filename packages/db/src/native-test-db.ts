@@ -27,10 +27,7 @@ export async function createTransientTestDatabase(): Promise<TestDatabaseHandle>
   }
 
   const parsedUrl = new URL(adminUrl);
-  if (
-    parsedUrl.pathname.includes('prod') ||
-    parsedUrl.pathname.includes('production')
-  ) {
+  if (parsedUrl.pathname.includes('prod') || parsedUrl.pathname.includes('production')) {
     throw new Error('Refusing to run: target database name looks like production');
   }
 
@@ -45,9 +42,7 @@ export async function createTransientTestDatabase(): Promise<TestDatabaseHandle>
       `SELECT 1 FROM pg_database WHERE datname = 'collegebus';`,
     );
     if (templateCheck.rows.length > 0) {
-      await adminClient.query(
-        `CREATE DATABASE "${dbName}" TEMPLATE collegebus;`,
-      );
+      await adminClient.query(`CREATE DATABASE "${dbName}" TEMPLATE collegebus;`);
     } else {
       await adminClient.query(`CREATE DATABASE "${dbName}";`);
     }

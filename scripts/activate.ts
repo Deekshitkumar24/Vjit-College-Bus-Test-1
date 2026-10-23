@@ -105,7 +105,9 @@ const ACTIVATION_RULES: Record<string, ActivationRule> = {
 
 const target = process.argv[2];
 if (!target || !ACTIVATION_RULES[target]) {
-  console.error(`Unknown activation target: "${target}". Valid targets: ${Object.keys(ACTIVATION_RULES).join(', ')}`);
+  console.error(
+    `Unknown activation target: "${target}". Valid targets: ${Object.keys(ACTIVATION_RULES).join(', ')}`,
+  );
   process.exit(1);
 }
 
@@ -113,7 +115,9 @@ const rule = ACTIVATION_RULES[target];
 const missing = rule.envVars.filter((v) => !process.env[v]);
 
 if (missing.length > 0) {
-  console.log(`[ACTIVATION REFUSED] Required environment variables missing for ${rule.input} (${target}):`);
+  console.log(
+    `[ACTIVATION REFUSED] Required environment variables missing for ${rule.input} (${target}):`,
+  );
   for (const v of missing) {
     console.log(`  - ${v}`);
   }
@@ -124,5 +128,7 @@ console.log(`[ACTIVATION SUCCESS] All required variables present for ${rule.inpu
 if (rule.testCommand) {
   execSync(`pnpm evidence -- ${rule.evidenceId} -- ${rule.testCommand}`, { stdio: 'inherit' });
 } else {
-  execSync(`pnpm evidence -- ${rule.evidenceId} -- echo "Activation verified"`, { stdio: 'inherit' });
+  execSync(`pnpm evidence -- ${rule.evidenceId} -- echo "Activation verified"`, {
+    stdio: 'inherit',
+  });
 }

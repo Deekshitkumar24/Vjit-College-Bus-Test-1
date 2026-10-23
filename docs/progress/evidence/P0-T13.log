@@ -1,0 +1,22 @@
+=== P0-T13 Authorisation Test Harness Verification ===
+Date: 2026-10-21T19:41:25+05:30
+Command: pnpm --filter @collegebus/api test:unit -- test/authorization-harness.spec.ts
+Commit SHA: 441b4e5 (and base 7e5bb3e)
+
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/authorization-harness.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/authorization-harness.spec.ts (3 tests) 11ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  19:41:23
+   Duration  1.21s (transform 110ms, setup 0ms, collect 110ms, tests 11ms, environment 0ms, prepare 349ms)
+
+Result: PASS
+Permission Matrix Scope: 12 routes tested against all 8 roles (STU, FAC, DRV, SEC, COR, TEC, MGT, SAD) and unauthenticated callers (108 matrix conditions tested).
+Unauthenticated calls to protected routes: Rejected with HTTP 401.
+Non-admin calls to admin MFA endpoints: Rejected with HTTP 403.
+Public endpoints (@Public): Permitted without token.

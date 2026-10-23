@@ -1,0 +1,26 @@
+=== P0-T19 Minimal Web Console Shell Verification ===
+Date: 2026-10-21T20:19:36+05:30
+Command: pnpm --filter @collegebus/admin-web test ; pnpm --filter @collegebus/admin-web typecheck
+Commit SHA: 7f668be
+
+> @collegebus/admin-web@1.0.0 test C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/apps/admin-web
+
+ ✓ test/guards.spec.ts (4 tests) 7ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  20:09:59
+   Duration  1.24s (transform 92ms, setup 0ms, collect 82ms, tests 7ms, environment 0ms, prepare 459ms)
+
+> @collegebus/admin-web@1.0.0 typecheck C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\apps\admin-web
+> tsc --noEmit
+
+Result: PASS
+Vite & React Router Shell: Initialized with dev security headers
+Dev CSP Header Configured in vite.config.ts: default-src 'self'; frame-ancestors 'none';
+Admin Route Guard: Verified across admin roles (COR, TEC, MGT, SAD)
+MFA Verification Enforcement: Enforced (redirects unverified to /mfa-verify)
+Playwright E2E Smoke Test: Staged for end-to-end suite

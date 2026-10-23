@@ -20,8 +20,8 @@ The following sections from `SW-MVP-1.0` and `HW-SPEC-1.0` have been reviewed fo
 
 ## 2. Task Inventory & Execution Status
 
-| Task ID    | Scope                                                                                                                                           |  Status  |            Evidence Log             | Current State & Verified Commit SHA                                           |
-| :--------- | :---------------------------------------------------------------------------------------------------------------------------------------------- | :------: | :---------------------------------: | :---------------------------------------------------------------------------- |
+| Task ID    | Scope                                                                                                                                           |  Status  |            Evidence Log             | Current State & Verified Commit SHA                                       |
+| :--------- | :---------------------------------------------------------------------------------------------------------------------------------------------- | :------: | :---------------------------------: | :------------------------------------------------------------------------ |
 | **P1-T1**  | **Device tokens:** generation, HMAC storage, key versions, activation on first use (C-01), rotation with overlap, revocation (Part 6.2 to 6.4). | **DONE** | `docs/progress/evidence/P1-T1.log`  | Done. Commit `e393f9a`. 7/7 unit tests passing.                           |
 | **P1-T2**  | **Device links:** bus-device linking with row locks and attribution rules (Part 6.5 & 6.6).                                                     | **DONE** | `docs/progress/evidence/P1-T2.log`  | Done. Commit `dfa07b7`. 5/5 unit tests passing.                           |
 | **P1-T3**  | **Telemetry pipeline stages S1 to S13:** validation, dedup, duplicate sample 200 CONFLICT (C-09/OV-1), storage (Part 5.2).                      | **DONE** | `docs/progress/evidence/P1-T3.log`  | Done. Commit `a0ba87b`. 4/4 pipeline tests passing.                       |

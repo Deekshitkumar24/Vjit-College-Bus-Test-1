@@ -18,7 +18,14 @@ describe('Driver Manual Stop Arrival & Skipped Stops Pipeline (P3-T15, Part 9.9,
       shiftService.addRosterEntry({
         id: `roster_${idx + 1}`,
         driver_id: drvId,
-        bus_id: idx === 0 ? 'bus_stops' : idx === 1 ? 'bus_stops_2' : idx === 2 ? 'bus_stops_3' : 'bus_stops_4',
+        bus_id:
+          idx === 0
+            ? 'bus_stops'
+            : idx === 1
+              ? 'bus_stops_2'
+              : idx === 2
+                ? 'bus_stops_3'
+                : 'bus_stops_4',
         valid_from: new Date('2026-10-01T00:00:00Z'),
         valid_to: new Date('2026-11-01T00:00:00Z'),
       });

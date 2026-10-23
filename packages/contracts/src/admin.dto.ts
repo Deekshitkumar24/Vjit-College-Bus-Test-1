@@ -35,13 +35,7 @@ export type BusResponseDto = z.infer<typeof BusResponseSchema>;
 // ==========================================
 // 2. Device Provisioning & Lifecycle Schemas
 // ==========================================
-export const DeviceStatusEnum = z.enum([
-  'PROVISIONED',
-  'ACTIVE',
-  'BENCH',
-  'REVOKED',
-  'RETIRED',
-]);
+export const DeviceStatusEnum = z.enum(['PROVISIONED', 'ACTIVE', 'BENCH', 'REVOKED', 'RETIRED']);
 export type DeviceStatus = z.infer<typeof DeviceStatusEnum>;
 
 export const ProvisionDeviceItemSchema = z.object({
@@ -164,8 +158,14 @@ export type UpdateStopDto = z.infer<typeof UpdateStopSchema>;
 export const OrderedRouteStopSchema = z.object({
   stop_id: z.string(),
   sequence_order: z.number().int().positive(),
-  scheduled_arrival_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).optional(),
-  scheduled_departure_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).optional(),
+  scheduled_arrival_time: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .optional(),
+  scheduled_departure_time: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .optional(),
 });
 export type OrderedRouteStopDto = z.infer<typeof OrderedRouteStopSchema>;
 
@@ -300,7 +300,15 @@ export const UserImportRowSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
   phone: z.string().regex(/^\+?[1-9]\d{7,14}$/, 'Invalid phone number format'),
-  role: z.enum(['STUDENT', 'FACULTY', 'DRIVER', 'COORDINATOR', 'TECHNICIAN', 'SECURITY', 'MANAGEMENT']),
+  role: z.enum([
+    'STUDENT',
+    'FACULTY',
+    'DRIVER',
+    'COORDINATOR',
+    'TECHNICIAN',
+    'SECURITY',
+    'MANAGEMENT',
+  ]),
   college_id: z.string().min(1, 'College ID is required'),
   route_id: z.string().optional(),
   morning_stop_id: z.string().optional(),
@@ -530,7 +538,3 @@ export const AdminAuditLogEntrySchema = z.object({
   recorded_at: z.string().datetime(),
 });
 export type AdminAuditLogEntryDto = z.infer<typeof AdminAuditLogEntrySchema>;
-
-
-
-

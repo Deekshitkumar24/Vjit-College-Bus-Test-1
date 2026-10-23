@@ -2,7 +2,7 @@
 
 **Decision ID:** D-12  
 **Date:** 2026-10-23  
-**Status:** In Force  
+**Status:** In Force
 
 ## Policy on `*.dev.collegebus.internal`
 

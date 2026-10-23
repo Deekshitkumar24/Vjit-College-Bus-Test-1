@@ -1,0 +1,16 @@
+=== P0-T9 Rate Limiter & Idempotency Middleware Verification ===
+Date: 2026-10-21T19:23:40+05:30
+Command: pnpm --filter @collegebus/api test:unit -- test/auth.spec.ts
+Commit SHA: 441b4e5 (and base 7e5bb3e)
+
+Verified in test/auth.spec.ts:
+- Rate Limiter Middleware (T-SEC-04, Part 13.4):
+  ✓ Enforces rate counters in sliding window
+  ✓ Triggers HTTP 429 RATE_LIMITED when threshold exceeded
+  ✓ Emits standard Retry-After and RateLimit-Remaining headers
+- Idempotency Middleware (Part 8.1, OV-1):
+  ✓ Preserves Idempotency-Key for 24 hours
+  ✓ Replays identical cached responses on idempotent retries
+  ✓ Detects payload divergence and rejects with HTTP 409 IDEMPOTENCY_CONFLICT
+
+Result: PASS

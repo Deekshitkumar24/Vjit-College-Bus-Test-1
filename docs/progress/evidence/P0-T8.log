@@ -1,0 +1,19 @@
+=== P0-T8 HTTP Hardening Verification ===
+Date: 2026-10-21T19:23:30+05:30
+Command: pnpm --filter @collegebus/api test:unit
+Commit SHA: 441b4e5 (and base 7e5bb3e)
+
+Security Headers Configured in bootstrap (services/api/src/main.ts):
+- Helmet CSP: default-src 'none', frame-ancestors 'none'
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- Referrer-Policy: strict-origin-when-cross-origin
+- Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+- Permissions-Policy: geolocation=(), camera=(), microphone=()
+- X-Powered-By: Stripped
+- Cache-Control: no-store on authenticated requests
+- Standardized Error Envelope: { error: { code, message, request_id } }
+- Tracing Header: X-Request-Id generated and echoed
+
+Result: PASS
+Note: Live Ingress verification against ALB/CloudFront is tracked as Exit Criterion 5 (NOT VERIFIED until deployed).

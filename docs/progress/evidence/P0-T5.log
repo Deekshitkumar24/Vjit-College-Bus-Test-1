@@ -1,0 +1,23 @@
+=== P0-T5 Migration Policy Check Verification ===
+Date: 2026-10-21T19:21:15+05:30
+Command: pnpm tsx scripts/check-migrations.ts ; pnpm --filter @collegebus/db test:unit -- test/check-migrations.spec.ts
+Commit SHA: 441b4e5 (and base 7e5bb3e)
+
+> pnpm tsx scripts/check-migrations.ts
+Expand-only migration policy check passed.
+
+> @collegebus/db@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\db
+> vitest run test/db.spec.ts test/check-migrations.spec.ts "test/check-migrations.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/db
+
+ ✓ test/db.spec.ts (2 tests) 6ms
+ ✓ test/check-migrations.spec.ts (4 tests) 9ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  19:21:14
+   Duration  1.11s (transform 226ms, setup 0ms, collect 257ms, tests 15ms, environment 1ms, prepare 773ms)
+
+Result: PASS
+Expand-Only Enforcement: DROP COLUMN, RENAME COLUMN, DROP TABLE blocked unless contract phase exception is registered.

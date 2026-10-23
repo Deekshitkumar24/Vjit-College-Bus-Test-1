@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { Pool } from 'pg';
-import { createTransientTestDatabase, TestDatabaseHandle } from '../../../packages/db/src/native-test-db.js';
+import {
+  createTransientTestDatabase,
+  TestDatabaseHandle,
+} from '../../../packages/db/src/native-test-db.js';
 import { ExportService } from '../src/modules/reports/export.service.js';
 import { PrivacyService } from '../src/modules/privacy/privacy.service.js';
 import { RetentionService } from '../src/modules/retention/retention.service.js';
@@ -173,7 +176,11 @@ describe('Phase P7: Reports, Privacy, and Retention (Real DB & API)', () => {
     );
 
     // Re-evaluate: guardian consent present -> unlocked
-    const unlockedStatus = await privacyService.evaluateMinorConsent(minorUserId, birthDateMinor, now);
+    const unlockedStatus = await privacyService.evaluateMinorConsent(
+      minorUserId,
+      birthDateMinor,
+      now,
+    );
     expect(unlockedStatus.hasParentalConsent).toBe(true);
     expect(unlockedStatus.restrictedMode).toBe(false);
     expect(unlockedStatus.allowedViews).toEqual(['ALL']);
@@ -245,17 +252,15 @@ describe('Phase P7: Reports, Privacy, and Retention (Real DB & API)', () => {
     expect(parseInt(attCount.rows[0].count, 10)).toBe(0);
 
     // 2. Sessions gone
-    const sessCount = await pool.query(
-      `SELECT COUNT(*) FROM sessions WHERE user_id = $1;`,
-      [deleteUserId],
-    );
+    const sessCount = await pool.query(`SELECT COUNT(*) FROM sessions WHERE user_id = $1;`, [
+      deleteUserId,
+    ]);
     expect(parseInt(sessCount.rows[0].count, 10)).toBe(0);
 
     // 3. User status is DELETED and name is anonymized
-    const userRes = await pool.query(
-      `SELECT status, full_name, email FROM users WHERE id = $1;`,
-      [deleteUserId],
-    );
+    const userRes = await pool.query(`SELECT status, full_name, email FROM users WHERE id = $1;`, [
+      deleteUserId,
+    ]);
     expect(userRes.rows[0].status).toBe('DELETED');
     expect(userRes.rows[0].full_name).toBe('Anonymized User');
 
@@ -271,7 +276,9 @@ describe('Phase P7: Reports, Privacy, and Retention (Real DB & API)', () => {
   it('T-PRV-03: retention purges expired partitions and logs summary in audit_logs', async () => {
     // Create an artificial expired partition table older than 90 days
     const expiredPartitionName = 'location_samples_2026_01_01';
-    await pool.query(`CREATE TABLE IF NOT EXISTS "${expiredPartitionName}" (id UUID, sample_time TIMESTAMPTZ);`);
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS "${expiredPartitionName}" (id UUID, sample_time TIMESTAMPTZ);`,
+    );
 
     // Purge partitions older than 90 days relative to 2026-10-22
     const now = new Date('2026-10-22T00:00:00Z');
@@ -310,4 +317,3 @@ describe('Phase P7: Reports, Privacy, and Retention (Real DB & API)', () => {
     ).rejects.toThrowError(/audit_logs rows are append-only/);
   });
 });
-

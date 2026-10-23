@@ -165,7 +165,11 @@ export class QrAttendanceValidator {
     }
 
     // Step 4: Trip is ACTIVE and token bus matches trip bus
-    if (context.trip.status !== 'ACTIVE' || context.trip.bus_id !== tokenBusId || context.trip.id !== tokenTripId) {
+    if (
+      context.trip.status !== 'ACTIVE' ||
+      context.trip.bus_id !== tokenBusId ||
+      context.trip.id !== tokenTripId
+    ) {
       return { valid: false, error: 'TRIP_NOT_ACTIVE' };
     }
 

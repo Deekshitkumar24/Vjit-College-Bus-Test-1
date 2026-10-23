@@ -1,6 +1,7 @@
 <!-- ARCHIVED per Step 0 (S0.1) of AG-MVP-GUIDE-1.0:
 Reason: Claimed COMPLETE, shared commit SHA 441b4e5 across nine tasks, and contained unverified exit criteria without written owner acceptance.
 -->
+
 # Phase Report: P0 Foundation (SUPERSEDED)
 
 **Phase ID:** P0  

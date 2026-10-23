@@ -1,0 +1,12 @@
+{
+  "phase": "P0",
+  "timestamp": "2026-10-23T08:10:05.202Z",
+  "passed": false,
+  "checks": [
+    {
+      "command": "pnpm lint",
+      "success": false,
+      "error": "Command failed: pnpm lint"
+    }
+  ]
+}

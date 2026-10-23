@@ -1,9 +1,10 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import {
-  QrTokenService,
-  QrAttendanceValidator,
-  type QrScanErrorCode,
-} from '@collegebus/domain';
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
+import { QrTokenService, QrAttendanceValidator, type QrScanErrorCode } from '@collegebus/domain';
 
 export interface AttendanceServiceOptions {
   keys?: Record<string, string>;
@@ -14,17 +15,29 @@ export interface AttendanceServiceOptions {
 export interface GetTripQrParams {
   tripId: string;
   driverId: string;
-  getTrip: (tripId: string) => Promise<any>;
-  getActiveShift: (driverId: string) => Promise<any>;
+  getTrip: (tripId: string) => Promise<{ bus?: { id?: string; bus_number?: string } } | null>;
+  getActiveShift: (driverId: string) => Promise<{ id: string } | null>;
 }
 
 export interface ProcessScanParams {
   studentId: string;
   token: string;
   scanTime?: number;
-  getTrip: (tripId: string) => Promise<any>;
-  getStudentAssignment: (studentId: string, routeId: string, tripType: string) => Promise<any>;
-  getExistingAttendance: (tripId: string, studentId: string) => Promise<any>;
+  getTrip: (tripId: string) => Promise<{
+    id: string;
+    route_id?: string;
+    trip_type?: string;
+    bus?: { bus_number?: string };
+  } | null>;
+  getStudentAssignment: (
+    studentId: string,
+    routeId: string,
+    tripType: string,
+  ) => Promise<Record<string, unknown> | null>;
+  getExistingAttendance: (
+    tripId: string,
+    studentId: string,
+  ) => Promise<Record<string, unknown> | null>;
   saveAttendance: (record: {
     tripId: string;
     studentId: string;
@@ -32,7 +45,7 @@ export interface ProcessScanParams {
     method: string;
     boardingStopId?: string;
     boardedAt: Date;
-  }) => Promise<any>;
+  }) => Promise<Record<string, unknown>>;
 }
 
 export interface ScanResult {
@@ -154,7 +167,7 @@ export class AttendanceService {
     const studentAssignment = await params.getStudentAssignment(
       params.studentId,
       trip.route_id,
-      trip.trip_type
+      trip.trip_type,
     );
 
     const existing = await params.getExistingAttendance(trip.id, params.studentId);
@@ -200,8 +213,9 @@ export class AttendanceService {
         boardingStopId: validationResult.boardingStopId,
         boardedAt,
       });
-    } catch (err: any) {
-      if (err?.message?.includes('DUPLICATE_BOARDING') || err?.code === 'P2002') {
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string; code?: string };
+      if (errorObj?.message?.includes('DUPLICATE_BOARDING') || errorObj?.code === 'P2002') {
         return { success: false, error: 'DUPLICATE_BOARDING' };
       }
       throw err;
@@ -220,9 +234,18 @@ export class AttendanceService {
     studentId: string;
     token: string;
     scanTime?: number;
-    getTrip: (tripId: string) => Promise<any>;
-    getStudentAssignment: (studentId: string, routeId: string, tripType: string) => Promise<any>;
-    store: Map<string, any>;
+    getTrip: (tripId: string) => Promise<{
+      id: string;
+      route_id?: string;
+      trip_type?: string;
+      bus?: { bus_number?: string };
+    } | null>;
+    getStudentAssignment: (
+      studentId: string,
+      routeId: string,
+      tripType: string,
+    ) => Promise<Record<string, unknown> | null>;
+    store: Map<string, unknown>;
   }): Promise<ScanResult> {
     const key = `${params.tripId}:${params.studentId}`;
     if (params.store.has(key)) {
@@ -236,7 +259,7 @@ export class AttendanceService {
       scanTime: params.scanTime,
       getTrip: params.getTrip,
       getStudentAssignment: params.getStudentAssignment,
-      getExistingAttendance: async () => params.store.get(key) || null,
+      getExistingAttendance: async () => (params.store.get(key) as Record<string, unknown>) || null,
       saveAttendance: async (record) => {
         if (params.store.has(key)) {
           throw new Error('DUPLICATE_BOARDING');
@@ -253,7 +276,7 @@ export class AttendanceService {
     driverId: string;
     reason?: string;
     isGuest?: boolean;
-    saveRecord: (record: any) => Promise<any>;
+    saveRecord: (record: Record<string, unknown>) => Promise<Record<string, unknown>>;
   }): Promise<{ success: boolean; status: string; method: string }> {
     const status = params.isGuest ? 'FLAGGED_GUEST' : 'MANUAL_CHECKIN';
     const method = 'DRIVER';
@@ -280,8 +303,8 @@ export class AttendanceService {
     newStatus: string;
     coordinatorId: string;
     reason: string;
-    saveRecord: (update: any) => Promise<any>;
-    logAudit: (audit: any) => Promise<any>;
+    saveRecord: (update: Record<string, unknown>) => Promise<Record<string, unknown>>;
+    logAudit: (audit: Record<string, unknown>) => Promise<Record<string, unknown>>;
   }): Promise<{ success: boolean; status: string }> {
     if (!params.reason || params.reason.trim().length === 0) {
       throw new BadRequestException('Mandatory reason required for coordinator correction');

@@ -25,13 +25,8 @@ const phaseChecks: Record<string, string[]> = {
     'pnpm verify:migrations',
     'pnpm security:scan',
   ],
-  P1: [
-    'pnpm test:contract',
-    'pnpm --filter @collegebus/simulator test:unit',
-  ],
-  P2: [
-    'pnpm --filter @collegebus/mobile test:unit',
-  ],
+  P1: ['pnpm test:contract', 'pnpm --filter @collegebus/simulator test:unit'],
+  P2: ['pnpm --filter @collegebus/mobile test:unit'],
   P3: [
     'pnpm --filter @collegebus/mobile test:unit test/shift-lifecycle.spec.ts test/location-buffer.spec.ts',
   ],
@@ -39,27 +34,14 @@ const phaseChecks: Record<string, string[]> = {
     'pnpm --filter @collegebus/api test:unit test/p4-coordinator-technician.integration.spec.ts',
     'pnpm --filter @collegebus/admin-web test:unit',
   ],
-  P5: [
-    'pnpm --filter @collegebus/api test:unit test/attendance-manual-concurrency.spec.ts',
-  ],
-  P6: [
-    'pnpm --filter @collegebus/api test:unit test/p6-sos-notifications.spec.ts',
-  ],
-  P7: [
-    'pnpm --filter @collegebus/api test:unit test/p7-reports-privacy-retention.spec.ts',
-  ],
-  P8: [
-    'pnpm --filter @collegebus/api test:unit test/p8-security-hardening.spec.ts',
-  ],
-  P9: [
-    'pnpm verify:prod-clean:dry-run',
-  ],
+  P5: ['pnpm --filter @collegebus/api test:unit test/attendance-manual-concurrency.spec.ts'],
+  P6: ['pnpm --filter @collegebus/api test:unit test/p6-sos-notifications.spec.ts'],
+  P7: ['pnpm --filter @collegebus/api test:unit test/p7-reports-privacy-retention.spec.ts'],
+  P8: ['pnpm --filter @collegebus/api test:unit test/p8-security-hardening.spec.ts'],
+  P9: ['pnpm verify:prod-clean:dry-run'],
 };
 
-const checksToRun = [
-  ...phaseChecks['P0'],
-  ...(phase !== 'P0' ? phaseChecks[phase] || [] : []),
-];
+const checksToRun = [...phaseChecks['P0'], ...(phase !== 'P0' ? phaseChecks[phase] || [] : [])];
 
 const results: Array<{ command: string; success: boolean; error?: string }> = [];
 let allPassed = true;

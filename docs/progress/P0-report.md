@@ -24,15 +24,19 @@ P0-T19 | 7f668be | Minimal web console shell: Vite, React Router, admin guard, d
 Tests: 164 run, 164 pass, 0 fail across 18 files (all unit and integration suites passing).
 
 Exit criteria:
+
 1. SSO dev sign-in: NOT VERIFIED (awaiting college IT test tenant, E3)
 2. verify:routes-auth: VERIFIED
+
 ```
 > college-bus-tracker@1.0.0 verify:routes-auth
 > tsx scripts/verify-routes-auth.ts
 
 verify:routes-auth PASSED. 30 routes checked with zero unauthorized public endpoints.
 ```
+
 3. RLS integration on PostgreSQL 16: VERIFIED
+
 ```
 > @collegebus/db@1.0.0 test:int
 > vitest run test/integration.spec.ts
@@ -50,6 +54,7 @@ verify:routes-auth PASSED. 30 routes checked with zero unauthorized public endpo
    Start at  19:35:12
    Duration  2.41s
 ```
+
 4. CI green: NOT VERIFIED (awaiting GitHub Actions runner, E2)
 5. Security headers on API host: NOT VERIFIED (awaiting deployed API host, E1)
 
@@ -60,23 +65,25 @@ E3: College identity test tenant (college IT)
 E4: Sentry project (college IT)
 
 Open decisions used:
-| Ref | Question | Default in force | Owner |
-| --- | --- | --- | --- |
-| L-1 | BENCH device status | `PROVISIONED`, `ACTIVE`, `BENCH`, `REVOKED`, `RETIRED` | Product owner |
-| L-2 | SOS category | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner |
-| L-3 | Security staff visibility | Read-only view of all active buses | Product owner |
-| L-4 | College SSO provider | Dual Google Workspace and Microsoft Entra ID support | College IT |
-| L-5 | AWS Region | `ap-south-1` (Mumbai), CloudFront/ACM in `us-east-1` | Product owner |
-| D-01 | Device GNSS source | Internal EC200U-CN or external NEO-6M fallback | ECE team |
-| D-02 | Low-voltage event | 11.8V (12V) / 23.5V (24V) sustained 30s | ECE team |
-| D-03 | Bus voltage class | V12 or V24 provisioned per bus | Transport office |
-| D-06 | Driver phones | College-issued preferred, personal allowed with consent | Transport office |
-| D-11 | Map provider | MapLibre with OSM tiles | Product owner |
-| D-13 | Tracking mode | AUTO default | Transport office |
-| D-14 | Retention periods | Values in Master Part 14.2 | Policy owner |
-| D-18 | College SSO provider | Runtime selection Google/Microsoft | College IT |
+
+| Ref  | Question                  | Default in force                                        | Owner            |
+| ---- | ------------------------- | ------------------------------------------------------- | ---------------- |
+| L-1  | BENCH device status       | `PROVISIONED`, `ACTIVE`, `BENCH`, `REVOKED`, `RETIRED`  | Product owner    |
+| L-2  | SOS category              | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner    |
+| L-3  | Security staff visibility | Read-only view of all active buses                      | Product owner    |
+| L-4  | College SSO provider      | Dual Google Workspace and Microsoft Entra ID support    | College IT       |
+| L-5  | AWS Region                | `ap-south-1` (Mumbai), CloudFront/ACM in `us-east-1`    | Product owner    |
+| D-01 | Device GNSS source        | Internal EC200U-CN or external NEO-6M fallback          | ECE team         |
+| D-02 | Low-voltage event         | 11.8V (12V) / 23.5V (24V) sustained 30s                 | ECE team         |
+| D-03 | Bus voltage class         | V12 or V24 provisioned per bus                          | Transport office |
+| D-06 | Driver phones             | College-issued preferred, personal allowed with consent | Transport office |
+| D-11 | Map provider              | MapLibre with OSM tiles                                 | Product owner    |
+| D-13 | Tracking mode             | AUTO default                                            | Transport office |
+| D-14 | Retention periods         | Values in Master Part 14.2                              | Policy owner     |
+| D-18 | College SSO provider      | Runtime selection Google/Microsoft                      | College IT       |
 
 Git log for this phase:
+
 ```
 6626da0 P0-T6: dual OIDC discrete settings with startup refusal, session family rotation, and driver OTP verified
 33c0a5a P0-T14: audit append-only trigger rejection test on native database

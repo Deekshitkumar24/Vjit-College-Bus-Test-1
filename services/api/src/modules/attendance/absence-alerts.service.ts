@@ -3,7 +3,7 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 export interface AcknowledgeAlertParams {
   alertId: string;
   userId: string;
-  getAlert: (id: string) => Promise<any>;
+  getAlert: (id: string) => Promise<Record<string, unknown> | null>;
   updateAlert: (id: string, data: { status: string; acknowledged_by: string }) => Promise<void>;
 }
 
@@ -11,16 +11,19 @@ export interface AddNoteParams {
   alertId: string;
   userId: string;
   note: string;
-  getAlert: (id: string) => Promise<any>;
+  getAlert: (id: string) => Promise<Record<string, unknown> | null>;
   updateAlert: (id: string, data: { note: string }) => Promise<void>;
 }
 
 export interface ReconcileLateBoardingParams {
   tripId: string;
   studentId: string;
-  getOpenAlertForTrip: (tripId: string, studentId: string) => Promise<any>;
+  getOpenAlertForTrip: (
+    tripId: string,
+    studentId: string,
+  ) => Promise<{ id: string; status: string } | null>;
   updateAlertStatus: (alertId: string, newStatus: string) => Promise<void>;
-  notifyFaculty: (alert: any) => Promise<void>;
+  notifyFaculty: (alert: { id: string; status: string }) => Promise<void>;
 }
 
 @Injectable()
@@ -28,7 +31,9 @@ export class AbsenceAlertsService {
   /**
    * Acknowledges an OPEN absence alert by faculty or coordinator.
    */
-  async acknowledgeAlert(params: AcknowledgeAlertParams): Promise<{ success: boolean; status: string }> {
+  async acknowledgeAlert(
+    params: AcknowledgeAlertParams,
+  ): Promise<{ success: boolean; status: string }> {
     const alert = await params.getAlert(params.alertId);
     if (!alert) {
       throw new NotFoundException('Absence alert not found');
@@ -71,7 +76,9 @@ export class AbsenceAlertsService {
    * When a BOARDED record is created for an afternoon trip that has an OPEN alert,
    * set the alert to BOARDED_LATE and notify the faculty (Part 11.3).
    */
-  async reconcileLateBoarding(params: ReconcileLateBoardingParams): Promise<{ reconciled: boolean; status?: string }> {
+  async reconcileLateBoarding(
+    params: ReconcileLateBoardingParams,
+  ): Promise<{ reconciled: boolean; status?: string }> {
     const openAlert = await params.getOpenAlertForTrip(params.tripId, params.studentId);
     if (!openAlert || openAlert.status !== 'OPEN') {
       return { reconciled: false };

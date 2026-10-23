@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { Pool } from 'pg';
-import { createTransientTestDatabase, TestDatabaseHandle } from '../../../packages/db/src/native-test-db.js';
+import {
+  createTransientTestDatabase,
+  TestDatabaseHandle,
+} from '../../../packages/db/src/native-test-db.js';
 
 /**
  * P4 Coordinator and Technician Integration Test Suite
@@ -72,10 +75,9 @@ describe('Phase P4 Coordinator & Technician Integration (Real DB & API)', () => 
     );
 
     // 2. Coordinator revokes the device
-    await pool.query(
-      `UPDATE devices SET status = 'REVOKED', updated_at = NOW() WHERE id = $1;`,
-      [deviceUuid],
-    );
+    await pool.query(`UPDATE devices SET status = 'REVOKED', updated_at = NOW() WHERE id = $1;`, [
+      deviceUuid,
+    ]);
 
     // Create corresponding maintenance/revocation ticket
     const ticketRes = await pool.query(
@@ -88,10 +90,7 @@ describe('Phase P4 Coordinator & Technician Integration (Real DB & API)', () => 
     expect(ticketRes.rows[0].status).toBe('OPEN');
 
     // 3. Verification: Query device status must be REVOKED
-    const checkRes = await pool.query(
-      `SELECT status FROM devices WHERE id = $1;`,
-      [deviceUuid],
-    );
+    const checkRes = await pool.query(`SELECT status FROM devices WHERE id = $1;`, [deviceUuid]);
     expect(checkRes.rows[0].status).toBe('REVOKED');
   });
 
@@ -105,7 +104,12 @@ describe('Phase P4 Coordinator & Technician Integration (Real DB & API)', () => 
         errors.push({
           line: i,
           email: i === 42 ? 'invalid-email-format' : i === 107 ? '' : 'dup@example.com',
-          reason: i === 42 ? 'Malformed email' : i === 107 ? 'Missing required email' : 'Duplicate email in batch',
+          reason:
+            i === 42
+              ? 'Malformed email'
+              : i === 107
+                ? 'Missing required email'
+                : 'Duplicate email in batch',
         });
       }
     }
@@ -164,7 +168,9 @@ describe('Phase P4 Coordinator & Technician Integration (Real DB & API)', () => 
     const userRes = await pool.query(`SELECT status FROM users WHERE id = $1;`, [userId]);
     expect(userRes.rows[0].status).toBe('DEACTIVATED');
 
-    const sessionRes = await pool.query(`SELECT COUNT(*) FROM sessions WHERE user_id = $1;`, [userId]);
+    const sessionRes = await pool.query(`SELECT COUNT(*) FROM sessions WHERE user_id = $1;`, [
+      userId,
+    ]);
     expect(parseInt(sessionRes.rows[0].count, 10)).toBe(0);
   });
 
@@ -234,14 +240,12 @@ describe('Phase P4 Coordinator & Technician Integration (Real DB & API)', () => 
     );
 
     // 4. Verify segregation: Old device retains historic event; new device has its own event
-    const oldEvents = await pool.query(
-      `SELECT COUNT(*) FROM device_events WHERE device_id = $1;`,
-      [oldDeviceIdStr],
-    );
-    const newEvents = await pool.query(
-      `SELECT COUNT(*) FROM device_events WHERE device_id = $1;`,
-      [newDeviceIdStr],
-    );
+    const oldEvents = await pool.query(`SELECT COUNT(*) FROM device_events WHERE device_id = $1;`, [
+      oldDeviceIdStr,
+    ]);
+    const newEvents = await pool.query(`SELECT COUNT(*) FROM device_events WHERE device_id = $1;`, [
+      newDeviceIdStr,
+    ]);
 
     expect(parseInt(oldEvents.rows[0].count, 10)).toBe(1);
     expect(parseInt(newEvents.rows[0].count, 10)).toBe(1);

@@ -6,7 +6,8 @@ const runbooks = [
     id: 'RB-01',
     slug: 'RB-01-fleet-silence',
     title: 'Fleet Silence',
-    trigger: 'Zero telemetry received from > 50% of active buses for 3 consecutive minutes during active service hours.',
+    trigger:
+      'Zero telemetry received from > 50% of active buses for 3 consecutive minutes during active service hours.',
     firstFiveMinutes: [
       '1. Check CloudWatch / Prometheus alert dashboard for API gateway ingestion drop.',
       '2. Verify cellular gateway / APN network status across carriers (Airtel / Jio).',
@@ -25,15 +26,17 @@ const runbooks = [
       '- If cellular outage: send alert to college transport coordinators to instruct drivers to engage Driver App phone tracking fallback.',
       '- If WAF block: temporarily bypass or adjust IP rate limiter on telemetry endpoints.',
     ],
-    commTemplate: 'URGENT: Fleet telemetry ingestion delay observed. Telemetry failover to driver phone tracking initiated. Estimated resolution time: 15 minutes.',
+    commTemplate:
+      'URGENT: Fleet telemetry ingestion delay observed. Telemetry failover to driver phone tracking initiated. Estimated resolution time: 15 minutes.',
   },
   {
     id: 'RB-02',
     slug: 'RB-02-sos-not-delivered',
     title: 'SOS Not Delivered',
-    trigger: 'SOS event triggered but no push/SMS dispatched within 5 seconds (T-SOS-01 breach) or dead-letter queue count > 0.',
+    trigger:
+      'SOS event triggered but no push/SMS dispatched within 5 seconds (T-SOS-01 breach) or dead-letter queue count > 0.',
     firstFiveMinutes: [
-      '1. Verify active SOS incidents table in database (`SELECT * FROM sos_incidents WHERE status = \'OPEN\';`).',
+      "1. Verify active SOS incidents table in database (`SELECT * FROM sos_incidents WHERE status = 'OPEN';`).",
       '2. Check notification dispatcher queue lag and dead-letter queue (DLQ) in Redis / SQS.',
       '3. Check FCM / APNs error rates and SES / SMS provider health.',
       '4. Escalate immediately to On-Call Lead and Campus Security Coordinator.',
@@ -48,7 +51,8 @@ const runbooks = [
       '- Restart stuck notification dispatch worker instances.',
       '- Direct voice phone call to campus security control room for any unacknowledged SOS.',
     ],
-    commTemplate: 'SECURITY ALERT: Automated SOS push delivery experiencing delay. Emergency response personnel notified via direct voice dispatch.',
+    commTemplate:
+      'SECURITY ALERT: Automated SOS push delivery experiencing delay. Emergency response personnel notified via direct voice dispatch.',
   },
   {
     id: 'RB-03',
@@ -71,13 +75,15 @@ const runbooks = [
       '- If database contention: kill long-running analytical queries blocking transaction slots.',
       '- If memory leak: trigger rolling restart of ECS API tasks.',
     ],
-    commTemplate: 'SYSTEM STATUS: Elevated API error rates detected. Technical team is mitigating. Critical safety services remain monitored.',
+    commTemplate:
+      'SYSTEM STATUS: Elevated API error rates detected. Technical team is mitigating. Critical safety services remain monitored.',
   },
   {
     id: 'RB-04',
     slug: 'RB-04-database-failover',
     title: 'Database Failover',
-    trigger: 'RDS PostgreSQL Multi-AZ primary instance failure, unreachable health check, or read-write failover event.',
+    trigger:
+      'RDS PostgreSQL Multi-AZ primary instance failure, unreachable health check, or read-write failover event.',
     firstFiveMinutes: [
       '1. Verify RDS console for failover state and standby promotion status.',
       '2. Check API connection pool error logs for reconnection backoff.',
@@ -94,16 +100,18 @@ const runbooks = [
       '- Ensure `app_runtime` RLS grants and triggers are active on the newly promoted master.',
       '- Verify replication lag on newly assigned standby.',
     ],
-    commTemplate: 'SERVICE NOTICE: Database automated failover completed. Reconnection in progress; expect brief latency stabilization.',
+    commTemplate:
+      'SERVICE NOTICE: Database automated failover completed. Reconnection in progress; expect brief latency stabilization.',
   },
   {
     id: 'RB-05',
     slug: 'RB-05-device-token-compromise',
     title: 'Device Token Compromise',
-    trigger: 'Suspicious device token activity: duplicate concurrent connections with differing IPs, or reported hardware theft.',
+    trigger:
+      'Suspicious device token activity: duplicate concurrent connections with differing IPs, or reported hardware theft.',
     firstFiveMinutes: [
       '1. Immediately identify compromised `device_id` and associated token prefix.',
-      '2. Execute token revocation API call or database update setting device status = \'REVOKED\'.',
+      "2. Execute token revocation API call or database update setting device status = 'REVOKED'.",
       '3. Verify all active sessions and links associated with the hardware device are terminated.',
       '4. Notify Campus Transportation Office and Hardware Engineering Team.',
     ],
@@ -116,13 +124,15 @@ const runbooks = [
       '- Provision replacement tracker hardware following standard technician workflow (AC-TEC-02).',
       '- Add IP block if anomalous calls originate from known adversarial CIDR blocks.',
     ],
-    commTemplate: 'SECURITY NOTICE: Device token revoked due to security protocol. Hardware device isolated; fleet telemetry unaffected.',
+    commTemplate:
+      'SECURITY NOTICE: Device token revoked due to security protocol. Hardware device isolated; fleet telemetry unaffected.',
   },
   {
     id: 'RB-06',
     slug: 'RB-06-certificate-renewal-failure',
     title: 'Certificate Renewal Failure',
-    trigger: 'ACM or CloudFront SSL/TLS certificate expires in <= 14 days without automatic renewal confirmation.',
+    trigger:
+      'ACM or CloudFront SSL/TLS certificate expires in <= 14 days without automatic renewal confirmation.',
     firstFiveMinutes: [
       '1. Inspect AWS Certificate Manager (ACM) console in us-east-1 and ap-south-1.',
       '2. Check Route 53 DNS validation CNAME records for domain verification.',
@@ -138,13 +148,15 @@ const runbooks = [
       '- Request immediate certificate re-issuance through ACM.',
       '- Associate renewed certificate with CloudFront distribution and ALB listener.',
     ],
-    commTemplate: 'INFRASTRUCTURE ADVISORY: SSL certificate renewal in progress. No user-facing interruption expected.',
+    commTemplate:
+      'INFRASTRUCTURE ADVISORY: SSL certificate renewal in progress. No user-facing interruption expected.',
   },
   {
     id: 'RB-07',
     slug: 'RB-07-queue-backlog',
     title: 'Queue Backlog',
-    trigger: 'Telemetry ingestion or notification queue depth exceeds 10,000 messages or processing latency > 30 seconds.',
+    trigger:
+      'Telemetry ingestion or notification queue depth exceeds 10,000 messages or processing latency > 30 seconds.',
     firstFiveMinutes: [
       '1. Inspect queue metrics (Redis Streams / SQS message count and age).',
       '2. Check worker consumer count and worker CPU/memory consumption.',
@@ -160,13 +172,15 @@ const runbooks = [
       '- Divert poisoned/malformed messages to Dead Letter Queue (DLQ) for asynchronous analysis.',
       '- Increase batch write transaction size in database ingestion pipeline.',
     ],
-    commTemplate: 'SYSTEM NOTICE: Temporary queuing delay in location updates. System auto-scaling engaged to clear backlog.',
+    commTemplate:
+      'SYSTEM NOTICE: Temporary queuing delay in location updates. System auto-scaling engaged to clear backlog.',
   },
   {
     id: 'RB-08',
     slug: 'RB-08-rolling-back-an-api-or-app-release',
     title: 'Rolling Back an API or App Release',
-    trigger: 'Critical bug, security defect, or severe regression discovered immediately following a production deployment.',
+    trigger:
+      'Critical bug, security defect, or severe regression discovered immediately following a production deployment.',
     firstFiveMinutes: [
       '1. Halt ongoing deployment pipeline in GitHub Actions / CodeDeploy.',
       '2. Notify engineering leads and incident management channel.',
@@ -184,13 +198,15 @@ const runbooks = [
       '- Flush CloudFront edge cache if static web console assets were affected.',
       '- Verify health probes return 200 OK across all rolled-back instances.',
     ],
-    commTemplate: 'DEPLOYMENT NOTICE: Production release rolled back to previous stable baseline. Services operational and verified.',
+    commTemplate:
+      'DEPLOYMENT NOTICE: Production release rolled back to previous stable baseline. Services operational and verified.',
   },
   {
     id: 'RB-09',
     slug: 'RB-09-restoring-from-backup',
     title: 'Restoring from Backup',
-    trigger: 'Catastrophic database corruption, accidental table truncation, or hardware failure requiring full snapshot restore.',
+    trigger:
+      'Catastrophic database corruption, accidental table truncation, or hardware failure requiring full snapshot restore.',
     firstFiveMinutes: [
       '1. Freeze API writes by enabling maintenance mode banner.',
       '2. Identify target point-in-time recovery (PITR) timestamp or latest verified snapshot.',
@@ -207,13 +223,15 @@ const runbooks = [
       '- Verify checksum equality against known pre-incident records.',
       '- Repoint API connection strings to restored database instance and disable maintenance mode.',
     ],
-    commTemplate: 'EMERGENCY MAINTENANCE: Database restore executed successfully from verified backup. Full data parity confirmed.',
+    commTemplate:
+      'EMERGENCY MAINTENANCE: Database restore executed successfully from verified backup. Full data parity confirmed.',
   },
   {
     id: 'RB-10',
     slug: 'RB-10-halting-a-firmware-rollout',
     title: 'Halting a Firmware Rollout',
-    trigger: 'Firmware canary update causes device crash loop, GPS freeze, or elevated battery drain on reference fleet.',
+    trigger:
+      'Firmware canary update causes device crash loop, GPS freeze, or elevated battery drain on reference fleet.',
     firstFiveMinutes: [
       '1. Access firmware management console / API.',
       '2. Revoke active firmware target URL in `firmware_updates` table.',
@@ -229,13 +247,15 @@ const runbooks = [
       '- Physically quarantine affected vehicles if tracker fails to communicate.',
       '- Deploy field technician with manual serial flasher if OTA recovery fails.',
     ],
-    commTemplate: 'FIRMWARE ADVISORY: Firmware OTA rollout halted due to diagnostic alert. Devices reverted to stable baseline.',
+    commTemplate:
+      'FIRMWARE ADVISORY: Firmware OTA rollout halted due to diagnostic alert. Devices reverted to stable baseline.',
   },
   {
     id: 'RB-11',
     slug: 'RB-11-notification-provider-outage',
     title: 'Notification Provider Outage',
-    trigger: 'Primary notification gateway (FCM, APNs, or SMS telecom aggregator) reports sustained service failure (> 5 minutes).',
+    trigger:
+      'Primary notification gateway (FCM, APNs, or SMS telecom aggregator) reports sustained service failure (> 5 minutes).',
     firstFiveMinutes: [
       '1. Check status page of third-party providers (Google Firebase, Apple System Status, SMS Gateway).',
       '2. Verify dead letter count in notification outbox.',
@@ -251,13 +271,15 @@ const runbooks = [
       '- For SOS emergencies, engage direct telephone tree to campus security control.',
       '- Re-enable primary provider once upstream health confirms 100% recovery.',
     ],
-    commTemplate: 'NOTICE: Push notifications experiencing provider-side delays. In-app live map and alerts remain active.',
+    commTemplate:
+      'NOTICE: Push notifications experiencing provider-side delays. In-app live map and alerts remain active.',
   },
   {
     id: 'RB-12',
     slug: 'RB-12-personal-data-breach-response',
     title: 'Personal Data Breach Response',
-    trigger: 'Unauthorized exfiltration, credential leak, or inadvertent disclosure of personally identifiable information (PII).',
+    trigger:
+      'Unauthorized exfiltration, credential leak, or inadvertent disclosure of personally identifiable information (PII).',
     firstFiveMinutes: [
       '1. Immediately revoke compromised session tokens, API keys, and IAM credentials.',
       '2. Isolate affected network endpoints and enable strict CloudFront WAF block.',
@@ -274,13 +296,15 @@ const runbooks = [
       '- Invalidate all active user sessions across mobile and web consoles.',
       '- Prepare formal regulatory breach notification in compliance with DPDP / GDPR requirements within 72 hours.',
     ],
-    commTemplate: 'SECURITY ADVISORY: Security incident contained. No evidence of ongoing exposure. Affected users will receive direct advisory.',
+    commTemplate:
+      'SECURITY ADVISORY: Security incident contained. No evidence of ongoing exposure. Affected users will receive direct advisory.',
   },
   {
     id: 'RB-13',
     slug: 'RB-13-use-of-the-emergency-access-account',
     title: 'Use of the Emergency Access Account',
-    trigger: 'Break-glass root/superuser access required due to total lockout, infrastructure failure, or security disaster.',
+    trigger:
+      'Break-glass root/superuser access required due to total lockout, infrastructure failure, or security disaster.',
     firstFiveMinutes: [
       '1. Two-person authorization: obtain dual sign-off from Engineering Lead and Campus Security Officer.',
       '2. Retrieve emergency credential from encrypted hardware vault.',
@@ -296,7 +320,8 @@ const runbooks = [
       '- Revoke emergency session immediately upon resolution.',
       '- Rotate break-glass credentials and generate new recovery codes.',
     ],
-    commTemplate: 'AUDIT ADVISORY: Emergency break-glass access activated under dual authorization. Incident logging enabled.',
+    commTemplate:
+      'AUDIT ADVISORY: Emergency break-glass access activated under dual authorization. Incident logging enabled.',
   },
 ];
 

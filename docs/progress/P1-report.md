@@ -16,7 +16,9 @@ P1-T11 | 596dbe5 | Simulator in tools/simulator: 50 buses, dual sources, failure
 Tests: 199 run, 199 pass, 0 fail across 24 files (packages/domain 115 pass, tools/simulator 7 pass, services/api 77 pass).
 
 Exit criteria:
+
 1. Simulator drives the states correctly across 50 buses: VERIFIED
+
 ```
 > vitest run tools/simulator/test/simulator.spec.ts
 
@@ -29,7 +31,9 @@ Exit criteria:
    Start at  20:20:30
    Duration  2.17s
 ```
+
 2. Contract harness passes against all recorded hardware sample streams: VERIFIED
+
 ```
 > vitest run services/api/test/contract-harness.spec.ts
 
@@ -42,6 +46,7 @@ Exit criteria:
    Start at  20:22:04
    Duration  3.50s
 ```
+
 3. Load test T-LOAD-01 passes in staging: NOT VERIFIED (awaiting staging environment E7)
 
 External blockers:
@@ -52,22 +57,24 @@ E4: Sentry project (college IT)
 E7: Staging environment for load test T-LOAD-01 (college IT)
 
 Open decisions used:
-| Ref | Question | Default in force | Owner |
-| --- | --- | --- | --- |
-| L-1 | BENCH device status | `PROVISIONED`, `ACTIVE`, `BENCH`, `REVOKED`, `RETIRED` | Product owner |
-| L-2 | SOS category | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner |
-| L-3 | Security staff visibility | Read-only view of all active buses | Product owner |
-| L-4 | College SSO provider | Dual Google Workspace and Microsoft Entra ID support | College IT |
-| L-5 | AWS Region | `ap-south-1` (Mumbai), CloudFront/ACM in `us-east-1` | Product owner |
-| D-01 | Device GNSS source | Internal EC200U-CN or external NEO-6M fallback | ECE team |
-| D-02 | Low-voltage event | 11.8V (12V) / 23.5V (24V) sustained 30s | ECE team |
-| D-03 | Bus voltage class | V12 or V24 provisioned per bus | Transport office |
-| D-06 | Driver phones | College-issued preferred, personal allowed with consent | Transport office |
-| D-11 | Map provider | MapLibre with OSM tiles | Product owner |
-| D-13 | Tracking mode | AUTO default | Transport office |
-| D-14 | Retention periods | Values in Master Part 14.2 | Policy owner |
+
+| Ref  | Question                  | Default in force                                        | Owner            |
+| ---- | ------------------------- | ------------------------------------------------------- | ---------------- |
+| L-1  | BENCH device status       | `PROVISIONED`, `ACTIVE`, `BENCH`, `REVOKED`, `RETIRED`  | Product owner    |
+| L-2  | SOS category              | `EMERGENCY`, `MEDICAL`, `BREAKDOWN`, `OTHER`, `UNKNOWN` | Product owner    |
+| L-3  | Security staff visibility | Read-only view of all active buses                      | Product owner    |
+| L-4  | College SSO provider      | Dual Google Workspace and Microsoft Entra ID support    | College IT       |
+| L-5  | AWS Region                | `ap-south-1` (Mumbai), CloudFront/ACM in `us-east-1`    | Product owner    |
+| D-01 | Device GNSS source        | Internal EC200U-CN or external NEO-6M fallback          | ECE team         |
+| D-02 | Low-voltage event         | 11.8V (12V) / 23.5V (24V) sustained 30s                 | ECE team         |
+| D-03 | Bus voltage class         | V12 or V24 provisioned per bus                          | Transport office |
+| D-06 | Driver phones             | College-issued preferred, personal allowed with consent | Transport office |
+| D-11 | Map provider              | MapLibre with OSM tiles                                 | Product owner    |
+| D-13 | Tracking mode             | AUTO default                                            | Transport office |
+| D-14 | Retention periods         | Values in Master Part 14.2                              | Policy owner     |
 
 Git log for this phase:
+
 ```
 596dbe5 feat(simulator): implement 50-bus fleet simulator with dual sources and failure scenarios (P1-T11)
 6508b03 docs(p1): record commit SHA e93f054 for P1-T10

@@ -31,8 +31,7 @@ describe('BoardingCutoffJob & AbsenceEvaluatorService (P5-T4, T-ATT-03)', () => 
           scheduled_departure: departureTime,
         },
       ],
-      getPendingRecords: async () =>
-        attendanceRecords.filter((r) => r.status === 'EXPECTED'),
+      getPendingRecords: async () => attendanceRecords.filter((r) => r.status === 'EXPECTED'),
       updateStatus: async (recId, newStatus) => {
         const item = attendanceRecords.find((r) => r.id === recId);
         if (item) item.status = newStatus;

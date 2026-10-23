@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   NotificationManager,
-  NotificationPreference,
   NotificationItem,
   setupAndroidSafetyChannel,
 } from '../src/notifications/notification-manager.js';

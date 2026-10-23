@@ -1,0 +1,29 @@
+=== P1-T1 Device Tokens Verification ===
+Date: 2026-10-21T21:28:11+05:30
+Command: pnpm --filter @collegebus/domain test:unit ; pnpm --filter @collegebus/domain typecheck
+Commit SHA: e393f9a
+
+> @collegebus/domain@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> vitest run
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/packages/domain
+
+ ✓ test/device-tokens.spec.ts (7 tests) 10ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  21:07:05
+   Duration  1.98s (transform 1.02s, setup 0ms, collect 1.00s, tests 10ms, environment 0ms, prepare 393ms)
+
+> @collegebus/domain@1.0.0 typecheck C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\packages\domain
+> tsc --noEmit
+
+Result: PASS
+Features Verified:
+- 256-bit Token Generation (dvt_<64hex>): Verified
+- HMAC-SHA256 Storage & Constant-Time Verification: Verified
+- Keyring Versioning (Part 3.3 DEVICE_TOKEN_HMAC_KEYS): Verified
+- Conflict C-01 Enforcement: PROVISIONED device accepted on first request (first_used_at null) with shouldActivate flag; subsequent requests while still PROVISIONED rejected
+- Active & Bench Status Access: Verified
+- Revocation & Retirement Enforcement: REVOKED and RETIRED devices immediately rejected
+- Rotation with Overlap Window: Dual-token validation during grace period verified

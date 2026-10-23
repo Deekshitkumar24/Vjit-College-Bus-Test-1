@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { Pool } from 'pg';
-import { createTransientTestDatabase, TestDatabaseHandle } from '../../../packages/db/src/native-test-db.js';
+import {
+  createTransientTestDatabase,
+  TestDatabaseHandle,
+} from '../../../packages/db/src/native-test-db.js';
 
 describe('Phase P8: Security Hardening Suite (Real DB & API)', () => {
   let dbHandle: TestDatabaseHandle | null = null;
@@ -73,10 +76,7 @@ describe('Phase P8: Security Hardening Suite (Real DB & API)', () => {
 
     for (const input of maliciousInputs) {
       // Parameterized query must treat input strictly as string literal
-      const res = await pool.query(
-        `SELECT id FROM users WHERE email = $1;`,
-        [input],
-      );
+      const res = await pool.query(`SELECT id FROM users WHERE email = $1;`, [input]);
       expect(res.rows.length).toBe(0);
     }
   });

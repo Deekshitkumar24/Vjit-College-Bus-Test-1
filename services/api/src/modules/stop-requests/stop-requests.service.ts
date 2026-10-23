@@ -62,8 +62,8 @@ export class StopRequestsService {
            VALUES (gen_random_uuid(), $1, $2, NOW(), NOW());`,
           [requestId, studentId],
         );
-      } catch (err: any) {
-        if (err.code === '23505') {
+      } catch (err: unknown) {
+        if (typeof err === 'object' && err !== null && 'code' in err && (err as { code: string }).code === '23505') {
           throw new Error('DUPLICATE_VOTE');
         }
         throw err;

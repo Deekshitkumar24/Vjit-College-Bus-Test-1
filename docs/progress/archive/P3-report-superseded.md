@@ -1,6 +1,7 @@
 <!-- ARCHIVED per Step 0 (S0.1) of AG-MVP-GUIDE-1.0:
 Reason: Claimed COMPLETE, relied on 4ms simulated app restart instead of on-device evidence, and omitted reference phone battery testing without owner written approval.
 -->
+
 # Phase Report: P3 Driver Application & Phone Tracking (SUPERSEDED)
 
 **Phase ID:** P3  
@@ -28,16 +29,16 @@ Phase P3 has fully implemented, verified, and integrated all 8 required tasks fo
 
 ## 2. Task Verification Matrix (Rule A-5)
 
-| Task ID   | Scope                                                                                                                 |  Status  | Commit SHA | Verification Evidence Log          |
-| :-------- | :-------------------------------------------------------------------------------------------------------------------- | :------: | :--------: | :--------------------------------- |
-| **P3-T1** | Driver OTP sign-in, roster list, device registration, AC-DRV-01 unrostered bus 403 isolation                          | **DONE** | `f795f5a`  | `docs/progress/evidence/P3-T1.log` |
-| **P3-T2** | 8 pre-trip checks, AC-DRV-02 RED hardware warning & phone fallback, AC-DRV-03 location Always blocking & fix screen   | **DONE** | `da2af0e`  | `docs/progress/evidence/P3-T2.log` |
-| **P3-T3** | Shift start, AC-DRV-04 restart resume <10s without duplicates, 20m idle prompt, 14h timeout, SOS shift-end block     | **DONE** | `9a0d173`  | `docs/progress/evidence/P3-T3.log` |
-| **P3-T4** | Foreground service notification, adaptive cadence (10s moving/30s stopped), 24h SQLite buffer (~8.6k), FIFO flush    | **DONE** | `bae7796`  | `docs/progress/evidence/P3-T4.log` |
-| **P3-T5** | Mode switcher (Auto/Hardware/Phone) with 140-char note, 2s hold SOS trigger, L-2 category routing, incident tracker   | **DONE** | `e925c63`  | `docs/progress/evidence/P3-T5.log` |
-| **P3-T6** | 30s rotating HMAC QR code generator with circular timer, passenger manifest, manual check-in with reason codes       | **DONE** | `6de3ed6`  | `docs/progress/evidence/P3-T6.log` |
-| **P3-T7** | Problem reporter, 5-500 char validation, priority derivation, offline queue & sync, backend ticket submission        | **DONE** | `8a5f84b`  | `docs/progress/evidence/P3-T7.log` |
-| **P3-T8** | Mock GPS detection (`is_mock`), warning banner, coordinator alert, AC-DRV-01 to 04 integration suite, 2h simulation   | **DONE** | `8bc6bf0`  | `docs/progress/evidence/P3-T8.log` |
+| Task ID   | Scope                                                                                                               |  Status  | Commit SHA | Verification Evidence Log          |
+| :-------- | :------------------------------------------------------------------------------------------------------------------ | :------: | :--------: | :--------------------------------- |
+| **P3-T1** | Driver OTP sign-in, roster list, device registration, AC-DRV-01 unrostered bus 403 isolation                        | **DONE** | `f795f5a`  | `docs/progress/evidence/P3-T1.log` |
+| **P3-T2** | 8 pre-trip checks, AC-DRV-02 RED hardware warning & phone fallback, AC-DRV-03 location Always blocking & fix screen | **DONE** | `da2af0e`  | `docs/progress/evidence/P3-T2.log` |
+| **P3-T3** | Shift start, AC-DRV-04 restart resume <10s without duplicates, 20m idle prompt, 14h timeout, SOS shift-end block    | **DONE** | `9a0d173`  | `docs/progress/evidence/P3-T3.log` |
+| **P3-T4** | Foreground service notification, adaptive cadence (10s moving/30s stopped), 24h SQLite buffer (~8.6k), FIFO flush   | **DONE** | `bae7796`  | `docs/progress/evidence/P3-T4.log` |
+| **P3-T5** | Mode switcher (Auto/Hardware/Phone) with 140-char note, 2s hold SOS trigger, L-2 category routing, incident tracker | **DONE** | `e925c63`  | `docs/progress/evidence/P3-T5.log` |
+| **P3-T6** | 30s rotating HMAC QR code generator with circular timer, passenger manifest, manual check-in with reason codes      | **DONE** | `6de3ed6`  | `docs/progress/evidence/P3-T6.log` |
+| **P3-T7** | Problem reporter, 5-500 char validation, priority derivation, offline queue & sync, backend ticket submission       | **DONE** | `8a5f84b`  | `docs/progress/evidence/P3-T7.log` |
+| **P3-T8** | Mock GPS detection (`is_mock`), warning banner, coordinator alert, AC-DRV-01 to 04 integration suite, 2h simulation | **DONE** | `8bc6bf0`  | `docs/progress/evidence/P3-T8.log` |
 
 ---
 

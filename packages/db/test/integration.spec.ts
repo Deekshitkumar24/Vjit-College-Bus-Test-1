@@ -1,8 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import {
-  createTransientTestDatabase,
-  TestDatabaseHandle,
-} from '../src/native-test-db.js';
+import { createTransientTestDatabase, TestDatabaseHandle } from '../src/native-test-db.js';
 import { withRlsTransaction } from '../src/rls-manager.js';
 
 describe('Real-Database Integration Tests (Section 1A, OV-20, P0 Exit 3, P0-T4/T14)', () => {
@@ -62,17 +59,23 @@ describe('Real-Database Integration Tests (Section 1A, OV-20, P0 Exit 3, P0-T4/T
     `);
 
     const collegeId = '11111111-1111-1111-1111-111111111111';
-    await suPool.query(`
+    await suPool.query(
+      `
       INSERT INTO colleges (id, name, email_domains, updated_at) 
       VALUES ($1, 'Test College', ARRAY['college.edu'], NOW())
       ON CONFLICT (id) DO NOTHING;
-    `, [collegeId]);
+    `,
+      [collegeId],
+    );
 
-    const userRes = await suPool.query(`
+    const userRes = await suPool.query(
+      `
       INSERT INTO users (id, email, full_name, college_id, updated_at) 
       VALUES (gen_random_uuid(), 'test.role@college.edu', 'Role Test', $1, NOW()) 
       RETURNING id;
-    `, [collegeId]);
+    `,
+      [collegeId],
+    );
     const userId = userRes.rows[0].id;
 
     await suPool.query(

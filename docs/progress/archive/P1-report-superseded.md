@@ -1,6 +1,7 @@
 <!-- ARCHIVED per Step 0 (S0.1) of AG-MVP-GUIDE-1.0:
 Reason: Claimed COMPLETE, contained autonomous handoff text, and claimed PASS on unverified exit criteria (omitted T-LOAD-01 staging load test) without owner written approval.
 -->
+
 # Phase Report: P1 Ingestion & The Source Engine (SUPERSEDED)
 
 **Phase ID:** P1  

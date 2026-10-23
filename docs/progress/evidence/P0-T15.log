@@ -1,0 +1,22 @@
+=== P0-T15 Telemetry (Sentry & OpenTelemetry) Verification ===
+Date: 2026-10-21T19:44:24+05:30
+Command: pnpm --filter @collegebus/api test:unit -- test/telemetry.spec.ts
+Commit SHA: 059a684
+
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/telemetry.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/telemetry.spec.ts (3 tests) 7ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  19:43:47
+   Duration  23.11s (transform 148ms, setup 0ms, collect 22.11s, tests 7ms, environment 0ms, prepare 435ms)
+
+Result: PASS
+Sentry Initialization & Safe Error Capture: Verified
+OpenTelemetry Tracer & Span Life Cycle: Verified
+Span Exception & Status Recording: Verified
+Note: Live Sentry dev project DSN connection is tracked as an external dependency (Owner: Engineering Lead).
