@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 import { EXIT_DEFINITIONS, ExitDefinition } from '../readiness/exits';
 
 export interface LedgerItem {
@@ -11,13 +12,21 @@ export interface LedgerItem {
   unlockingInput: string;
 }
 
-export function buildLedger(): { items: LedgerItem[]; verifiedCount: number; blockedCount: number } {
+export function buildLedger(): {
+  items: LedgerItem[];
+  verifiedCount: number;
+  blockedCount: number;
+} {
   const evidenceDir = path.resolve('docs/progress/evidence');
   const items: LedgerItem[] = [];
 
   for (const def of EXIT_DEFINITIONS) {
     let status: 'VERIFIED' | 'BLOCKED-EXTERNAL' | 'BLOCKED-OWNER' | 'NOT VERIFIED' | 'FAILED' =
-      def.type === 'OWNER' ? 'BLOCKED-OWNER' : def.type === 'EXTERNAL' ? 'BLOCKED-EXTERNAL' : 'NOT VERIFIED';
+      def.type === 'OWNER'
+        ? 'BLOCKED-OWNER'
+        : def.type === 'EXTERNAL'
+          ? 'BLOCKED-EXTERNAL'
+          : 'NOT VERIFIED';
     let chosenEvidencePath = '';
 
     const candidates = [`${def.id}.json`, ...def.evidenceFiles];
@@ -78,7 +87,7 @@ export function buildLedger(): { items: LedgerItem[]; verifiedCount: number; blo
   const blockedCount = items.filter((i) => i.status.startsWith('BLOCKED')).length;
 
   const ledgerJsonPath = path.resolve('docs/progress/ledger.json');
-  fs.writeFileSync(ledgerJsonPath, JSON.stringify(items, null, 2), 'utf-8');
+  fs.writeFileSync(ledgerJsonPath, JSON.stringify(items, null, 2) + '\n', 'utf-8');
 
   // Also write docs/progress/ledger.md
   let md = `# System Exit Criteria Ledger\n\n`;
@@ -88,7 +97,15 @@ export function buildLedger(): { items: LedgerItem[]; verifiedCount: number; blo
     md += `| **${item.id}** | ${item.phase} | ${item.description} | **${item.status}** | \`${item.evidencePath}\` | ${item.unlockingInput} |\n`;
   }
   const ledgerMdPath = path.resolve('docs/progress/ledger.md');
-  fs.writeFileSync(ledgerMdPath, md, 'utf-8');
+  fs.writeFileSync(ledgerMdPath, md + '\n', 'utf-8');
+
+  try {
+    execSync('npx prettier --write "docs/progress/ledger.json" "docs/progress/ledger.md"', {
+      stdio: 'ignore',
+    });
+  } catch {
+    // ignore
+  }
 
   return { items, verifiedCount, blockedCount };
 }

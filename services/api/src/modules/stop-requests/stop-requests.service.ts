@@ -13,7 +13,9 @@ export interface SubmitStopRequestParams {
 export class StopRequestsService {
   constructor(private readonly pool: Pool) {}
 
-  public async submitRequest(params: SubmitStopRequestParams): Promise<{ id: string; status: string; voteCount: number }> {
+  public async submitRequest(
+    params: SubmitStopRequestParams,
+  ): Promise<{ id: string; status: string; voteCount: number }> {
     if (!params.proposedName || params.proposedName.trim().length === 0) {
       throw new Error('PROPOSED_NAME_REQUIRED');
     }
@@ -30,7 +32,13 @@ export class StopRequestsService {
         gen_random_uuid(), $1, $2, $3, $4, $5,
         'PENDING', 1, NOW(), NOW()
       ) RETURNING id, status, vote_count;`,
-      [params.requestedBy, params.routeId, params.proposedName.trim(), params.latitude, params.longitude],
+      [
+        params.requestedBy,
+        params.routeId,
+        params.proposedName.trim(),
+        params.latitude,
+        params.longitude,
+      ],
     );
 
     const record = res.rows[0];
@@ -63,7 +71,12 @@ export class StopRequestsService {
           [requestId, studentId],
         );
       } catch (err: unknown) {
-        if (typeof err === 'object' && err !== null && 'code' in err && (err as { code: string }).code === '23505') {
+        if (
+          typeof err === 'object' &&
+          err !== null &&
+          'code' in err &&
+          (err as { code: string }).code === '23505'
+        ) {
           throw new Error('DUPLICATE_VOTE');
         }
         throw err;

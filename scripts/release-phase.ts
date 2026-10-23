@@ -67,7 +67,7 @@ const gateResult = {
 };
 
 const gateFilePath = path.resolve(`docs/progress/gate-${phase}.json`);
-fs.writeFileSync(gateFilePath, JSON.stringify(gateResult, null, 2), 'utf-8');
+fs.writeFileSync(gateFilePath, JSON.stringify(gateResult, null, 2) + '\n', 'utf-8');
 
 console.log(`\n================================================================`);
 console.log(`PHASE GATE ${phase} RESULT: ${allPassed ? 'PASSED' : 'FAILED'}`);

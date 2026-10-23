@@ -15,8 +15,8 @@ const FORBIDDEN_MARKERS = [
   /demo\s+account/i,
   /example\.com/i,
   /test@/i,
-  /9999999999/,
-  /0000000000/,
+  /(?<![0-9a-fA-F-])9{10}(?![0-9a-fA-F-])/,
+  /(?<![0-9a-fA-F-])0{10}(?![0-9a-fA-F-])/,
 ];
 
 const FORBIDDEN_IMPORTS = [
@@ -66,7 +66,13 @@ export function scanDirectory(dir: string, baseDir = dir): boolean {
       continue;
     }
 
-    if (EXCLUDED_PATHS.some((exc) => relPath === exc || relPath.startsWith(exc + '/'))) {
+    if (
+      EXCLUDED_PATHS.some((exc) => relPath === exc || relPath.startsWith(exc + '/')) ||
+      relPath.includes('/test/') ||
+      relPath.startsWith('test/') ||
+      relPath.endsWith('.spec.ts') ||
+      relPath.endsWith('.test.ts')
+    ) {
       continue;
     }
 

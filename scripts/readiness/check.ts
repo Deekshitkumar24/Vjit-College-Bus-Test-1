@@ -15,13 +15,18 @@ interface Section5GateResults {
   prodCleanProductionVerified: boolean;
 }
 
-async function evaluateReadiness(): Promise<{ isReady: boolean; results: Section5GateResults; items: LedgerItem[] }> {
+async function evaluateReadiness(): Promise<{
+  isReady: boolean;
+  results: Section5GateResults;
+  items: LedgerItem[];
+}> {
   // 1. Build authoritative ledger from evidence files
   const { items } = buildLedger();
 
   // (a) Every exit defined in exits.ts is VERIFIED and links to its evidence file
   const verifiedItems = items.filter((i) => i.status === 'VERIFIED');
-  const allExitsVerified = verifiedItems.length === items.length && items.length === EXIT_DEFINITIONS.length;
+  const allExitsVerified =
+    verifiedItems.length === items.length && items.length === EXIT_DEFINITIONS.length;
 
   // (b) No item is BLOCKED-EXTERNAL or BLOCKED-OWNER
   const blockedExternal = items.filter((i) => i.status === 'BLOCKED-EXTERNAL');
@@ -65,8 +70,29 @@ async function evaluateReadiness(): Promise<{ isReady: boolean; results: Section
   // (f) Runbooks: RB-01 to RB-13 contain all 6 required sections
   const runbooksDir = path.resolve('docs/runbooks');
   let runbooksValid = true;
-  const requiredRunbooks = ['RB-01', 'RB-02', 'RB-03', 'RB-04', 'RB-05', 'RB-06', 'RB-07', 'RB-08', 'RB-09', 'RB-10', 'RB-11', 'RB-12', 'RB-13'];
-  const requiredSections = ['trigger', 'first five minutes', 'diagnosis', 'mitigation', 'communication template', 'post-incident review'];
+  const requiredRunbooks = [
+    'RB-01',
+    'RB-02',
+    'RB-03',
+    'RB-04',
+    'RB-05',
+    'RB-06',
+    'RB-07',
+    'RB-08',
+    'RB-09',
+    'RB-10',
+    'RB-11',
+    'RB-12',
+    'RB-13',
+  ];
+  const requiredSections = [
+    'trigger',
+    'first five minutes',
+    'diagnosis',
+    'mitigation',
+    'communication template',
+    'post-incident review',
+  ];
 
   if (fs.existsSync(runbooksDir)) {
     const files = fs.readdirSync(runbooksDir);
@@ -98,10 +124,14 @@ async function evaluateReadiness(): Promise<{ isReady: boolean; results: Section
   }
 
   // (h) Launch checklist: every item in Part 17 has evidence
-  const launchChecklistEvidenced = fs.existsSync(path.resolve('docs/progress/evidence/launch-checklist.json')) || fs.existsSync(path.resolve('docs/progress/evidence/runbooks.json'));
+  const launchChecklistEvidenced =
+    fs.existsSync(path.resolve('docs/progress/evidence/launch-checklist.json')) ||
+    fs.existsSync(path.resolve('docs/progress/evidence/runbooks.json'));
 
   // (i) verify:prod-clean passes against production (not dry run)
-  const prodCleanProdPath = path.resolve('docs/progress/evidence/verify-prod-clean-production.json');
+  const prodCleanProdPath = path.resolve(
+    'docs/progress/evidence/verify-prod-clean-production.json',
+  );
   let prodCleanProductionVerified = false;
   if (fs.existsSync(prodCleanProdPath)) {
     try {
@@ -179,10 +209,16 @@ async function main() {
   console.log('PRODUCTION READINESS GATE EVALUATION (SECTION 5):');
   console.log(`- Total Exit Items Tracked: ${items.length}`);
   console.log(`- Verified Local Exits: ${verifiedItems.length}/${items.length}`);
-  console.log(`- Blocked External Items: ${blockedItems.filter((i) => i.status === 'BLOCKED-EXTERNAL').length}`);
-  console.log(`- Blocked Owner Items: ${blockedItems.filter((i) => i.status === 'BLOCKED-OWNER').length}`);
+  console.log(
+    `- Blocked External Items: ${blockedItems.filter((i) => i.status === 'BLOCKED-EXTERNAL').length}`,
+  );
+  console.log(
+    `- Blocked Owner Items: ${blockedItems.filter((i) => i.status === 'BLOCKED-OWNER').length}`,
+  );
   console.log(`- Runbooks RB-01..13 Verified: ${results.runbooksValid ? 'YES' : 'NO'}`);
-  console.log(`- RB-09 Checksum & Row-Count Equality: ${results.backupDrillVerified ? 'YES' : 'NO'}`);
+  console.log(
+    `- RB-09 Checksum & Row-Count Equality: ${results.backupDrillVerified ? 'YES' : 'NO'}`,
+  );
   console.log('====================================================');
 
   if (isReady) {
@@ -191,7 +227,9 @@ async function main() {
     console.log('NOT READY');
     console.log('\nOpen items remaining before production readiness:');
     for (const item of blockedItems) {
-      console.log(`- [${item.id}] (${item.status}): ${item.description} -> Unlocks with ${item.unlockingInput}`);
+      console.log(
+        `- [${item.id}] (${item.status}): ${item.description} -> Unlocks with ${item.unlockingInput}`,
+      );
     }
   }
 }

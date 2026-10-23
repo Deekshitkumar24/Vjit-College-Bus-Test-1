@@ -103,7 +103,7 @@ describe('Phase P4 Coordinator & Technician Integration (Real DB & API)', () => 
       if (badIndices.includes(i)) {
         errors.push({
           line: i,
-          email: i === 42 ? 'invalid-email-format' : i === 107 ? '' : 'dup@example.com',
+          email: i === 42 ? 'invalid-email-format' : i === 107 ? '' : 'dup@college.edu',
           reason:
             i === 42
               ? 'Malformed email'

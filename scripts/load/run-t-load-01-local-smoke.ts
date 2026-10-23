@@ -87,9 +87,10 @@ async function main() {
 
       // Ingest telemetry samples directly into location_samples partition
       for (const hw of tickResult.hardwareTelemetry) {
-        for (const sample of (hw.batch.samples as any[])) {
+        for (const sample of hw.batch.samples as any[]) {
           totalSamples++;
-          const sampleTime = sample.recorded_at || sample.timestamp || sample.time || new Date().toISOString();
+          const sampleTime =
+            sample.recorded_at || sample.timestamp || sample.time || new Date().toISOString();
           const lat = sample.lat ?? sample.latitude ?? 12.9716;
           const lng = sample.lng ?? sample.longitude ?? 77.5946;
           const speed = sample.speed_kmh ?? sample.speed ?? 30;
@@ -105,18 +106,10 @@ async function main() {
               '00000000-0000-0000-0000-000000000001', 'HW', $1, $2, $3,
               $4, $5, '3D', true, $6
             );`,
-            [
-              new Date(sampleTime),
-              lat,
-              lng,
-              speed,
-              heading,
-              JSON.stringify(sample),
-            ],
+            [new Date(sampleTime), lat, lng, speed, heading, JSON.stringify(sample)],
           );
         }
       }
-
     }
 
     const durationMs = Date.now() - startTime;

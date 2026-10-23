@@ -50,7 +50,6 @@ export class SosManagementService {
       `;
       const queryParams: unknown[] = [now];
 
-
       if (params.busId) {
         existingQuery += ` AND bus_id = $2 ORDER BY received_at DESC LIMIT 1`;
         queryParams.push(params.busId);
@@ -66,7 +65,12 @@ export class SosManagementService {
         await client.query(
           `INSERT INTO sos_events (id, incident_id, type, actor_id, at, detail, created_at, updated_at)
            VALUES (gen_random_uuid(), $1, 'JOINED', $2, $3, $4, NOW(), NOW());`,
-          [incident.id, params.senderId, now, JSON.stringify({ source: params.source, category: params.category })],
+          [
+            incident.id,
+            params.senderId,
+            now,
+            JSON.stringify({ source: params.source, category: params.category }),
+          ],
         );
 
         await client.query('COMMIT');
@@ -97,7 +101,12 @@ export class SosManagementService {
       await client.query(
         `INSERT INTO sos_events (id, incident_id, type, actor_id, at, detail, created_at, updated_at)
          VALUES (gen_random_uuid(), $1, 'TRIGGERED', $2, $3, $4, NOW(), NOW());`,
-        [newIncident.id, params.senderId, now, JSON.stringify({ source: params.source, category: params.category })],
+        [
+          newIncident.id,
+          params.senderId,
+          now,
+          JSON.stringify({ source: params.source, category: params.category }),
+        ],
       );
 
       await client.query('COMMIT');
@@ -120,11 +129,14 @@ export class SosManagementService {
   /**
    * T-SOS-05: Cancellation is refused once incident is acknowledged or responding.
    */
-  public async cancelSos(incidentId: string, actorId: string, note?: string): Promise<{ success: boolean }> {
-    const res = await this.pool.query(
-      `SELECT status FROM sos_incidents WHERE id = $1;`,
-      [incidentId],
-    );
+  public async cancelSos(
+    incidentId: string,
+    actorId: string,
+    note?: string,
+  ): Promise<{ success: boolean }> {
+    const res = await this.pool.query(`SELECT status FROM sos_incidents WHERE id = $1;`, [
+      incidentId,
+    ]);
 
     if (res.rows.length === 0) {
       throw new Error('INCIDENT_NOT_FOUND');
@@ -206,7 +218,8 @@ export class SosManagementService {
     if (!recipients || recipients.length === 0) {
       await raiseSystemAlert({
         type: 'SETUP_ALERT_MISSING_SOS_RECIPIENTS',
-        message: 'No emergency escalation contacts configured. Immediate administrative configuration required.',
+        message:
+          'No emergency escalation contacts configured. Immediate administrative configuration required.',
       });
       return { recipients: [], setupAlertRaised: true };
     }

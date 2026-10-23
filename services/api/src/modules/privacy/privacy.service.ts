@@ -85,10 +85,9 @@ export class PrivacyService {
       );
 
       // 2. Revoke and delete active sessions
-      const sessRes = await client.query(
-        `DELETE FROM sessions WHERE user_id = $1 RETURNING id;`,
-        [userId],
-      );
+      const sessRes = await client.query(`DELETE FROM sessions WHERE user_id = $1 RETURNING id;`, [
+        userId,
+      ]);
 
       // 3. Clear location samples if table exists
       let locCount = 0;
@@ -102,7 +101,6 @@ export class PrivacyService {
         );
         locCount = locRes.rows.length;
       }
-
 
       // 4. Anonymize SOS events (scrub actor_id and anonymize payload detail)
       const anonUserId = '00000000-0000-0000-0000-000000000000';

@@ -65,7 +65,6 @@ export class RetentionService {
         ],
       );
 
-
       await client.query('COMMIT');
 
       return {

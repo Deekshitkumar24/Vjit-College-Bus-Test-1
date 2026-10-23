@@ -58,9 +58,7 @@ export class ExportService {
     const headers = Object.keys(rows[0]!);
     const headerLine = headers.map((h) => this.sanitizeCsvCell(h)).join(',');
 
-    const lines = rows.map((row) =>
-      headers.map((h) => this.sanitizeCsvCell(row[h])).join(','),
-    );
+    const lines = rows.map((row) => headers.map((h) => this.sanitizeCsvCell(row[h])).join(','));
 
     return [headerLine, ...lines].join('\n');
   }
@@ -72,13 +70,17 @@ export class ExportService {
     const now = params.now ?? new Date();
 
     if (params.rows.length > ExportService.MAX_ROWS) {
-      throw new Error(`EXPORT_ROW_LIMIT_EXCEEDED: Maximum allowed is ${ExportService.MAX_ROWS} rows`);
+      throw new Error(
+        `EXPORT_ROW_LIMIT_EXCEEDED: Maximum allowed is ${ExportService.MAX_ROWS} rows`,
+      );
     }
 
     const csvContent = this.formatCsv(params.rows);
     const jobId = `exp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const storageKey = `exports/${now.toISOString().slice(0, 10)}/${jobId}.csv`;
-    const expiresAt = new Date(now.getTime() + ExportService.PRESIGNED_LIFETIME_HOURS * 3600 * 1000);
+    const expiresAt = new Date(
+      now.getTime() + ExportService.PRESIGNED_LIFETIME_HOURS * 3600 * 1000,
+    );
 
     // Mock S3/MinIO presigned GET URL (valid for 24h per C-06)
     const presignedUrl = `https://minio.local:9000/collegebus-exports/${storageKey}?X-Amz-Expires=86400&X-Amz-Signature=dummy_sig`;
@@ -90,7 +92,14 @@ export class ExportService {
         ) VALUES (
           gen_random_uuid(), $1, $2, $3, 'READY', $4, $5, $6, NOW(), NOW()
         );`,
-        [params.requestedBy, params.type, JSON.stringify(params.filters ?? {}), storageKey, params.rows.length, expiresAt],
+        [
+          params.requestedBy,
+          params.type,
+          JSON.stringify(params.filters ?? {}),
+          storageKey,
+          params.rows.length,
+          expiresAt,
+        ],
       );
     }
 

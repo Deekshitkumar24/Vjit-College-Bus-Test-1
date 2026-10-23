@@ -10,7 +10,9 @@ import * as crypto from 'crypto';
  * Verifies complete data, row-count, and checksum equality.
  */
 async function runDrill() {
-  console.log('=== Starting P8 Backup and Restore Drill (RB-09 Rehearsal: PostgreSQL 16 with PostGIS) ===');
+  console.log(
+    '=== Starting P8 Backup and Restore Drill (RB-09 Rehearsal: PostgreSQL 16 with PostGIS) ===',
+  );
   const baseAdminUrl =
     process.env['DATABASE_URL_TEST'] ||
     process.env['DATABASE_URL'] ||
@@ -100,7 +102,9 @@ async function runDrill() {
     const postgisCheck = await targetPool.query(`SELECT PostGIS_Version();`);
     const postgisVersion = postgisCheck.rows[0].postgis_version;
 
-    console.log(`Target database verified: ${tgtBusCount} buses (Checksum: ${tgtChecksum}), PostGIS: ${postgisVersion}`);
+    console.log(
+      `Target database verified: ${tgtBusCount} buses (Checksum: ${tgtChecksum}), PostGIS: ${postgisVersion}`,
+    );
     await targetPool.end();
 
     if (tgtBusCount !== srcBusCount) {
@@ -108,7 +112,9 @@ async function runDrill() {
     }
 
     if (tgtChecksum !== srcChecksum) {
-      throw new Error(`Checksum mismatch: source checksum ${srcChecksum}, target checksum ${tgtChecksum}`);
+      throw new Error(
+        `Checksum mismatch: source checksum ${srcChecksum}, target checksum ${tgtChecksum}`,
+      );
     }
 
     const report = `P8 Backup and Restore Drill (RB-09 Rehearsal) Evidence:
