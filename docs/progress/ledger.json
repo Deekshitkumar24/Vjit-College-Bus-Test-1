@@ -12,7 +12,7 @@
     "phase": "P0",
     "description": "verify:routes-auth passes across all endpoints",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P0-T7.log",
+    "evidencePath": "docs/progress/evidence/P0-T7.json",
     "unlockingInput": "-"
   },
   {

@@ -3,7 +3,7 @@
 | Exit ID | Phase | Description | Status | Evidence Path | Unlocking External Input |
 | :--- | :--- | :--- | :---: | :--- | :--- |
 | **P0-EXIT-01** | P0 | SSO dev sign-in against college test tenant | **BLOCKED-EXTERNAL** | `pnpm activate:sso` | E3 |
-| **P0-EXIT-02** | P0 | verify:routes-auth passes across all endpoints | **VERIFIED** | `docs/progress/evidence/P0-T7.log` | - |
+| **P0-EXIT-02** | P0 | verify:routes-auth passes across all endpoints | **VERIFIED** | `docs/progress/evidence/P0-T7.json` | - |
 | **P0-EXIT-03** | P0 | RLS integration on PostgreSQL 16 PostGIS | **VERIFIED** | `docs/progress/evidence/test-rls.json` | - |
 | **P0-EXIT-04** | P0 | CI green on GitHub Actions | **BLOCKED-EXTERNAL** | `pnpm activate:ci` | E2 |
 | **P0-EXIT-05** | P0 | Security headers on API host | **BLOCKED-EXTERNAL** | `pnpm activate:headers` | E1 |
