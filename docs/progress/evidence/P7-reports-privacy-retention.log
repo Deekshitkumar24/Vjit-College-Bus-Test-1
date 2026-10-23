@@ -1,0 +1,16 @@
+> @collegebus/api@1.0.0 test:unit
+> vitest run "test/p7-reports-privacy-retention.spec.ts"
+
+ RUN  v2.1.9 C:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api
+
+ ✓ test/p7-reports-privacy-retention.spec.ts (6 tests) 2000ms
+   ✓ Phase P7: Reports, Privacy, and Retention (Real DB & API) > T-SEC-03: escapes formula injection characters (=, +, -, @, \t, \r) in CSV cells
+   ✓ Phase P7: Reports, Privacy, and Retention (Real DB & API) > ExportService: enforces 100,000-row limit and 24-hour presigned URL expiry (C-06)
+   ✓ Phase P7: Reports, Privacy, and Retention (Real DB & API) > T-PRV-01: under-18 without parental consent is restricted to privacy notice and SOS only
+   ✓ Phase P7: Reports, Privacy, and Retention (Real DB & API) > T-PRV-02: data deletion removes attendance, sessions, and anonymizes SOS events
+   ✓ Phase P7: Reports, Privacy, and Retention (Real DB & API) > T-PRV-03: retention purges expired partitions and logs summary in audit_logs
+   ✓ Phase P7: Reports, Privacy, and Retention (Real DB & API) > Part 13.12: audit log coverage for write operations
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+ Duration  4.34s
