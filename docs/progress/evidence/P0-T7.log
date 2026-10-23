@@ -1,0 +1,5 @@
+
+> college-bus-tracker@1.0.0 verify:routes-auth C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus
+> tsx scripts/verify-routes-auth.ts
+
+verify:routes-auth PASSED. 37 routes generated from code and verified with zero unauthorized public endpoints.

@@ -1,0 +1,12 @@
+{
+  "id": "P0-T7",
+  "command": "pnpm verify:routes-auth",
+  "gitSha": "618feb6a6b7219baefbc1a0f3bf60dc057dba078",
+  "startTime": "2026-10-23T07:25:44.232Z",
+  "endTime": "2026-10-23T07:25:45.761Z",
+  "durationMs": 1527,
+  "exitCode": 0,
+  "stdoutSha256": "deede7515a3a8d30f17f1794ff4ee21db70e75f9a0d79a7b3b6660d7c1881d18",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "deede7515a3a8d30f17f1794ff4ee21db70e75f9a0d79a7b3b6660d7c1881d18"
+}
