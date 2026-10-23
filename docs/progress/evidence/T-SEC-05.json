@@ -1,0 +1,12 @@
+{
+  "id": "T-SEC-05",
+  "command": "pnpm --filter @collegebus/api test:unit test/p4-coordinator-technician.integration.spec.ts -t T-SEC-05",
+  "gitSha": "5deb5f1320a50ea04ee13d112d36eb1a112f18a0",
+  "startTime": "2026-10-23T07:56:31.533Z",
+  "endTime": "2026-10-23T07:56:37.835Z",
+  "durationMs": 6300,
+  "exitCode": 0,
+  "stdoutSha256": "245001933f375de991a9bd089e0be59a563fa310eddf66f7367555766af0148a",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "245001933f375de991a9bd089e0be59a563fa310eddf66f7367555766af0148a"
+}

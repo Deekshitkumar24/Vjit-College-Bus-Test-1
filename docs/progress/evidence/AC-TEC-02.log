@@ -1,0 +1,14 @@
+
+> @collegebus/api@1.0.0 test:unit C:\Users\Deekshit kumar .k\OneDrive\Desktop\collegebus\services\api
+> vitest run "test/p4-coordinator-technician.integration.spec.ts" "-t" "AC-TEC-02"
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/Deekshit kumar .k/OneDrive/Desktop/collegebus/services/api[39m
+
+ [32m✓[39m test/p4-coordinator-technician.integration.spec.ts [2m([22m[2m6 tests[22m[2m | [22m[33m5 skipped[39m[2m)[22m[33m 2078[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (6)[39m
+[2m   Start at [22m 13:26:25
+[2m   Duration [22m 3.62s[2m (transform 203ms, setup 0ms, collect 282ms, tests 2.08s, environment 0ms, prepare 423ms)[22m
+

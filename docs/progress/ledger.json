@@ -100,7 +100,7 @@
     "phase": "P4",
     "description": "AC-COR-01 (revocation & ticket creation)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P4-T2.log",
+    "evidencePath": "docs/progress/evidence/AC-COR-01.json",
     "unlockingInput": "-"
   },
   {
@@ -108,7 +108,7 @@
     "phase": "P4",
     "description": "AC-COR-02 (CSV dry-run rejection)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P4-T3.log",
+    "evidencePath": "docs/progress/evidence/AC-COR-02.json",
     "unlockingInput": "-"
   },
   {
@@ -116,7 +116,7 @@
     "phase": "P4",
     "description": "AC-COR-03 (user deactivation session revoke)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P4-T4.log",
+    "evidencePath": "docs/progress/evidence/AC-COR-03.json",
     "unlockingInput": "-"
   },
   {
@@ -132,7 +132,7 @@
     "phase": "P4",
     "description": "AC-TEC-02 (device replacement history)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P4-T5.log",
+    "evidencePath": "docs/progress/evidence/AC-TEC-02.json",
     "unlockingInput": "-"
   },
   {
@@ -140,7 +140,7 @@
     "phase": "P4",
     "description": "T-SEC-05 (admin endpoints 403/404)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P4-T9.log",
+    "evidencePath": "docs/progress/evidence/T-SEC-05.json",
     "unlockingInput": "-"
   },
   {
@@ -196,7 +196,7 @@
     "phase": "P6",
     "description": "T-SOS-02 (two triggers 20s apart join one incident)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T1.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-02.json",
     "unlockingInput": "-"
   },
   {
@@ -204,7 +204,7 @@
     "phase": "P6",
     "description": "T-SOS-03 (two buses in same second create 2 incidents)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T2.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-03.json",
     "unlockingInput": "-"
   },
   {
@@ -212,7 +212,7 @@
     "phase": "P6",
     "description": "T-SOS-04 (tier 1 after 2 minutes unacknowledged)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T3.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-04.json",
     "unlockingInput": "-"
   },
   {
@@ -220,7 +220,7 @@
     "phase": "P6",
     "description": "T-SOS-05 (cancellation refused after ack)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T4.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-05.json",
     "unlockingInput": "-"
   },
   {
@@ -228,7 +228,7 @@
     "phase": "P6",
     "description": "T-SOS-06 (missing recipient list raises setup alert)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T5.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-06.json",
     "unlockingInput": "-"
   },
   {
@@ -236,7 +236,7 @@
     "phase": "P6",
     "description": "T-NTF-01 (quiet hours non-safety suppressed)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T6.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-07.json",
     "unlockingInput": "-"
   },
   {
@@ -244,7 +244,7 @@
     "phase": "P6",
     "description": "T-NTF-02 (rate limit 5/min at dispatch)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T7.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-08.json",
     "unlockingInput": "-"
   },
   {
@@ -252,7 +252,7 @@
     "phase": "P6",
     "description": "T-NTF-03 (SMS template mismatch blocked)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T8.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-09.json",
     "unlockingInput": "-"
   },
   {
@@ -260,7 +260,7 @@
     "phase": "P6",
     "description": "T-CON-03 (parallel SOS triggers create one incident)",
     "status": "VERIFIED",
-    "evidencePath": "docs/progress/evidence/P6-T1.json",
+    "evidencePath": "docs/progress/evidence/P6-EXIT-10.json",
     "unlockingInput": "-"
   },
   {

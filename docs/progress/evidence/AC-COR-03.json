@@ -1,0 +1,12 @@
+{
+  "id": "AC-COR-03",
+  "command": "pnpm --filter @collegebus/api test:unit test/p4-coordinator-technician.integration.spec.ts -t AC-COR-03",
+  "gitSha": "5deb5f1320a50ea04ee13d112d36eb1a112f18a0",
+  "startTime": "2026-10-23T07:56:06.920Z",
+  "endTime": "2026-10-23T07:56:12.622Z",
+  "durationMs": 5699,
+  "exitCode": 0,
+  "stdoutSha256": "a7d2ca019ad4c7217761f55b4f946c40d5e51f1590e2d6305047f8d6730345ae",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "a7d2ca019ad4c7217761f55b4f946c40d5e51f1590e2d6305047f8d6730345ae"
+}

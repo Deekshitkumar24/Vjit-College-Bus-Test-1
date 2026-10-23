@@ -14,27 +14,27 @@
 | **P2-EXIT-02** | P2 | AC-FAC-01 to AC-FAC-03 on physical device | **BLOCKED-EXTERNAL** | `pnpm activate:device-p2` | E6, E3 |
 | **P3-EXIT-01** | P3 | AC-DRV-01 to AC-DRV-04 on physical reference phone | **BLOCKED-EXTERNAL** | `pnpm activate:device-p3` | E6, E3 |
 | **P3-EXIT-02** | P3 | Two-hour battery test (T-MOB-01 <= 8%/hr) | **BLOCKED-EXTERNAL** | `pnpm activate:battery` | E6 |
-| **P4-EXIT-01** | P4 | AC-COR-01 (revocation & ticket creation) | **VERIFIED** | `docs/progress/evidence/P4-T2.log` | - |
-| **P4-EXIT-02** | P4 | AC-COR-02 (CSV dry-run rejection) | **VERIFIED** | `docs/progress/evidence/P4-T3.log` | - |
-| **P4-EXIT-03** | P4 | AC-COR-03 (user deactivation session revoke) | **VERIFIED** | `docs/progress/evidence/P4-T4.log` | - |
+| **P4-EXIT-01** | P4 | AC-COR-01 (revocation & ticket creation) | **VERIFIED** | `docs/progress/evidence/AC-COR-01.json` | - |
+| **P4-EXIT-02** | P4 | AC-COR-02 (CSV dry-run rejection) | **VERIFIED** | `docs/progress/evidence/AC-COR-02.json` | - |
+| **P4-EXIT-03** | P4 | AC-COR-03 (user deactivation session revoke) | **VERIFIED** | `docs/progress/evidence/AC-COR-03.json` | - |
 | **P4-EXIT-04** | P4 | AC-TEC-01 (bench tracker first heartbeat < 2m) | **BLOCKED-EXTERNAL** | `pnpm activate:bench` | E11 |
-| **P4-EXIT-05** | P4 | AC-TEC-02 (device replacement history) | **VERIFIED** | `docs/progress/evidence/P4-T5.log` | - |
-| **P4-EXIT-06** | P4 | T-SEC-05 (admin endpoints 403/404) | **VERIFIED** | `docs/progress/evidence/P4-T9.log` | - |
+| **P4-EXIT-05** | P4 | AC-TEC-02 (device replacement history) | **VERIFIED** | `docs/progress/evidence/AC-TEC-02.json` | - |
+| **P4-EXIT-06** | P4 | T-SEC-05 (admin endpoints 403/404) | **VERIFIED** | `docs/progress/evidence/T-SEC-05.json` | - |
 | **P5-EXIT-01** | P5 | T-ATT-01 (QR code valid 30s, rejected 65s) | **VERIFIED** | `docs/progress/evidence/P5-T2.log` | - |
 | **P5-EXIT-02** | P5 | T-ATT-02 (duplicate scan rejected) | **VERIFIED** | `docs/progress/evidence/P5-T3.log` | - |
 | **P5-EXIT-03** | P5 | T-ATT-03 (morning present, afternoon absent alert) | **VERIFIED** | `docs/progress/evidence/P5-T4.log` | - |
 | **P5-EXIT-04** | P5 | T-ATT-04 (leave prevents absence alert) | **VERIFIED** | `docs/progress/evidence/P5-T5.log` | - |
 | **P5-EXIT-05** | P5 | T-CON-01 (two parallel transactions unique index) | **VERIFIED** | `docs/progress/evidence/P5-T6.log` | - |
 | **P6-EXIT-01** | P6 | T-SOS-01 (Tier 0 push within 5s at p95) | **BLOCKED-EXTERNAL** | `pnpm activate:push` | E12, E1 |
-| **P6-EXIT-02** | P6 | T-SOS-02 (two triggers 20s apart join one incident) | **VERIFIED** | `docs/progress/evidence/P6-T1.json` | - |
-| **P6-EXIT-03** | P6 | T-SOS-03 (two buses in same second create 2 incidents) | **VERIFIED** | `docs/progress/evidence/P6-T2.json` | - |
-| **P6-EXIT-04** | P6 | T-SOS-04 (tier 1 after 2 minutes unacknowledged) | **VERIFIED** | `docs/progress/evidence/P6-T3.json` | - |
-| **P6-EXIT-05** | P6 | T-SOS-05 (cancellation refused after ack) | **VERIFIED** | `docs/progress/evidence/P6-T4.json` | - |
-| **P6-EXIT-06** | P6 | T-SOS-06 (missing recipient list raises setup alert) | **VERIFIED** | `docs/progress/evidence/P6-T5.json` | - |
-| **P6-EXIT-07** | P6 | T-NTF-01 (quiet hours non-safety suppressed) | **VERIFIED** | `docs/progress/evidence/P6-T6.json` | - |
-| **P6-EXIT-08** | P6 | T-NTF-02 (rate limit 5/min at dispatch) | **VERIFIED** | `docs/progress/evidence/P6-T7.json` | - |
-| **P6-EXIT-09** | P6 | T-NTF-03 (SMS template mismatch blocked) | **VERIFIED** | `docs/progress/evidence/P6-T8.json` | - |
-| **P6-EXIT-10** | P6 | T-CON-03 (parallel SOS triggers create one incident) | **VERIFIED** | `docs/progress/evidence/P6-T1.json` | - |
+| **P6-EXIT-02** | P6 | T-SOS-02 (two triggers 20s apart join one incident) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-02.json` | - |
+| **P6-EXIT-03** | P6 | T-SOS-03 (two buses in same second create 2 incidents) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-03.json` | - |
+| **P6-EXIT-04** | P6 | T-SOS-04 (tier 1 after 2 minutes unacknowledged) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-04.json` | - |
+| **P6-EXIT-05** | P6 | T-SOS-05 (cancellation refused after ack) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-05.json` | - |
+| **P6-EXIT-06** | P6 | T-SOS-06 (missing recipient list raises setup alert) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-06.json` | - |
+| **P6-EXIT-07** | P6 | T-NTF-01 (quiet hours non-safety suppressed) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-07.json` | - |
+| **P6-EXIT-08** | P6 | T-NTF-02 (rate limit 5/min at dispatch) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-08.json` | - |
+| **P6-EXIT-09** | P6 | T-NTF-03 (SMS template mismatch blocked) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-09.json` | - |
+| **P6-EXIT-10** | P6 | T-CON-03 (parallel SOS triggers create one incident) | **VERIFIED** | `docs/progress/evidence/P6-EXIT-10.json` | - |
 | **P6-EXIT-11** | P6 | T-LOAD-02 (SOS burst of five buses on staging) | **BLOCKED-EXTERNAL** | `pnpm activate:staging-load` | E7 |
 | **P6-EXIT-12** | P6 | Live SMS transmission via DLT | **BLOCKED-EXTERNAL** | `pnpm activate:sms` | E13 |
 | **P7-EXIT-01** | P7 | T-SEC-03 (CSV formula injection escaped) | **VERIFIED** | `docs/progress/evidence/P7-T1.json` | - |

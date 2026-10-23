@@ -1,0 +1,12 @@
+{
+  "id": "P6-EXIT-03",
+  "command": "pnpm --filter @collegebus/api test:unit test/p6-sos-notifications.spec.ts -t T-SOS-03",
+  "gitSha": "5deb5f1320a50ea04ee13d112d36eb1a112f18a0",
+  "startTime": "2026-10-23T07:57:32.332Z",
+  "endTime": "2026-10-23T07:57:40.076Z",
+  "durationMs": 7742,
+  "exitCode": 0,
+  "stdoutSha256": "ed7c24ce3970f1197843e4089348b2747ebd8b8ff4a539cc0eeeb75820d1fbfe",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "outputSha256": "ed7c24ce3970f1197843e4089348b2747ebd8b8ff4a539cc0eeeb75820d1fbfe"
+}
