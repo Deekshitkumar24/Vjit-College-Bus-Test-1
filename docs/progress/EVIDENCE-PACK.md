@@ -369,7 +369,8 @@ The true production execution of `verify:prod-clean` (`P9-EXIT-07`) is strictly 
 ## 9. P8 Host Security Audit: Local vs. Deployed Hosts
 
 - **Tested Locally:**
-  - `http://localhost:3000` (Fastify / NestJS API Server): Verified security headers (`Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Strict-Transport-Security`), CORS origin enforcement, error response masking, and rate-limiting middleware via vitest and local curl drills.
-- **Not Tested Locally / Pending Deployed Hosts (BLOCKED-EXTERNAL `E1`):**
-  - `api.dev.collegebus.internal` / AWS ALB & CloudFront Distribution: Live TLS 1.3 cipher negotiation, ACM certificate chain validity, DNS CAA records, and internet-facing HSTS headers require deployed infrastructure on AWS.
-  - `admin.dev.collegebus.internal`: Admin web S3/CloudFront HTTPS distribution.
+  - `http://localhost:3000` (Fastify / NestJS API Server): Verified security headers (`Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Strict-Transport-Security`), CORS origin enforcement, error response masking, and rate-limiting middleware via vitest and local drills.
+- **Configuration Placeholders Pending Deployed Domain (BLOCKED-EXTERNAL `E1`, D-12):**
+  - `api.dev.collegebus.internal` / AWS ALB & CloudFront Distribution: Configuration placeholders only (not deployed). Live TLS 1.3 cipher negotiation, ACM certificate chain validity, DNS CAA records, and internet-facing HSTS headers require deployed infrastructure on AWS once E1 provides the real domain.
+  - `admin.dev.collegebus.internal`: Configuration placeholder for Admin web S3/CloudFront HTTPS distribution. Will be replaced by the real registered domain upon receipt of E1 without requiring an owner GO.
+
